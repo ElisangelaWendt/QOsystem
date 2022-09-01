@@ -1,0 +1,44 @@
+import { LinearGradient } from "expo-linear-gradient";
+import { Text, Dimensions, Image, View } from "react-native";
+import { styles } from './styles'
+import { colors } from '../../styles/colors'
+import Input from "../../components/textInput";
+import { useState } from "react";
+
+export default function Login({navigation}: any) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+
+  function handleNavigateToPasswordRecovery(){
+    navigation.navigate('PasswordRecovery');
+  }
+
+  return (
+    <LinearGradient style={styles.container} colors={[colors.lightGradient, colors.darkGradient]}>
+      <View>
+      <Image source={require('../../images/logo.png')} style={styles.image}/>
+      <Text style={styles.text}>
+        Bem-vindo ao QO SYSTEM
+      </Text>
+        <Input
+          labelName="Email"
+          tipoTeclado={"email-address"}
+          onChangeText={setEmail}
+          />
+        <Input
+          icon= {true}
+          labelName="Senha"
+          tipoTeclado={"password"}
+          onChangeText={setPassword}
+        />
+      <Text onPress={handleNavigateToPasswordRecovery}>
+        Esqueceu sua senha?
+      </Text>
+      </View>
+      <Text style={styles.footer}>
+        Version 1.0.0 powered by APLTDA
+      </Text>
+    </LinearGradient>
+  )
+}
