@@ -10,6 +10,7 @@ inputGroup:{
   borderRadius:4,
   borderWidth: 1,
   elevation:10,
+  borderColor: colors.dividor,
 },
 input: {
   width: 294,
