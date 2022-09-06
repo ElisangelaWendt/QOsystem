@@ -4,7 +4,7 @@ import { colors } from '../../styles/colors';
 const styles = StyleSheet.create({
 
     inputGroup:{
-        marginRight: 14,
+        marginRight: 20,
         backgroundColor: colors.inputBackground,
         elevation: 10,
         flexDirection: "row",

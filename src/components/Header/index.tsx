@@ -1,12 +1,23 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { View } from "react-native";
+import { Text, View } from "react-native";
 import { colors } from "../../styles/colors";
 import { styles } from "./styles";
+import { Feather } from '@expo/vector-icons';
+import BackButton from "../BackButton";
+import {MenuButton} from "../MenuButton";
+import { DrawerActions } from "@react-navigation/native";
 
-export default function Header(){
+interface HeaderProps{
+  title: string;
+  isHome?: boolean;
+}
+
+export default function Header({title, isHome}: HeaderProps, {navigation}){
   return(
     <LinearGradient style={styles.container} colors={[colors.lightGradient, colors.darkGradient]}>
-
+      {isHome ? <MenuButton title="" onPress={() => navigation.dispatch(DrawerActions.openDrawer())}/> : <BackButton/>}
+      <Text style={styles.title}>{title}</Text>
+      <View></View>
     </LinearGradient>
 
   )

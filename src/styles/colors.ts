@@ -8,4 +8,8 @@ export const colors = {
   inputBackground: "#FFFFFF",
   buttonText:"#FFFFFF",
   selectedIcon: "#FFFFFF",
+  titleText: "#FFFFFF",
+  bottomBar: "#FF7A00",
+  dividor: "#7B7B7B",
+  role: "#7B7B7B"
 }

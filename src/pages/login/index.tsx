@@ -1,18 +1,24 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { Text, Dimensions, Image, View } from "react-native";
+import { Text, Dimensions, Image, View, TouchableOpacity } from "react-native";
 import { styles } from './styles'
 import { colors } from '../../styles/colors'
 import Input from "../../components/textInput";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { Feather } from '@expo/vector-icons';
 
 export default function Login({navigation}: any) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const secondInput = useRef(null);
 
   function handleNavigateToPasswordRecovery(){
     navigation.navigate('PasswordRecovery');
   }
+
+  function handleNavigateToHome(){
+    navigation.navigate('BottomTab');
+  }
+
 
   return (
     <LinearGradient style={styles.container} colors={[colors.lightGradient, colors.darkGradient]}>
@@ -25,16 +31,23 @@ export default function Login({navigation}: any) {
           labelName="Email"
           tipoTeclado={"email-address"}
           onChangeText={setEmail}
+          onSubmitEditing={() => {secondInput.current.focus()}}
           />
         <Input
           icon= {true}
           labelName="Senha"
           tipoTeclado={"password"}
           onChangeText={setPassword}
+          reference={secondInput}
         />
       <Text onPress={handleNavigateToPasswordRecovery}>
         Esqueceu sua senha?
       </Text>
+      <View style={{ alignItems: 'center', paddingTop: 60 }}>
+        <TouchableOpacity onPress={handleNavigateToHome}>
+            <Feather  name="arrow-right-circle" size={60} color={colors.text} />
+        </TouchableOpacity>
+      </View>
       </View>
       <Text style={styles.footer}>
         Version 1.0.0 powered by APLTDA

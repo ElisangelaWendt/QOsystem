@@ -5,9 +5,8 @@ export const styles = StyleSheet.create({
   container:{
     width: Dimensions.get('window').width, 
     height: "100%",
-    paddingTop: 70,
+    paddingTop: 60,
     paddingHorizontal: 33,
-    alignItems:"center",
     justifyContent:"space-between",
     paddingBottom: 30,
   },
@@ -23,11 +22,11 @@ export const styles = StyleSheet.create({
   },
   footer:{
     fontSize:10,
-    position: "absolute",
-    paddingTop: "240%"
+    alignSelf:"center",
   },
   row:{
     flexDirection: 'row',
-    paddingBottom: 10
+    paddingBottom: 10,
+    alignSelf:"center",
   }
 })

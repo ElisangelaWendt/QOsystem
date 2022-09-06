@@ -3,13 +3,22 @@ import { colors } from "../../styles/colors";
 
 export const styles = StyleSheet.create({
   container:{
-    flex: 1,
     width: Dimensions.get('window').width, 
-    height: 56,
-    paddingTop: 70,
-    paddingHorizontal: 33,
-    alignItems:"center",
-    justifyContent:"space-between",
-    paddingBottom: 30,
+    height: 90,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+    flexDirection:'row',
+    alignContent: 'center',
+    paddingTop: 20,
+    paddingHorizontal:30
+    
   },
+  title:{
+    fontSize: 25,
+    color: colors.titleText,
+    fontFamily: "SairaStencilOne_400Regular",
+    paddingRight:20
+  }
 });

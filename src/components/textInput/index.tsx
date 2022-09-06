@@ -13,6 +13,7 @@ interface TextFieldProps extends TextInputProps{
     tipoTeclado?: any;
     secureTextEntry?: boolean;
     icon?: boolean;
+    reference?: any;
 }
 
 /**
@@ -21,18 +22,15 @@ interface TextFieldProps extends TextInputProps{
  * @param labelName: (string) Informe a label a ser exibida acima do campo;
  * @param value: (string) Informe o value do campo;
  * @param tipoTeclado: (any) Tipos de teclado mais usados: email-address, numeric, number-pad, decimal-pad, phone-pad;
- * @param exibeOpcional: (boolean) Exibe ou não o texto (opcional) acima do TextInput;
  * 
  */
-const input: React.FC<TextFieldProps> = ({ labelName, icon, value, tipoTeclado, ...rest }) => {
+const input: React.FC<TextFieldProps> = ({ labelName, icon, value, tipoTeclado, reference, ...rest }) => {
 
     return (
-        <View>
             <View style={styles.inputGroup}>
-                <TextInput placeholder={labelName} placeholderTextColor={colors.inputText} style={styles.input} value={value} keyboardType={tipoTeclado} {...rest}/>
+                <TextInput ref={reference} placeholder={labelName} placeholderTextColor={colors.inputText} style={styles.input} value={value} keyboardType={tipoTeclado} {...rest}/>
                 { icon && <Feather name="eye" style={styles.icon} size = {24} {...rest}/>}
             </View>
-        </View>
     );
 }
 

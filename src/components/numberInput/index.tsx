@@ -12,6 +12,7 @@ interface TextFieldProps extends TextInputProps{
     value?: any;
     tipoTeclado?: any;
     secureTextEntry?: boolean;
+    reference?: any;
 }
 
 /**
@@ -23,14 +24,12 @@ interface TextFieldProps extends TextInputProps{
  * @param exibeOpcional: (boolean) Exibe ou não o texto (opcional) acima do TextInput;
  * 
  */
-const numberInput: React.FC<TextFieldProps> = ({ labelName, value, tipoTeclado, ...rest }) => {
+const numberInput: React.FC<TextFieldProps> = ({ labelName, value, reference, tipoTeclado, ...rest }) => {
 
     return (
-        <View>
             <View style={styles.inputGroup}>
-                <TextInput placeholder={labelName} placeholderTextColor={colors.inputText} style={styles.input} value={value} keyboardType={tipoTeclado} {...rest}/>
+                <TextInput ref={reference} placeholder={labelName} placeholderTextColor={colors.inputText} style={styles.input} value={value} keyboardType={tipoTeclado} {...rest}/>
             </View>
-        </View>
     );
 }
 
