@@ -16,7 +16,7 @@ export default function EmployeeRegister() {
           labelName="Informe o nome do Funcionário"
           title="Nome"
         />
-        <DropBox title="Cargo" />
+        <DropBox title="Cargo" placeholder="Selecione um Cargo"/>
         <RegisterInput
           labelName="Informe o salário do funcionário"
           title="Salário"

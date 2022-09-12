@@ -5,11 +5,12 @@ import PasswordRecovery from '../pages/passwordRecovery';
 // import {Home} from '../pages/home';
 import {useFonts, SairaStencilOne_400Regular,
 } from '@expo-google-fonts/dev';
-import FoodList from '../pages/foodList';
 import MyTab from '../components/BottomTab';
-import Home from '../pages/home';
 import AppLoading from 'expo-app-loading';
 import EmployeeRegister from '../pages/employee/EmployeeRegister';
+import ItemList from '../pages/itemList';
+import Home from '../pages/home';
+import ItemDetails from '../pages/itemList/itemDetails';
 const { Navigator, Screen } = createStackNavigator();
 
 function AppStack() {
@@ -22,13 +23,14 @@ function AppStack() {
   } else {
     return (
 
-      <Navigator initialRouteName="Login" screenOptions={{ headerShown: false, cardStyle: {  }, }} >
+      <Navigator initialRouteName="Login" screenOptions={{ headerShown: false }} >
         <Screen name="Login" component={Login} />
         <Screen name="Home" component={Home} />
         <Screen name="EmployeeRegister" component={EmployeeRegister} />
         <Screen name="PasswordRecovery" component={PasswordRecovery} />
         <Screen name="BottomTab" component={MyTab} />
-        <Screen name="FoodList" component={FoodList} />
+        <Screen name="ItemList" component={ItemList} />
+        <Screen name="ItemDetails" component={ItemDetails} />
       </Navigator>
 
     );

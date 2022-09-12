@@ -11,5 +11,8 @@ export const colors = {
   titleText: "#FFFFFF",
   bottomBar: "#FF7A00",
   dividor: "#7B7B7B",
-  role: "#7B7B7B"
+  role: "#7B7B7B",
+  backgroundButtonAdd: "#D9D9D9",
+  green: "#159400",
+  red:"##FF0000B2"
 }

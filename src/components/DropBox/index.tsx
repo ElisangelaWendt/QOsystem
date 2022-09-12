@@ -6,9 +6,10 @@ import styles from "./styles";
 
 interface DropBoxProps{
   title: string;
+  placeholder: string;
 }
 
-export default function DropBox({title}: DropBoxProps) {
+export default function DropBox({title, placeholder}: DropBoxProps) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([
@@ -20,7 +21,7 @@ export default function DropBox({title}: DropBoxProps) {
     <>
     <Text>{title}</Text>
     <DropDownPicker
-      placeholder="Selecione um cargo"
+      placeholder={placeholder}
       textStyle={styles.dropdownText}
       labelStyle={styles.dropdownText}
       open={open}

@@ -9,7 +9,11 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
     "@expo-google-fonts/dev": "^0.2.2",
+    "@mui/material": "^5.10.4",
+    "@mui/x-data-grid": "^5.17.1",
     "@react-navigation/bottom-tabs": "^6.3.3",
     "@react-navigation/drawer": "^6.4.4",
     "@react-navigation/material-bottom-tabs": "^6.2.3",

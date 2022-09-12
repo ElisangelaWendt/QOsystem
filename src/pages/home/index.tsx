@@ -8,8 +8,8 @@ import Header from "../../components/Header";
 
 export default function Home({ navigation }: any) {
 
-  function handleNavigateToFoodList(){
-    navigation.navigate('FoodList');
+  function handleNavigateToItemList(){
+    navigation.navigate('ItemList');
   }
 
   return (
@@ -22,7 +22,7 @@ export default function Home({ navigation }: any) {
         </View>
         <Text style={styles.text}>Categorias</Text>
         {/* Categorias de lanches */}
-        <TouchableOpacity style={styles.categoryButton} onPress={handleNavigateToFoodList}>
+        <TouchableOpacity style={styles.categoryButton} onPress={handleNavigateToItemList}>
           <Image source={require('../../images/lanches.png')} style={styles.image} />
           <Text style={styles.categoryText}>Lanches</Text>
         </TouchableOpacity>
