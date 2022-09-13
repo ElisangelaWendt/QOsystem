@@ -5,6 +5,7 @@ import { colors } from '../../styles/colors'
 import Input from "../../components/textInput";
 import { useRef, useState } from "react";
 import { Feather } from '@expo/vector-icons';
+import axios from 'axios';
 
 export default function Login({navigation}: any) {
   const [email, setEmail] = useState("");
@@ -15,10 +16,16 @@ export default function Login({navigation}: any) {
     navigation.navigate('PasswordRecovery');
   }
 
-  function handleNavigateToHome(){
-    navigation.navigate('BottomTab');
-  }
 
+  function logar(){
+    axios.post(`https://jsonplaceholder.typicode.com/users`, {   "conta": email,
+    "senha": password })
+    .then(res => {
+      console.log(res);
+      console.log(res.data);
+      navigation.navigate('BottomTab');
+    })
+  }
 
   return (
     <LinearGradient style={styles.container} colors={[colors.lightGradient, colors.darkGradient]}>
@@ -44,7 +51,7 @@ export default function Login({navigation}: any) {
         Esqueceu sua senha?
       </Text>
       <View style={{ alignItems: 'center', paddingTop: 60 }}>
-        <TouchableOpacity onPress={handleNavigateToHome}>
+        <TouchableOpacity onPress={logar}>
             <Feather  name="arrow-right-circle" size={60} color={colors.text} />
         </TouchableOpacity>
       </View>
