@@ -23,6 +23,10 @@ export default function Menu({navigation}: any) {
     navigation.navigate("Employee")
   }
 
+  function handleNavigateToIngredientRegister(){
+    navigation.navigate("IngredientRegister")
+  }
+
   function LogOut(){
     navigation.navigate("Login")
   }
@@ -35,6 +39,7 @@ export default function Menu({navigation}: any) {
         <MenuButton title="Cadastrar Funcionário" onPress={handleNavigateToEmployeeRegister}/>
         <MenuButton title="Cadastrar Categoria" onPress={handleNavigateToCategoryRegister}/>
         <MenuButton title="Cadastrar Cargo" onPress={handleNavigateToJobRegister}/>
+        <MenuButton title="Cadastrar Ingrediente" onPress={handleNavigateToIngredientRegister}/>
 
         <MenuButton title="Sair" onPress={LogOut}/>
     </View>

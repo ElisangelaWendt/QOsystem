@@ -5,12 +5,19 @@ export const styles = StyleSheet.create({
     margin:20,
     height: "100%",
     justifyContent:'space-between',
-    flex:1
+    flex:1,
+  },
+  row:{
+    flexDirection: "row",
+    alignItems:'center'
+  },
+  text:{
+    fontSize: 18,
+    marginRight: 30
   },
   footer:{
-    alignItems:"center",
-    alignContent:'flex-end',
-    marginBottom: 40
+    alignItems:'center',
+    marginVertical: 40
   }
  
 });
