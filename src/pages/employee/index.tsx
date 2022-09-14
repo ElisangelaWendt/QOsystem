@@ -12,7 +12,7 @@ export default function Employee({navigation}: any) {
 
   return (
     <>
-    <Header title="Empregados" isHome={true} />
+    <Header title="Empregados" canGoBack={true} />
     <View style={styles.container}>
       <View style={styles.content}>
         {/* trazer informações do banco */}

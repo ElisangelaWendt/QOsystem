@@ -12,7 +12,7 @@ export default function ItemList({navigation}: any){
 
   return(
     <>
-      <Header title="Lanches"/>
+      <Header title="Lanches" canGoBack={true}/>
       <View style={styles.container}>
         <View> 
         {/* trazer informações do banco */}

@@ -1,11 +1,11 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import DropBox from "../../../components/DropBox";
-import Header from "../../../components/Header";
-import RegisterInput from "../../../components/RegisterInput";
+import DropBox from "../../components/DropBox";
+import Header from "../../components/Header";
+import RegisterInput from "../../components/RegisterInput";
 import styles from "./styles";
 import { Feather } from "@expo/vector-icons";
-import { colors } from "../../../styles/colors";
+import { colors } from "../../styles/colors";
 
 export default function EmployeeRegister() {
   return (

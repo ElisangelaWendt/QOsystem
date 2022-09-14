@@ -7,13 +7,14 @@ import {useFonts, SairaStencilOne_400Regular,
 } from '@expo-google-fonts/dev';
 import MyTab from '../components/BottomTab';
 import AppLoading from 'expo-app-loading';
-import EmployeeRegister from '../pages/employee/EmployeeRegister';
+import EmployeeRegister from '../pages/EmployeeRegister';
 import ItemList from '../pages/itemList';
 import Home from '../pages/home';
-import ItemDetails from '../pages/itemList/itemDetails';
+import ItemDetails from '../pages/itemDetails';
 import CloseOrder from '../pages/closeOrder';
-import DrawerNavigator from '../components/DrawerComponent';
 import CategoryRegister from '../pages/categoryRegister';
+import JobRegister from '../pages/JobRegister';
+import Employee from '../pages/employee';
 const { Navigator, Screen } = createStackNavigator();
 
 function AppStack() {
@@ -28,14 +29,16 @@ function AppStack() {
 
       <Navigator initialRouteName="Login" screenOptions={{ headerShown: false }} >
         <Screen name="Login" component={Login} />
-        <Screen name="Home" component={Home} />
+        {/* <Screen name="Home" component={Home} /> */}
         <Screen name="EmployeeRegister" component={EmployeeRegister} />
+        <Screen name="Employee" component={Employee} />
         <Screen name="PasswordRecovery" component={PasswordRecovery} />
         <Screen name="BottomTab" component={MyTab} />
         <Screen name="ItemList" component={ItemList} />
         <Screen name="ItemDetails" component={ItemDetails} />
         <Screen name="CategoryRegister" component={CategoryRegister} />
-        {/* <Screen name="CloseOrder" component={CloseOrder} /> */}
+        <Screen name="CloseOrder" component={CloseOrder} />
+        <Screen name="JobRegister" component={JobRegister} />
       </Navigator>
 
     );

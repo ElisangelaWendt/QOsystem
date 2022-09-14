@@ -26,6 +26,7 @@ export default function Home({ navigation }: any) {
           <Image source={require('../../images/lanches.png')} style={styles.image} />
           <Text style={styles.categoryText}>Lanches</Text>
         </TouchableOpacity>
+
       </ScrollView>
     </View>
   )

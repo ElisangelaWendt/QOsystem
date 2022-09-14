@@ -4,7 +4,8 @@ import { colors } from '../../styles/colors';
 const styles = StyleSheet.create({
   content:{
     paddingHorizontal: 20,
-    height:"100%"
+    // height:"100%",
+    marginBottom:90
   },
   inputGroup:{
     marginVertical:25,

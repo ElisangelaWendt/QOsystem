@@ -12,7 +12,7 @@ export default function Orders({navigation}){
   
   return(
     <View>
-      <Header title="Pedidos" isHome={true}/>
+      <Header title="Pedidos" canGoBack={false}/>
       <View style={styles.container}>
       {/* <MenuButton title="" onPress={() => navigation.dispatch(DrawerActions.openDrawer())}/> */}
 
