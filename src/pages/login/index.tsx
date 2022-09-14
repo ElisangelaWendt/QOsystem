@@ -6,6 +6,7 @@ import Input from "../../components/textInput";
 import { useRef, useState } from "react";
 import { Feather } from '@expo/vector-icons';
 import axios from 'axios';
+import { baseUrl } from '../../config/globalConfig';
 
 export default function Login({navigation}: any) {
   const [email, setEmail] = useState("");
@@ -18,13 +19,19 @@ export default function Login({navigation}: any) {
 
 
   function logar(){
-    axios.post(`https://jsonplaceholder.typicode.com/users`, {   "conta": email,
-    "senha": password })
+    axios.post(baseUrl+"conta/buscar", {
+        conta: email,
+        senha: password
+      }
+    )
     .then(res => {
-      console.log(res);
       console.log(res.data);
       navigation.navigate('BottomTab');
-    })
+    }) .catch(function (error) {
+      console.log(error);
+      //login ou senha incorretos
+      
+        })
   }
 
   return (
