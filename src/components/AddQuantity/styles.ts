@@ -10,7 +10,6 @@ removeButton:{
  width: 37,
  height: 27,
  justifyContent: "center",
- marginLeft: 14
 },
 addButton:{
  backgroundColor: colors.backgroundButtonAdd,
@@ -32,7 +31,7 @@ textQuantity:{
   borderColor: colors.backgroundButtonAdd,
   width: 45,
   alignItems:'center',
-  justifyContent:"center"
+  justifyContent:"center",
 }
 })
 export default styles;

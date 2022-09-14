@@ -3,6 +3,8 @@ import { Feather } from "@expo/vector-icons";
 import styles from "./styles";
 import { colors } from "../../styles/colors";
 import { DrawerActions } from "@react-navigation/native";
+import React from "react";
+import { LinearGradient } from "expo-linear-gradient";
 
 
 interface MenuButtonProps extends TouchableOpacityProps {
@@ -12,7 +14,9 @@ interface MenuButtonProps extends TouchableOpacityProps {
 export function MenuButton({ title, ...rest }: MenuButtonProps, {navigation}) {
   return (
     <TouchableOpacity style={styles.buttonMenu}  {...rest}>
-      <Text><Feather name="menu" size={35} color={colors.text}/>{title}</Text>
+      <LinearGradient style={styles.container} colors={[colors.lightGradient, colors.darkGradient]}>
+      <Text style={styles.text}>{title}</Text>
+      </LinearGradient>
     </TouchableOpacity>
   );
 }

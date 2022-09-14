@@ -14,5 +14,5 @@ export const colors = {
   role: "#7B7B7B",
   backgroundButtonAdd: "#D9D9D9",
   green: "#159400",
-  red:"##FF0000B2"
+  red:"#FF0000B2"
 }

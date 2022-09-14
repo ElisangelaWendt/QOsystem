@@ -14,7 +14,7 @@ export default function Home({ navigation }: any) {
 
   return (
     <View >
-      <Header title="QO SYSTEM" isHome={true} />
+      <Header title="QO SYSTEM" canGoBack={false} />
       <ScrollView style={styles.content}>
         <View style={styles.inputGroup}>
           <TextInput placeholder="Buscar Categoria" style={styles.input} />

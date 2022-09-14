@@ -10,7 +10,7 @@ import { colors } from "../../../styles/colors";
 export default function EmployeeRegister() {
   return (
     <>
-      <Header title="Novo Funcionário" isHome={true} />
+      <Header title="Novo Funcionário" canGoBack={true} />
       <View style={styles.container}>
         <RegisterInput
           labelName="Informe o nome do Funcionário"

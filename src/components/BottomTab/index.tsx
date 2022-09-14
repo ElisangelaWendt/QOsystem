@@ -6,7 +6,9 @@ import { Feather } from "@expo/vector-icons";
 import Employee from "../../pages/employee";
 import Home from "../../pages/home";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Orders from "../../pages/orders/finishOrder";
+import CloseOrder from "../../pages/closeOrder";
+import Orders from "../../pages/finishOrders";
+import Menu from "../../pages/menu";
 
 
 const Tab = createMaterialBottomTabNavigator();
@@ -20,8 +22,8 @@ export default function MyTab() {
       labeled={false}
       activeColor={colors.buttonText}
       >
-        <Tab.Screen  name="Employee" component={Employee}  options={{tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="file-document-outline" color={color} size={25} />
+        <Tab.Screen  name="Menu" component={Menu}  options={{tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="menu" color={color} size={25} />
           ),}}/>
         <Tab.Screen name="Home" options={{tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="home-outline" color={color} size={25} />

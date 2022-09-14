@@ -32,6 +32,7 @@ text:{
 categoryButton:{
   height: 120,
   backgroundColor:"black",
+  marginBottom:20
 },
 image:{
   width: Dimensions.get('window').width,

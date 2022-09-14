@@ -15,7 +15,18 @@ image:{
 properties:
 {
   alignSelf:"flex-start",
-  marginTop: 40
-}
+  marginTop: 40,
+},
+text:{
+  marginTop: 20,
+},
+table:{
+  backgroundColor: colors.backgroundButtonAdd,
+  height:65,
+  width: 227,
+  alignSelf:"center",
+  elevation: 10,
+  marginVertical: 15
+},
 })
 export default styles;

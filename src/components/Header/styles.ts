@@ -19,6 +19,5 @@ export const styles = StyleSheet.create({
     fontSize: 25,
     color: colors.titleText,
     fontFamily: "SairaStencilOne_400Regular",
-    paddingRight:20
   }
 });

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text } from "react-native";
+import { SafeAreaView, Text } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { colors } from "../../styles/colors";
 import styles from "./styles";

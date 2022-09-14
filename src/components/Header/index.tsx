@@ -9,15 +9,15 @@ import { DrawerActions, useNavigation } from "@react-navigation/native";
 
 interface HeaderProps{
   title: string;
-  isHome?: boolean;
+  canGoBack?: boolean;
 }
 
 
-export default function Header({title, isHome}: HeaderProps){
+export default function Header({title, canGoBack}: HeaderProps){
   const navigation = useNavigation();
   return(
     <LinearGradient style={styles.container} colors={[colors.lightGradient, colors.darkGradient]}>
-      {isHome ? <MenuButton title="" onPress={() => navigation.dispatch(DrawerActions.openDrawer())}/> : <BackButton/>}
+      {canGoBack ? <BackButton/> : <View></View>}
       <Text style={styles.title}>{title}</Text>
       <View></View>
     </LinearGradient>

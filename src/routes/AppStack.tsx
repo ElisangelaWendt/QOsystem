@@ -11,6 +11,9 @@ import EmployeeRegister from '../pages/employee/EmployeeRegister';
 import ItemList from '../pages/itemList';
 import Home from '../pages/home';
 import ItemDetails from '../pages/itemList/itemDetails';
+import CloseOrder from '../pages/closeOrder';
+import DrawerNavigator from '../components/DrawerComponent';
+import CategoryRegister from '../pages/categoryRegister';
 const { Navigator, Screen } = createStackNavigator();
 
 function AppStack() {
@@ -31,6 +34,8 @@ function AppStack() {
         <Screen name="BottomTab" component={MyTab} />
         <Screen name="ItemList" component={ItemList} />
         <Screen name="ItemDetails" component={ItemDetails} />
+        <Screen name="CategoryRegister" component={CategoryRegister} />
+        {/* <Screen name="CloseOrder" component={CloseOrder} /> */}
       </Navigator>
 
     );
