@@ -7,27 +7,27 @@ export const styles = StyleSheet.create({
     alignItems:"center",
   },
   table:{
-    borderWidth:1,
-    minHeight: 400,
-    width:"100%",
-    // width:Dimensions.get("screen").width,
-    flexDirection:"row",
-    overflow: "scroll",
-    marginVertical:20,
-    justifyContent:"space-between"
+    width:Dimensions.get("screen").width,
+    marginVertical: 20
+
   },
-  title:{
-    margin:15,
-    alignSelf:"center"
+  headStyle: { 
+    height: 50,
+    alignContent: "center",
+    // borderWidth: 1,
   },
-  column:{
-    borderRightWidth: 1,
-    minHeight: 400,
-    width:"33.33%"
+  tableText: { 
+    textAlign:"center",
+    margin:10,
   },
-  middleColumn:{
-    borderTopWidth: 1,
-    width:"100%"
+  totalText: { 
+    textAlign:"center",
+    margin:10,
+  },
+  footer:{
+    alignSelf:"center",
+    marginBottom: 40
   }
+
 })
 export default styles;

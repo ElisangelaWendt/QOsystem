@@ -16,6 +16,7 @@ import CategoryRegister from '../pages/categoryRegister';
 import JobRegister from '../pages/JobRegister';
 import Employee from '../pages/employee';
 import IngredientRegister from '../pages/ingredientRegister';
+import ItemRegister from '../pages/itemRegister';
 const { Navigator, Screen } = createStackNavigator();
 
 function AppStack() {
@@ -41,6 +42,7 @@ function AppStack() {
         <Screen name="CloseOrder" component={CloseOrder} />
         <Screen name="JobRegister" component={JobRegister} />
         <Screen name="IngredientRegister" component={IngredientRegister} />
+        <Screen name="ItemRegister" component={ItemRegister} />
       </Navigator>
 
     );
