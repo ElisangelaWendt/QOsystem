@@ -9,9 +9,14 @@ import { styles } from "./styles";
 
 export default function Menu({navigation}: any) {
 
+  function handleNavigateToCompleteOrder(){
+    navigation.navigate("CompleteOrder")
+  }
+
   function handleNavigateToEmployeeRegister(){
     navigation.navigate("EmployeeRegister")
   }
+
   function handleNavigateToCategoryRegister(){
     navigation.navigate("CategoryRegister")
   }
@@ -39,6 +44,7 @@ export default function Menu({navigation}: any) {
     <ScrollView>
       <Header title="Menu"/>
     <View style={styles.container}>
+        <MenuButton title="Pedidos" onPress={handleNavigateToCompleteOrder}/>
         <MenuButton title="Lista de empregados" onPress={handleNavigateToEmployee}/>
         <Text style={styles.text}>---------------- Cadastros ----------------</Text>
         <MenuButton title="Cadastrar Funcionário" onPress={handleNavigateToEmployeeRegister}/>

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { TouchableOpacity, View, Text } from "react-native";
 import DropBox from "../../components/DropBox";
 import Header from "../../components/Header";
 import RegisterInput from "../../components/RegisterInput";
@@ -8,16 +8,16 @@ import { Feather } from "@expo/vector-icons";
 import { colors } from "../../styles/colors";
 import Button from "../../components/Button";
 
-export default function EmployeeRegister() {
+export default function EditEmployee() {
   return (
     <>
-      <Header title="Novo Funcionário" canGoBack={true} />
+      <Header title="Editar Funcionário" canGoBack={true} />
       <View style={styles.container}>
         <RegisterInput
           labelName="Informe o nome do Funcionário"
           title="Nome"
         />
-        <DropBox title="Cargo" placeholder="Selecione um Cargo"/>
+        <DropBox title="Cargo" placeholder="Selecione um Cargo" />
         <RegisterInput
           labelName="Informe o salário do funcionário"
           title="Salário"
@@ -41,16 +41,20 @@ export default function EmployeeRegister() {
           >
             <View style={styles.dashedBox}>
 
-            <Feather name="plus" size={60} color={colors.text} />
-          </View>
+              <Feather name="plus" size={60} color={colors.text} />
+            </View>
           </TouchableOpacity>
         </View>
         <View style={styles.footer}>
-          <Button title="Cadastrar"/>
+          {/* botão excluir */}
+          <TouchableOpacity style={styles.buttonContainer} >
+            <Text style={styles.text}>Excluir Funcionário</Text>
+          </TouchableOpacity>
+          {/* botão cadastrar */}
+          <Button title="Cadastrar" />
         </View>
 
       </View>
     </>
-
   )
 }

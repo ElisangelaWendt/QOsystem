@@ -8,7 +8,7 @@ import { styles } from "./styles";
 import { Table, Row, Rows} from 'react-native-table-component';
 import { colors } from "../../styles/colors";
 
-export default function Orders({navigation}){
+export default function FinishOrders({navigation}){
 const HeadTable = ['Quantidade', 'Item', 'R$']
 // Trazer dados da API
 const DataTable = [
