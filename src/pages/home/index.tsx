@@ -1,4 +1,4 @@
-import React, {  } from "react";
+import React, { useState } from "react";
 
 import { View, Text, ScrollView, Image, TouchableOpacity, TextInput } from "react-native";
 import { Feather } from "@expo/vector-icons";
@@ -7,6 +7,7 @@ import Header from "../../components/Header";
 
 
 export default function Home({ navigation }: any) {
+  const [search, setSearch] = useState('')
 
   function handleNavigateToItemList(){
     navigation.navigate('ItemList');
@@ -17,7 +18,7 @@ export default function Home({ navigation }: any) {
       <Header title="QO SYSTEM" canGoBack={false} />
       <ScrollView style={styles.content}>
         <View style={styles.inputGroup}>
-          <TextInput placeholder="Buscar Categoria" style={styles.input} />
+          <TextInput placeholder="Buscar Categoria" style={styles.input} onChangeText={setSearch}/>
           <Feather name="search" style={styles.icon} size={24} />
         </View>
         <Text style={styles.text}>Categorias</Text>

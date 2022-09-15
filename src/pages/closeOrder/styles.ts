@@ -13,7 +13,8 @@ content:{
   flexDirection:"row",
   justifyContent:'space-between',
   alignItems:"center",
-  width:"100%"
+  width:"100%",
+  paddingTop:10
 },
 text:{
   marginLeft:20,
@@ -41,8 +42,7 @@ image:{
 },
 footer:
 {
-  paddingBottom:20,
-  paddingRight: 20,
+  paddingBottom:40,
   justifyContent:"flex-end",
   flex:1
 }

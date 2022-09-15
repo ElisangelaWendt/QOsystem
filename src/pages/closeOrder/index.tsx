@@ -13,7 +13,7 @@ export default function CloseOrder({navigation}: any){
   
   return(
     <View style={styles.container}>
-    <Header title="Concluir Pedido"/>
+    <Header title="Concluir Pedido" canGoBack={true}/>
     <View style={styles.content}>
         <View style={styles.text}>
           <Text style={styles.title}>Nome do lanche</Text>

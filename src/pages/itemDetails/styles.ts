@@ -6,6 +6,7 @@ content:{
   margin: 20,
   alignItems:"center",
   justifyContent:"space-between",
+  flex:1,
 },
 image:{
   width:"100%",
@@ -28,5 +29,10 @@ table:{
   elevation: 10,
   marginVertical: 15
 },
+footer:{
+  paddingBottom:20,
+  justifyContent:"flex-end",
+  flex:1,
+}
 })
 export default styles;
