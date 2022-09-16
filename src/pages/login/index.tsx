@@ -7,11 +7,13 @@ import { useRef, useState } from "react";
 import { Feather } from '@expo/vector-icons';
 import axios from 'axios';
 import { baseUrl } from '../../config/globalConfig';
+import ErrorModal from "../../components/Modal";
 
 export default function Login({navigation}: any) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const secondInput = useRef(null);
+  const [visible, setVisible] = useState(false)
 
   function handleNavigateToPasswordRecovery(){
     navigation.navigate('PasswordRecovery');
@@ -28,14 +30,20 @@ export default function Login({navigation}: any) {
       console.log(res.data);
       navigation.navigate('BottomTab');
     }) .catch(function (error) {
-      console.log(error);
+      // console.log(error);
       //login ou senha incorretos
-      
-        })
+      //abre modal
+      setVisible(true)
+    })
   }
 
+  function CloseModal(){
+    setVisible(false)
+  }
+  
   return (
     <LinearGradient style={styles.container} colors={[colors.lightGradient, colors.darkGradient]}>
+      <ErrorModal visible={visible} text={"Credenciais inválidas"} functionOnRequestClose={CloseModal}/>
       <View>
       <Image source={require('../../images/logo.png')} style={styles.image}/>
       <Text style={styles.text}>
@@ -53,6 +61,7 @@ export default function Login({navigation}: any) {
           tipoTeclado={"password"}
           onChangeText={setPassword}
           reference={secondInput}
+          
         />
       <Text onPress={handleNavigateToPasswordRecovery}>
         Esqueceu sua senha?

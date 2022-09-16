@@ -27,12 +27,23 @@ interface TextFieldProps extends TextInputProps {
  */
 const registerInput: React.FC<TextFieldProps> = ({ labelName, icon, value, tipoTeclado, reference, title, ...rest }) => {
 
+  const [visible, setVisible] = useState(true)
+    
+     function check() {
+        if (visible === true) {
+            setVisible(false)
+        } else {
+            setVisible(true)
+        }
+      }
+
   return (
     <>
       <Text>{title}</Text>
       <View style={styles.inputGroup}>
-        <TextInput placeholder={labelName} style={styles.input} {...rest} />
-        {icon && <Feather name="eye" style={styles.icon} size={24} {...rest} />}
+        <TextInput placeholder={labelName} secureTextEntry={visible} style={styles.input} {...rest} />
+        {icon && visible && <Feather name="eye-off" style={styles.icon} size={24} {...rest} onPress={check} />}
+        {icon && !visible && <Feather name="eye" style={styles.icon} size={24} {...rest} onPress={check} />}
       </View>
     </>
 

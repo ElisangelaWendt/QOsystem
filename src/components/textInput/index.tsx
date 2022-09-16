@@ -24,12 +24,24 @@ interface TextFieldProps extends TextInputProps{
  * @param tipoTeclado: (any) Tipos de teclado mais usados: email-address, numeric, number-pad, decimal-pad, phone-pad;
  * 
  */
+
+
 const input: React.FC<TextFieldProps> = ({ labelName, icon, value, tipoTeclado, reference, ...rest }) => {
+    const [visible, setVisible] = useState(true)
+    
+     function check() {
+        if (visible === true) {
+            setVisible(false)
+        } else {
+            setVisible(true)
+        }
+      }
 
     return (
             <View style={styles.inputGroup}>
-                <TextInput ref={reference} placeholder={labelName} placeholderTextColor={colors.inputText} style={styles.input} value={value} keyboardType={tipoTeclado} {...rest}/>
-                { icon && <Feather name="eye" style={styles.icon} size = {24} {...rest}/>}
+                <TextInput ref={reference} secureTextEntry={visible} placeholder={labelName} placeholderTextColor={colors.inputText} style={styles.input} value={value} keyboardType={tipoTeclado} {...rest}/>
+                { icon && visible && <Feather name="eye-off" style={styles.icon} size = {24} {...rest} onPress={check}/>}
+                { icon && !visible && <Feather name="eye" style={styles.icon} size = {24} {...rest} onPress={check}/>}
             </View>
     );
 }
