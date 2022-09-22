@@ -12,7 +12,7 @@ export default function JobRegister(){
   const [name, setName] = useState("")
 
   function Register(){
-    axios.post(baseUrl + "/categoria/cadastrar",{
+    axios.post(baseUrl + "/cargo/cadastrar",{
       nome: name
     })    
     .then(res => {

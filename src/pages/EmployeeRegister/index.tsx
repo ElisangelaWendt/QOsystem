@@ -9,27 +9,26 @@ import { colors } from "../../styles/colors";
 import Button from "../../components/Button";
 import axios from "axios";
 import { baseUrl } from "../../config/globalConfig";
+import DropDownPicker from "react-native-dropdown-picker";
 
-interface Cargos{
-  name: string
+interface Cargos {
+  nome: string,
+  id: number
 }
 
 export default function EmployeeRegister() {
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
   const [cargos, setCargos] = useState<Cargos[]>([]);
 
-  function teste(){
+  function teste() {
 
-    axios.get(baseUrl+"cargo/listar", {
-
-    }
-  )
-  .then(res => {
-    setCargos(res.data)
-    console.log(res.data)
-    console.log("constante: "+ cargos.map(cargo => {cargo.name}))
-  }) .catch(function (error) {
-    console.log(error);
-  })
+    axios.get(baseUrl + "cargo/listar", {})
+      .then(res => {
+        setCargos(res.data)
+      }).catch(function (error) {
+        console.log(error);
+      })
   }
 
 
@@ -41,7 +40,21 @@ export default function EmployeeRegister() {
           labelName="Informe o nome do Funcionário"
           title="Nome"
         />
-        <DropBox  title="Cargo" placeholder="Selecione um Cargo"/>
+        <DropDownPicker
+          placeholder="Selecione o cargo"
+          textStyle={styles.dropdownText}
+          labelStyle={styles.dropdownText}
+          open={open}
+          value={value}
+          items={cargos.map(cargo => ({label: cargo.nome, value: cargo.id}))}
+          setOpen={setOpen}
+          setValue={setValue}
+          style={styles.dropdown}
+          placeholderStyle={{ color: colors.dividor }}
+          dropDownContainerStyle={{ borderColor: colors.dividor }}
+          selectedItemContainerStyle={{ height: 35 }}
+          
+        />
         <RegisterInput
           labelName="Informe o salário do funcionário"
           title="Salário"
@@ -65,12 +78,12 @@ export default function EmployeeRegister() {
           >
             <View style={styles.dashedBox}>
 
-            <Feather name="plus" size={60} color={colors.text} />
-          </View>
+              <Feather name="plus" size={60} color={colors.text} />
+            </View>
           </TouchableOpacity>
         </View>
         <View style={styles.footer}>
-          <Button title="Cadastrar" onPress={teste}/>
+          <Button title="Cadastrar" onPress={teste} />
         </View>
 
       </View>
