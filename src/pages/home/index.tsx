@@ -4,10 +4,14 @@ import { View, Text, ScrollView, Image, TouchableOpacity, TextInput } from "reac
 import { Feather } from "@expo/vector-icons";
 import styles from "./styles";
 import Header from "../../components/Header";
+import axios from "axios";
+import { baseUrl } from "../../config/globalConfig";
 
 
 export default function Home({ navigation }: any) {
   const [search, setSearch] = useState('')
+
+  
 
   function handleNavigateToItemList(){
     navigation.navigate('ItemList');

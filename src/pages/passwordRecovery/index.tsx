@@ -8,17 +8,21 @@ import { Feather } from '@expo/vector-icons';
 import BackButton from "../../components/BackButton";
 
 export default function PasswordRecovery({navigation}: any) {
-  const [count, setCount] = useState('')
   const [code, setCode] = useState([ '', '', '','' , '']);
   const secondInput = useRef(null);
   const thirdInput = useRef(null);
   const fourthInput = useRef(null);
   const fifthInput = useRef(null);
 
-  useEffect(() => {
-    console.log(code)
-
-  },[count])
+  const onChanged = (text,i) => {
+    //  console.log(code+' - '+text)
+      code[i] = text;
+      
+  }
+    useEffect(() => {
+      console.log(code)
+  
+    },[code])
   function handleNavigateToHome(){
     // navigation.navigate('');
   }
@@ -36,14 +40,14 @@ export default function PasswordRecovery({navigation}: any) {
         <View style={styles.row}>
           <NumberInput labelName="*" tipoTeclado={"numeric"} 
           maxLength={1}
-          onChangeText={setCode[2]}
           onKeyPress={() => {secondInput.current.focus()}}
+          onChangeText={text => onChanged(text,0)}
           />
           <NumberInput 
           labelName="*" tipoTeclado={"numeric"} 
           reference={secondInput} 
           maxLength={1}
-          onChangeText={setCount}
+          onChangeText={text => onChanged(text,1)}
           onKeyPress={() => {thirdInput.current.focus()}}
           />
           <NumberInput 
@@ -52,6 +56,7 @@ export default function PasswordRecovery({navigation}: any) {
           maxLength={1}
           reference={thirdInput} 
           onKeyPress={() => {fourthInput.current.focus()}}
+          onChangeText={text => onChanged(text,2)}
           />
           <NumberInput 
           labelName="*" 
@@ -59,12 +64,14 @@ export default function PasswordRecovery({navigation}: any) {
           tipoTeclado={"numeric"}
           reference={fourthInput} 
           onKeyPress={() => {fifthInput.current.focus()}}
+          onChangeText={text => onChanged(text,3)}
           />
           <NumberInput 
           labelName="*" 
           maxLength={1}
           tipoTeclado={"numeric"}
           reference={fifthInput} 
+          onChangeText={text => onChanged(text,4)}
           />
         </View>
         <Text>

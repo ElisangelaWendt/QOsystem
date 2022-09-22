@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import DropBox from "../../components/DropBox";
 import Header from "../../components/Header";
@@ -7,8 +7,32 @@ import styles from "./styles";
 import { Feather } from "@expo/vector-icons";
 import { colors } from "../../styles/colors";
 import Button from "../../components/Button";
+import axios from "axios";
+import { baseUrl } from "../../config/globalConfig";
+
+interface Cargos{
+  name: string
+}
 
 export default function EmployeeRegister() {
+  const [cargos, setCargos] = useState<Cargos[]>([]);
+
+  function teste(){
+
+    axios.get(baseUrl+"cargo/listar", {
+
+    }
+  )
+  .then(res => {
+    setCargos(res.data)
+    console.log(res.data)
+    console.log("constante: "+ cargos.map(cargo => {cargo.name}))
+  }) .catch(function (error) {
+    console.log(error);
+  })
+  }
+
+
   return (
     <>
       <Header title="Novo Funcionário" canGoBack={true} />
@@ -17,7 +41,7 @@ export default function EmployeeRegister() {
           labelName="Informe o nome do Funcionário"
           title="Nome"
         />
-        <DropBox title="Cargo" placeholder="Selecione um Cargo"/>
+        <DropBox  title="Cargo" placeholder="Selecione um Cargo"/>
         <RegisterInput
           labelName="Informe o salário do funcionário"
           title="Salário"
@@ -46,7 +70,7 @@ export default function EmployeeRegister() {
           </TouchableOpacity>
         </View>
         <View style={styles.footer}>
-          <Button title="Cadastrar"/>
+          <Button title="Cadastrar" onPress={teste}/>
         </View>
 
       </View>
