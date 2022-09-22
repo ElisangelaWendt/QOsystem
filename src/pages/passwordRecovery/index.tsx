@@ -11,13 +11,15 @@ export default function PasswordRecovery({navigation}: any) {
   const [count, setCount] = useState('')
   const [code, setCode] = useState([ '', '', '','' , '']);
   const secondInput = useRef(null);
+  const thirdInput = useRef(null);
+  const fourthInput = useRef(null);
+  const fifthInput = useRef(null);
 
   useEffect(() => {
-    console.log('teste')
+    console.log(code)
 
-  },[code])
+  },[count])
   function handleNavigateToHome(){
-    
     // navigation.navigate('');
   }
 
@@ -34,27 +36,36 @@ export default function PasswordRecovery({navigation}: any) {
         <View style={styles.row}>
           <NumberInput labelName="*" tipoTeclado={"numeric"} 
           maxLength={1}
-          onChangeText={setCode[0]}
-          onSubmitEditing={() => {secondInput.current.focus()}}
+          onChangeText={setCode[2]}
+          onKeyPress={() => {secondInput.current.focus()}}
           />
           <NumberInput 
           labelName="*" tipoTeclado={"numeric"} 
           reference={secondInput} 
           maxLength={1}
+          onChangeText={setCount}
+          onKeyPress={() => {thirdInput.current.focus()}}
           />
           <NumberInput 
           labelName="*" 
           tipoTeclado={"numeric"}
           maxLength={1}
+          reference={thirdInput} 
+          onKeyPress={() => {fourthInput.current.focus()}}
           />
           <NumberInput 
           labelName="*" 
           maxLength={1}
-          tipoTeclado={"numeric"}/>
+          tipoTeclado={"numeric"}
+          reference={fourthInput} 
+          onKeyPress={() => {fifthInput.current.focus()}}
+          />
           <NumberInput 
           labelName="*" 
           maxLength={1}
-          tipoTeclado={"numeric"}/>
+          tipoTeclado={"numeric"}
+          reference={fifthInput} 
+          />
         </View>
         <Text>
           Enviar o código novamente
