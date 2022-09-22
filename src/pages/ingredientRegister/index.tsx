@@ -7,11 +7,7 @@ import Input from "../../components/RegisterInput";
 import { colors } from "../../styles/colors";
 import { styles } from "./styles";
 
-interface IngredientRegisterProps {
-  checked: "checked" | "unchecked"
-}
-
-export default function IngredientRegister({ checked }: IngredientRegisterProps) {
+export default function IngredientRegister() {
   const [isChecked, setIsChecked] = useState(false)
 
   function check() {

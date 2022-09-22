@@ -3,17 +3,22 @@ import { Text, Image, View, TouchableOpacity } from "react-native";
 import { styles } from './styles'
 import { colors } from '../../styles/colors'
 import NumberInput from "../../components/numberInput";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Feather } from '@expo/vector-icons';
 import BackButton from "../../components/BackButton";
 
 export default function PasswordRecovery({navigation}: any) {
-  const [count, setCount] = useState(0)
-  const [code, setCode] = useState("");
+  const [count, setCount] = useState('')
+  const [code, setCode] = useState([ '', '', '','' , '']);
   const secondInput = useRef(null);
-  console.log(code)
+
+  useEffect(() => {
+    console.log('teste')
+
+  },[code])
   function handleNavigateToHome(){
-    navigation.navigate('PasswordRecovery');
+    
+    // navigation.navigate('');
   }
 
   return (
@@ -28,20 +33,27 @@ export default function PasswordRecovery({navigation}: any) {
         </Text>
         <View style={styles.row}>
           <NumberInput labelName="*" tipoTeclado={"numeric"} 
-          onChangeText={setCode}
+          maxLength={1}
+          onChangeText={setCode[0]}
           onSubmitEditing={() => {secondInput.current.focus()}}
           />
           <NumberInput 
           labelName="*" tipoTeclado={"numeric"} 
-          reference={secondInput} />
+          reference={secondInput} 
+          maxLength={1}
+          />
           <NumberInput 
           labelName="*" 
+          tipoTeclado={"numeric"}
+          maxLength={1}
+          />
+          <NumberInput 
+          labelName="*" 
+          maxLength={1}
           tipoTeclado={"numeric"}/>
           <NumberInput 
           labelName="*" 
-          tipoTeclado={"numeric"}/>
-          <NumberInput 
-          labelName="*" 
+          maxLength={1}
           tipoTeclado={"numeric"}/>
         </View>
         <Text>

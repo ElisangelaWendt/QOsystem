@@ -19,7 +19,7 @@ properties:
   marginTop: 40,
 },
 text:{
-  marginTop: 20,
+  // marginTop: 20,
 },
 table:{
   backgroundColor: colors.backgroundButtonAdd,
@@ -33,6 +33,11 @@ footer:{
   paddingBottom:20,
   justifyContent:"flex-end",
   flex:1,
+},
+row:{
+  flexDirection: 'row',
+  alignItems:"center",
+  marginTop: 10,
 }
 })
 export default styles;

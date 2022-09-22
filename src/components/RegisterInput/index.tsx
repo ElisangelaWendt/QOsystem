@@ -27,7 +27,7 @@ interface TextFieldProps extends TextInputProps {
  */
 const registerInput: React.FC<TextFieldProps> = ({ labelName, icon, value, tipoTeclado, reference, title, ...rest }) => {
 
-  const [visible, setVisible] = useState(true)
+  const [visible, setVisible] = useState(false)
     
      function check() {
         if (visible === true) {
