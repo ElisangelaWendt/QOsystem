@@ -1,13 +1,6 @@
 import { StyleSheet, Dimensions } from "react-native";
 
 export const styles = StyleSheet.create({
-  container:{
-    width: Dimensions.get('window').width, 
-    height: "100%",
-    paddingHorizontal: 20,
-    marginTop: 20,
-    justifyContent:"space-between",
-  },
   text:{
     alignSelf:"center"
   },
@@ -33,6 +26,14 @@ export const styles = StyleSheet.create({
   content:{
     marginHorizontal:20,
     marginTop: 20,
+    justifyContent:"space-between",
+    height:"100%",
+    flex:1
+  },
+  footer:{
+    alignItems:"center",
+    alignContent:'flex-end',
+    marginBottom: 40
   }
 
 })

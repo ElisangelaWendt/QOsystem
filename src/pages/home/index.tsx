@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { View, Text, ScrollView, Image, TouchableOpacity, TextInput } from "react-native";
 import { Feather } from "@expo/vector-icons";
@@ -7,11 +7,24 @@ import Header from "../../components/Header";
 import axios from "axios";
 import { baseUrl } from "../../config/globalConfig";
 
+interface Categoria{
+  nome: string,
+  imagem: string,
+  id:number
+}
 
 export default function Home({ navigation }: any) {
   const [search, setSearch] = useState('')
+  const [categoria, setCategoria] = useState<Categoria[]>([]);
 
-  
+  useEffect(() => {
+    axios.get(baseUrl + "categoria/listar", {})
+      .then(res => {
+        setCategoria(res.data)
+      }).catch(function (error) {
+        console.log(error);
+      })
+  },[categoria])
 
   function handleNavigateToItemList(){
     navigation.navigate('ItemList');
@@ -27,10 +40,12 @@ export default function Home({ navigation }: any) {
         </View>
         <Text style={styles.text}>Categorias</Text>
         {/* Categorias de lanches */}
-        <TouchableOpacity style={styles.categoryButton} onPress={handleNavigateToItemList}>
+        {categoria.map(categoria => (
+        <TouchableOpacity style={styles.categoryButton} onPress={handleNavigateToItemList} key={categoria.id}>
           <Image source={require('../../images/lanches.png')} style={styles.image} />
-          <Text style={styles.categoryText}>Lanches</Text>
+          <Text style={styles.categoryText}>{categoria.nome}</Text>
         </TouchableOpacity>
+        ))}
 
       </ScrollView>
     </View>

@@ -21,15 +21,14 @@ export default function EmployeeRegister() {
   const [value, setValue] = useState(null);
   const [cargos, setCargos] = useState<Cargos[]>([]);
 
-  function teste() {
-
-    axios.get(baseUrl + "cargo/listar", {})
-      .then(res => {
-        setCargos(res.data)
-      }).catch(function (error) {
-        console.log(error);
-      })
-  }
+useEffect(() => {
+  axios.get(baseUrl + "cargo/listar", {})
+    .then(res => {
+      setCargos(res.data)
+    }).catch(function (error) {
+      console.log(error);
+    })
+},[])
 
 
   return (
@@ -83,7 +82,7 @@ export default function EmployeeRegister() {
           </TouchableOpacity>
         </View>
         <View style={styles.footer}>
-          <Button title="Cadastrar" onPress={teste} />
+          <Button title="Cadastrar"/>
         </View>
 
       </View>

@@ -19,6 +19,11 @@ import IngredientRegister from '../pages/ingredientRegister';
 import ItemRegister from '../pages/itemRegister';
 import CompleteOrder from '../pages/CompleteOrder';
 import EditEmployee from '../pages/editEployee';
+import JobExclusion from '../pages/Exclusion/JobExclusion';
+import ItemExclusion from '../pages/Exclusion/ItemExclusion';
+import EmployeeExclusion from '../pages/Exclusion/EmployeeExclusion';
+import IngredientExclusion from '../pages/Exclusion/IngredientExclusion';
+import CategoryExclusion from '../pages/Exclusion/CategoryExclusion';
 const { Navigator, Screen } = createStackNavigator();
 
 function AppStack() {
@@ -47,6 +52,11 @@ function AppStack() {
         <Screen name="ItemRegister" component={ItemRegister} />
         <Screen name="CompleteOrder" component={CompleteOrder} />
         <Screen name="EditEmployee" component={EditEmployee} />
+        <Screen name="JobExclusion" component={JobExclusion} />
+        <Screen name="ItemExclusion" component={ItemExclusion} />
+        <Screen name="EmployeeExclusion" component={EmployeeExclusion} />
+        <Screen name="IngredientExclusion" component={IngredientExclusion} />
+        <Screen name="CategoryExclusion" component={CategoryExclusion} />
       </Navigator>
 
     );

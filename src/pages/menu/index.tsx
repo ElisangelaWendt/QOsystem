@@ -35,6 +35,21 @@ export default function Menu({navigation}: any) {
   function handleNavigateToItemRegister(){
     navigation.navigate("ItemRegister")
   }
+  function handleNavigateToEmployeeExclusion(){
+    navigation.navigate("EmployeeExclusion")
+  }
+  function handleNavigateToJobExclusion(){
+    navigation.navigate("JobExclusion")
+  }
+  function handleNavigateToItemExclusion(){
+    navigation.navigate("ItemExclusion")
+  }
+  function handleNavigateToCategoryExclusion(){
+    navigation.navigate("CategoryExclusion")
+  }
+  function handleNavigateToIngredientExclusion(){
+    navigation.navigate("IngredientExclusion")
+  }
 
   function LogOut(){
     navigation.navigate("Login")
@@ -45,13 +60,20 @@ export default function Menu({navigation}: any) {
       <Header title="Menu"/>
     <View style={styles.container}>
         <MenuButton title="Pedidos" onPress={handleNavigateToCompleteOrder}/>
-        <MenuButton title="Lista de empregados" onPress={handleNavigateToEmployee}/>
+        <MenuButton title="Lista de Funcionários" onPress={handleNavigateToEmployee}/>
         <Text style={styles.text}>---------------- Cadastros ----------------</Text>
         <MenuButton title="Cadastrar Funcionário" onPress={handleNavigateToEmployeeRegister}/>
         <MenuButton title="Cadastrar Categoria" onPress={handleNavigateToCategoryRegister}/>
         <MenuButton title="Cadastrar Cargo" onPress={handleNavigateToJobRegister}/>
         <MenuButton title="Cadastrar Ingrediente" onPress={handleNavigateToIngredientRegister}/>
         <MenuButton title="Cadastrar Item" onPress={handleNavigateToItemRegister}/>
+        
+        <Text style={styles.text}>---------------- Exclusões ----------------</Text>
+        <MenuButton title="Excluir Funcionário" onPress={handleNavigateToEmployeeExclusion}/>
+        <MenuButton title="Excluir Categoria" onPress={handleNavigateToCategoryExclusion}/>
+        <MenuButton title="Excluir Cargo" onPress={handleNavigateToJobExclusion}/>
+        <MenuButton title="Excluir Ingrediente" onPress={handleNavigateToIngredientExclusion}/>
+        <MenuButton title="Excluir Item" onPress={handleNavigateToItemExclusion}/>
         <Text style={styles.text}>-------------------------------------------</Text>
 
         <MenuButton title="Sair" onPress={LogOut}/>
