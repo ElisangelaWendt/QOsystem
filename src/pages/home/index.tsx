@@ -31,7 +31,7 @@ export default function Home({ navigation }: any) {
   }
 
   return (
-    <View >
+    < >
       <Header title="QO SYSTEM" canGoBack={false} />
       <ScrollView style={styles.content}>
         <View style={styles.inputGroup}>
@@ -48,6 +48,6 @@ export default function Home({ navigation }: any) {
         ))}
 
       </ScrollView>
-    </View>
+    </>
   )
 }
