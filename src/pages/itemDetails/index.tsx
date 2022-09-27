@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { View, Image, ScrollView, Text, TouchableOpacity, Dimensions } from "react-native";
 import AddQuantity from "../../components/AddQuantity";
 import Button from "../../components/Button";
-import DropBox from "../../components/DropBox";
 import Header from "../../components/Header";
 import styles from "./styles";
 import { Checkbox } from "react-native-paper";
@@ -43,7 +42,7 @@ export default function ItemDetails({ navigation }: any) {
             <Text style={styles.text}>Remover Algum Item?</Text>
             <Checkbox status={isChecked1 ? 'checked' : 'unchecked'} onPress={check1} color={colors.dividor} />
             </View>
-            <DropBox placeholder="Selecione um item" title="" />
+            {/* <DropBox placeholder="Selecione um item" title="" /> */}
             <View style={styles.table}></View>
             <View style={styles.row}>
 
@@ -51,7 +50,7 @@ export default function ItemDetails({ navigation }: any) {
             <Checkbox status={isChecked2 ? 'checked' : 'unchecked'} onPress={check2} color={colors.dividor} />
             </View>
 
-            <DropBox placeholder="Selecione um item" title="" />
+            {/* <DropBox placeholder="Selecione um item" title="" /> */}
             <View style={styles.table}></View>
 
           </View>

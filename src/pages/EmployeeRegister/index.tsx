@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import DropBox from "../../components/DropBox";
+import { View, Text, TouchableOpacity,Image } from "react-native";
 import Header from "../../components/Header";
 import RegisterInput from "../../components/RegisterInput";
 import styles from "./styles";
@@ -10,6 +9,9 @@ import Button from "../../components/Button";
 import axios from "axios";
 import { baseUrl } from "../../config/globalConfig";
 import DropDownPicker from "react-native-dropdown-picker";
+import * as ImagePicker from 'expo-image-picker';
+import ErrorModal from "../../components/Modal";
+
 
 interface Cargos {
   nome: string,
@@ -21,6 +23,14 @@ export default function EmployeeRegister() {
   const [value, setValue] = useState(null);
   const [cargos, setCargos] = useState<Cargos[]>([]);
 
+  const [name,setName] = useState("")
+  const [salary,setSalary] = useState("")
+  const [email,setEmail] = useState("")
+  const [password,setPassword] = useState("")
+  const [image,setImage] = useState('');
+  const [visible, setVisible] = useState(false)
+
+
 useEffect(() => {
   axios.get(baseUrl + "cargo/listar", {})
     .then(res => {
@@ -30,14 +40,69 @@ useEffect(() => {
     })
 },[])
 
+async function Register(){
+  var conta  = {
+    conta: email,
+    senha: password
+  }
+
+  var cargo = {
+    id:value
+  }
+  // cadastrar informações da conta
+  await axios.post(baseUrl + "pessoa/cadastrar", {
+    nome: name,
+    conta: conta,
+    cargo: cargo
+  }).then((res => {
+    console.log(res)
+  }))
+.catch(function (error) {
+    console.log(error);
+  })
+
+//   axios.post(baseUrl + "pessoa/cadastrar", {
+//     nome: name,
+//     salario: salary,
+    
+//   })
+// .catch(function (error) {
+//     console.log(error);
+//   })
+
+
+}
+
+async function handleSelecionarFoto(){
+  let result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.All,
+    allowsEditing: true,
+    aspect: [4, 4],
+    quality: 1,
+  });
+
+  console.log(result);
+
+  if (!result.cancelled) {
+    //caso apareça erro no uri, IGNORAR, o problema é no visual studio (compila normalmente)
+    setImage(result.uri);
+  }
+
+}
+
+function CloseModal(){
+  setVisible(false)
+}
 
   return (
     <>
       <Header title="Novo Funcionário" canGoBack={true} />
+      <ErrorModal visible={visible} text={"Credenciais inválidas"} functionOnRequestClose={CloseModal}/>
       <View style={styles.container}>
         <RegisterInput
           labelName="Informe o nome do Funcionário"
           title="Nome"
+          onChangeText={setName}
         />
         <DropDownPicker
           placeholder="Selecione o cargo"
@@ -57,21 +122,28 @@ useEffect(() => {
         <RegisterInput
           labelName="Informe o salário do funcionário"
           title="Salário"
+          onChangeText={setSalary}
         />
         <RegisterInput
           labelName="Informe o email do Funcionário"
           title="Email"
+          onChangeText={setEmail}
         />
         <RegisterInput
           labelName="Informe a senha do Funcionário"
           title="Senha"
           icon={true}
+          onChangeText={setPassword}
         />
         <Text style={styles.title}> Imagem do Funcionário</Text>
+        {/* se não existe imagem, mostrar o botão */}
+        {!image ?     
         <View
-          style={styles.imageSelector}>
+          style={styles.imageSelector}
+          
+          >
           <TouchableOpacity
-          // onPress={handleSelecionarFoto}
+          onPress={handleSelecionarFoto}
           // disabled={disableButton}
           // style={disableButton ? { display: "none" } : styles.imageSelector}
           >
@@ -81,8 +153,16 @@ useEffect(() => {
             </View>
           </TouchableOpacity>
         </View>
+        :
+        // se existe imagem, mostrar a imagem
+        <TouchableOpacity
+          onPress={handleSelecionarFoto}
+          >
+            <Image source={{uri: image}} style={styles.image}/>
+          </TouchableOpacity>
+      }
         <View style={styles.footer}>
-          <Button title="Cadastrar"/>
+          <Button title="Cadastrar" onPress={Register}/>
         </View>
 
       </View>

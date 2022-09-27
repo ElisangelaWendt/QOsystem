@@ -20,7 +20,13 @@ interface Employee {
   cargo: {
     nome: string
   }
-  id: number
+  id: number,
+  salario: number,
+
+}
+interface Conta {
+id:number,
+conta: string
 }
 
 interface Cargos {
@@ -34,6 +40,7 @@ export default function EditEmployee() {
   const route = useRoute();
   const params = route.params as EmployeeId;
   const [employee, setEmployee] = useState<Employee>();
+  const [conta, setConta] = useState<Conta>();
   const [cargos, setCargos] = useState<Cargos[]>([]);
 
 
@@ -45,11 +52,24 @@ export default function EditEmployee() {
         setEmployee(res.data)
 
         // console.log("----------------------")
-        // console.log(employee)
+        console.log(employee)
 
       }).catch(function (error) {
         console.log(error);
       })
+
+    // axios.post(baseUrl + "conta/buscar", {
+    //   // id: params.id
+    // })
+    //   .then(res => {
+    //     // setConta(res.data)
+    //     // console.log(res.data)
+    //     // console.log("----------------------")
+    //     // console.log(conta)
+
+    //   }).catch(function (error) {
+    //     console.log(error);
+    //   })
 
 
     axios.get(baseUrl + "cargo/listar", {})
@@ -85,14 +105,14 @@ export default function EditEmployee() {
         />
           <RegisterInput
             labelName="Informe o salário do funcionário"
-            title="Salário" />
+            title="Salário" ><Text>{employee.salario}</Text></RegisterInput>
           <RegisterInput
             labelName="Informe o email do Funcionário"
-            title="Email" />
+            title="Email" ><Text>{employee.salario}</Text></RegisterInput>
           <RegisterInput
-            labelName="Informe a senha do Funcionário"
+            labelName="Informe a nova senha"
             title="Senha"
-            icon={true} />
+            icon={true}/>
 
           <Text style={styles.title}> Imagem do Funcionário</Text>
           <View

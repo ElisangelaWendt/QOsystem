@@ -1,7 +1,6 @@
 import React from "react";
 import { ScrollView, View, Text } from "react-native";
 import Button from "../../components/Button";
-import DropBox from "../../components/DropBox";
 import Header from "../../components/Header";
 import { MenuButton } from "../../components/MenuButton";
 import { styles } from "./styles";
@@ -35,7 +34,7 @@ const Total = [
       <View style={styles.container}>
       {/* <MenuButton title="" onPress={() => navigation.dispatch(DrawerActions.openDrawer())}/> */}
 
-      <DropBox title="" placeholder="Mesa" />
+      {/* <DropBox title="" placeholder="Mesa" /> */}
       <View style={styles.table}>
       <Table borderStyle={{borderWidth: 1, borderColor: colors.dividor}}>
         <Row data={HeadTable} style={styles.headStyle} textStyle={styles.tableText}/>

@@ -34,6 +34,13 @@ export const styles = StyleSheet.create({
     alignItems:"center",
     alignContent:'flex-end',
     marginBottom: 40
+  },
+  image:{
+    alignSelf:'center',
+    height: 120,
+    width: "100%",
+    borderRadius:15,
+    marginTop:20
   }
 
 })

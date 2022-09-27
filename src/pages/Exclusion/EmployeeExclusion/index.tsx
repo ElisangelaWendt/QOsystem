@@ -25,6 +25,7 @@ export default function EmployeeExclusion() {
     axios.get(baseUrl + "pessoa/listar", {})
       .then(res => {
         setEmployee(res.data)
+        // console.log(employee)
       }).catch(function (error) {
         console.log(error);
       })
@@ -33,12 +34,13 @@ export default function EmployeeExclusion() {
 
   function Delete(){
     
-    axios.delete(baseUrl + "cargo/deletar",{
+    axios.delete(baseUrl + "pessoa/deletar",{
       data:{
         id: value
       }
-    }).then(
-    ).catch(function (error){
+    }).then(res => {
+      console.log(res)
+    }).catch(function (error){
       console.log(error);
     })
   }

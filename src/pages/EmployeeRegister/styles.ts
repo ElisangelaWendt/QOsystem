@@ -51,5 +51,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: colors.text,
   },
+  image:{
+    alignSelf:'center',
+    height: 120,
+    width: 120,
+    borderRadius:15,
+    marginTop:20
+  }
 });
 export default styles;

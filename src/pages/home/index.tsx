@@ -9,7 +9,7 @@ import { baseUrl } from "../../config/globalConfig";
 
 interface Categoria{
   nome: string,
-  imagem: string,
+  imagemUrl: string,
   id:number
 }
 
@@ -31,7 +31,7 @@ export default function Home({ navigation }: any) {
   }
 
   return (
-    < >
+    <View >
       <Header title="QO SYSTEM" canGoBack={false} />
       <ScrollView style={styles.content}>
         <View style={styles.inputGroup}>
@@ -42,12 +42,12 @@ export default function Home({ navigation }: any) {
         {/* Categorias de lanches */}
         {categoria.map(categoria => (
         <TouchableOpacity style={styles.categoryButton} onPress={handleNavigateToItemList} key={categoria.id}>
-          <Image source={require('../../images/lanches.png')} style={styles.image} />
+          <Image source={{uri: categoria.imagemUrl}} style={styles.image} />
           <Text style={styles.categoryText}>{categoria.nome}</Text>
         </TouchableOpacity>
         ))}
 
       </ScrollView>
-    </>
+    </View>
   )
 }

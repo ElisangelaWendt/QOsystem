@@ -3,6 +3,7 @@
     "name": "qosystem",
     "slug": "qosystem",
     "version": "1.0.0",
+    "plugins": ["expo-image-picker"],
     "assetBundlePatterns": [
       "**/*"
     ]
