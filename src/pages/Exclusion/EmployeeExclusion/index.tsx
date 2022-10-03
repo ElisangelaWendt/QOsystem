@@ -11,7 +11,7 @@ import { colors } from "../../../styles/colors";
 import { styles } from "./styles";
 
 interface Employee {
-  nome: string,
+  conta: string,
   id: number
 }
 
@@ -22,7 +22,7 @@ export default function EmployeeExclusion() {
   const [employee, setEmployee] = useState<Employee[]>([]);
 
   useEffect(() => {
-    axios.get(baseUrl + "pessoa/listar", {})
+    axios.get(baseUrl + "conta/listar", {})
       .then(res => {
         setEmployee(res.data)
         // console.log(employee)
@@ -33,8 +33,7 @@ export default function EmployeeExclusion() {
 
 
   function Delete(){
-    
-    axios.delete(baseUrl + "pessoa/deletar",{
+    axios.delete(baseUrl + "conta/deletar",{
       data:{
         id: value
       }
@@ -58,7 +57,7 @@ export default function EmployeeExclusion() {
           labelStyle={styles.dropdownText}
           open={open}
           value={value}
-          items={employee.map(employee => ({ label: employee.nome, value: employee.id }))}
+          items={employee.map(employee => ({ label: employee.conta, value: employee.id }))}
           setOpen={setOpen}
           setValue={setValue}
           style={styles.dropdown}

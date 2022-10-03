@@ -26,7 +26,7 @@ export default function Home({ navigation }: any) {
       })
   },[categoria])
 
-  function handleNavigateToItemList(){
+  function handleNavigateToItemList(id: number){
     navigation.navigate('ItemList');
   }
 
@@ -41,7 +41,7 @@ export default function Home({ navigation }: any) {
         <Text style={styles.text}>Categorias</Text>
         {/* Categorias de lanches */}
         {categoria.map(categoria => (
-        <TouchableOpacity style={styles.categoryButton} onPress={handleNavigateToItemList} key={categoria.id}>
+        <TouchableOpacity style={styles.categoryButton} onPress={() => handleNavigateToItemList(categoria.id)} key={categoria.id}>
           <Image source={{uri: categoria.imagemUrl}} style={styles.image} />
           <Text style={styles.categoryText}>{categoria.nome}</Text>
         </TouchableOpacity>

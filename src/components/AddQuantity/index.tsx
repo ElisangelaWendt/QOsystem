@@ -6,18 +6,21 @@ interface AddQuantityProps {
   title: boolean
 }
 
+export var quantity= 0;
+
 export default function AddQuantity({ title }: AddQuantityProps) {
-  const [quantity, setQuantity] = useState(0)
 
   function handleAddQuantity() {
-    setQuantity(quantity + 1)
+    quantity = quantity + 1
   }
 
   function handleRemoveQuantity() {
     if(quantity <= 0){
-      setQuantity(0)
+      quantity = 0
+
     }else{
-      setQuantity(quantity - 1)
+      quantity = quantity - 1
+
     }
   }
 
@@ -33,7 +36,7 @@ export default function AddQuantity({ title }: AddQuantityProps) {
       </TouchableOpacity>
       <View style={styles.textQuantity}>
 
-        <Text>{quantity}</Text>
+        <Text >{quantity}</Text>
       </View>
       <TouchableOpacity style={styles.addButton} onPress={handleAddQuantity}>
         <Text style={styles.add}>+</Text>

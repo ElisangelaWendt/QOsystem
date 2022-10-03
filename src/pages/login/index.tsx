@@ -10,10 +10,9 @@ import { baseUrl } from '../../config/globalConfig';
 import ErrorModal from "../../components/Modal";
 
 //pode ser acessado por qualquer função de qualquer arquivo
-export var emp;
+export var empresa;
 
 export default function Login({ navigation }: any) {
-  const [empresa, setEmpresa] = useState();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const secondInput = useRef(null);
@@ -22,10 +21,7 @@ export default function Login({ navigation }: any) {
   function handleNavigateToPasswordRecovery() {
     navigation.navigate('PasswordRecovery');
   }
-  useEffect(() => {
-    //setado empresa do usuário logado
-    emp = empresa
-  },[empresa])
+
 
   function logar() {
     axios.post(baseUrl + "conta/buscar", {
@@ -35,8 +31,9 @@ export default function Login({ navigation }: any) {
     )
       .then(res => {
         // console.log(res.data);
-        setEmpresa(res.data[0].pessoa.cargo.empresa.id);
+        empresa = (res.data[0].pessoa.cargo.empresa.id);
         navigation.navigate('BottomTab');
+    console.log(empresa)
       }).catch(function (error) {
         console.log(error);
         //login ou senha incorretos

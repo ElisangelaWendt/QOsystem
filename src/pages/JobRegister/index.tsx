@@ -1,13 +1,11 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { View, Text } from "react-native";
-import DropDownPicker from "react-native-dropdown-picker";
-import { Divider } from "react-native-paper";
+import React, { useState } from "react";
+import { View } from "react-native";
 import Button from "../../components/Button";
 import Header from "../../components/Header";
 import Input from "../../components/RegisterInput";
 import { baseUrl } from "../../config/globalConfig";
-import { colors } from "../../styles/colors";
+import { empresa } from "../login";
 import { styles } from "./styles";
 
 interface User {
@@ -35,7 +33,10 @@ export default function JobRegister() {
     //   })
 
     axios.post(baseUrl + "/cargo/cadastrar", {
-      nome: name
+      nome: name,
+      empresa: {
+        id: empresa
+      }
     })
       .then(res => {
         console.log(res.data);

@@ -1,11 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { TouchableOpacity, View, Text,Image } from "react-native";
 import AddQuantity from "../../components/AddQuantity";
 import Button from "../../components/Button";
 import Header from "../../components/Header";
+import { ItensPedido } from "../itemDetails";
 import styles from "./styles";
 
 export default function CloseOrder({navigation}: any){
+
+  useEffect(() => {
+    // axios.get(baseUrl + "pedidoItem/listar", {
+
+    // })
+    // .then(res => {
+    //   setPedido(res.data)
+    // }).catch(function (error) {
+    //   console.log(error);
+    // })
+
+    console.log(ItensPedido)
+  },[])
 
   function handleNavigateToHome(){
     navigation.navigate("Home")

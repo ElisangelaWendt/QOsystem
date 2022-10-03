@@ -11,7 +11,19 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems:"center",
     marginBottom: 40
-  }
+  },
+  dropdown: {
+    backgroundColor: colors.inputBackground,
+    borderColor: colors.dividor,
+    height: 35,
+    marginBottom: 20,
+    borderRadius: 4,
+    color: colors.dividor,
+  },
+  dropdownText: {
+    fontSize: 20,
+    color: colors.text,
+  },
 })
 
 export default styles;

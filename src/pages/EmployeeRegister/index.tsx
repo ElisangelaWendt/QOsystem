@@ -11,6 +11,7 @@ import { baseUrl } from "../../config/globalConfig";
 import DropDownPicker from "react-native-dropdown-picker";
 import * as ImagePicker from 'expo-image-picker';
 import ErrorModal from "../../components/Modal";
+import { empresa } from "../login";
 
 
 interface Cargos {
@@ -28,13 +29,17 @@ export default function EmployeeRegister() {
   const [email,setEmail] = useState("")
   const [password,setPassword] = useState("")
   const [image,setImage] = useState('');
-  const [visible, setVisible] = useState(false)
+  const [visibleError, setVisibleError] = useState(false)
+  const [visibleSuccess, setVisibleSuccess] = useState(false)
 
 
 useEffect(() => {
-  axios.get(baseUrl + "cargo/listar", {})
+  axios.post(baseUrl + "cargo/buscar/empresa", {
+      id: empresa
+  })
     .then(res => {
       setCargos(res.data)
+      console.log(res.data)
     }).catch(function (error) {
       console.log(error);
     })
@@ -46,19 +51,19 @@ async function Register(){
     senha: password
   }
 
-  var cargo = {
-    id:value
-  }
   // cadastrar informações da conta
   await axios.post(baseUrl + "pessoa/cadastrar", {
     nome: name,
     conta: conta,
-    cargo: cargo
+    cargo: value,
+    salario: salary
   }).then((res => {
     console.log(res)
+    setVisibleSuccess(true)
   }))
 .catch(function (error) {
     console.log(error);
+    setVisibleError(true)
   })
 
 //   axios.post(baseUrl + "pessoa/cadastrar", {
@@ -91,13 +96,15 @@ async function handleSelecionarFoto(){
 }
 
 function CloseModal(){
-  setVisible(false)
+  setVisibleError(false)
+  setVisibleSuccess(false)
 }
 
   return (
     <>
       <Header title="Novo Funcionário" canGoBack={true} />
-      <ErrorModal visible={visible} text={"Credenciais inválidas"} functionOnRequestClose={CloseModal}/>
+      <ErrorModal visible={visibleError} text={"Credenciais inválidas"} functionOnRequestClose={CloseModal}/>
+      <ErrorModal visible={visibleSuccess} text={"Cadastrado com Sucesso!"} functionOnRequestClose={CloseModal}/>
       <View style={styles.container}>
         <RegisterInput
           labelName="Informe o nome do Funcionário"
@@ -123,11 +130,13 @@ function CloseModal(){
           labelName="Informe o salário do funcionário"
           title="Salário"
           onChangeText={setSalary}
+          keyboardType="numeric"
         />
         <RegisterInput
           labelName="Informe o email do Funcionário"
           title="Email"
           onChangeText={setEmail}
+          keyboardType="email-address"
         />
         <RegisterInput
           labelName="Informe a senha do Funcionário"

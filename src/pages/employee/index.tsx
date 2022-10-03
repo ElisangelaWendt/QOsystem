@@ -8,10 +8,14 @@ import styles from "./styles";
 
 interface Employee{
   nome: string,
-  cargo: {
-    nome: string
+  id: number,
+  pessoa:{
+    nome: string,
+    id: number,
+    cargo: {
+      nome: string
+    }
   }
-  id: number
 }
 
 export default function Employee({navigation}: any) {
@@ -19,7 +23,7 @@ export default function Employee({navigation}: any) {
 
   
   useEffect(() => {
-    axios.get(baseUrl + "pessoa/listar", {})
+    axios.get(baseUrl + "conta/listar", {})
       .then(res => {
         setEmployee(res.data)
   // console.log(res.data)
@@ -27,7 +31,7 @@ export default function Employee({navigation}: any) {
       }).catch(function (error) {
         console.log(error);
       })
-  })
+  },[employee])
 
   function handleNavigateToNewEmployee(){
     navigation.navigate("EmployeeRegister")
@@ -49,9 +53,9 @@ export default function Employee({navigation}: any) {
         {/* trazer informações do banco */}
         <View style={styles.text}>
           <Text style={styles.title}>
-            {employee.nome}
+            {employee.pessoa.nome}
           </Text>
-          <Text style={styles.role}>{employee.cargo.nome}</Text>
+          <Text style={styles.role}>{employee.pessoa.cargo.nome}</Text>
         </View>
         <Image style={styles.image} source={require("../../images/user.png")} />
       </TouchableOpacity>

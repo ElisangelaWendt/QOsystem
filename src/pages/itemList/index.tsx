@@ -1,34 +1,57 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import AddButton from "../../components/AddButton";
 import Header from "../../components/Header";
+import { baseUrl } from "../../config/globalConfig";
 import styles from "./styles";
 
-export default function ItemList({navigation}: any){
+interface Item {
+  nome: string,
+  ingredientes: string[],
+  valor: number,
+  id: number
+}
 
-  function handleNavigateToItemDetails(){
-    navigation.navigate("ItemDetails")
+export default function ItemList({ navigation }: any) {
+  const [item, setItem] = useState<Item[]>([]);
+
+  function handleNavigateToItemDetails(id: number) {
+    navigation.navigate("ItemDetails",{id})
   }
 
-  return(
+  useEffect(() => {
+    axios.get(baseUrl + "item/listar", {})
+      .then(res => {
+        setItem(res.data)
+        // console.log(employee)
+      }).catch(function (error) {
+        console.log(error);
+      })
+  }, [item])
+
+
+  return (
     <>
-      <Header title="Lanches" canGoBack={true}/>
+      <Header title="Lanches" canGoBack={true} />
       <View style={styles.container}>
-        <View> 
-        {/* trazer informações do banco */}
-      <TouchableOpacity style={styles.content} onPress={handleNavigateToItemDetails}>
-        <View style={styles.text}>
-          <Text style={styles.title}>Nome do lanche</Text>
-          <Text style={styles.ingredients}>Ingredientes</Text>
-          <Text style={styles.title}>R$: Valor</Text>
+        <View>
+          {/* trazer informações do banco */}
+          {item.map(itens => (
+            <TouchableOpacity style={styles.content} onPress={() => handleNavigateToItemDetails(itens.id)} key={itens.id}>
+              <View style={styles.text}>
+                <Text style={styles.title}>{itens.nome}</Text>
+                <Text style={styles.ingredients}>{itens.ingredientes}</Text>
+                <Text style={styles.title}>R$: {itens.valor}</Text>
+              </View>
+              <Image style={styles.image} source={require("../../images/lanche1.png")} />
+            </TouchableOpacity>
+          ))}
         </View>
-        <Image style={styles.image} source={require("../../images/lanche1.png")} />
-      </TouchableOpacity>
+        <View style={styles.footer}>
+          <AddButton isAdding={false} />
+        </View>
       </View>
-      <View style={styles.footer}>
-      <AddButton isAdding={false} />
-      </View>
-    </View>
     </>
   )
 }
