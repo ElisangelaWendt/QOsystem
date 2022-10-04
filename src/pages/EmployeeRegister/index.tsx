@@ -103,7 +103,7 @@ function CloseModal(){
   return (
     <>
       <Header title="Novo Funcionário" canGoBack={true} />
-      <ErrorModal visible={visibleError} text={"Credenciais inválidas"} functionOnRequestClose={CloseModal}/>
+      <ErrorModal visible={visibleError} text={"Erro ao Cadastrar"} functionOnRequestClose={CloseModal}/>
       <ErrorModal visible={visibleSuccess} text={"Cadastrado com Sucesso!"} functionOnRequestClose={CloseModal}/>
       <View style={styles.container}>
         <RegisterInput

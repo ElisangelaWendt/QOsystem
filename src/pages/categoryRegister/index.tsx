@@ -11,11 +11,13 @@ import { baseUrl } from "../../config/globalConfig";
 import Button from "../../components/Button";
 import * as ImagePicker from 'expo-image-picker';
 import { empresa } from "../login";
+import ErrorModal from "../../components/Modal";
 
 
-export default function CategoryRegister() {
+export default function CategoryRegister({navigation}: any) {
   const [name, setName] = useState("")
   const [image, setImage] = useState('')
+  const [visible, setVisible] = useState(false)
 
   function Register() {
 
@@ -32,6 +34,7 @@ export default function CategoryRegister() {
       .then(res => {
         console.log(res.data);
         console.log(image);
+        setVisible(true)
       }).catch(function (error) {
         console.log(error);
       })
@@ -54,9 +57,14 @@ export default function CategoryRegister() {
 
   }
 
+  function OnRequestClose(){
+    navigation.navigate("Menu")
+  }
+
   return (
     <>
       <Header title="Cadastrar Categoria" canGoBack={true} />
+      <ErrorModal visible={visible} text="Categoria Cadastrada com Sucesso!" functionOnRequestClose={OnRequestClose} />
       <View style={styles.content}>
         <View>
           <RegisterInput labelName="Nome" title="Nome" onChangeText={setName} />

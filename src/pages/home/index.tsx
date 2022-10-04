@@ -27,7 +27,7 @@ export default function Home({ navigation }: any) {
       }).catch(function (error) {
         console.log(error);
       })
-  },[])
+  },[categoria])
 
   function handleNavigateToItemList(id: number){
     navigation.navigate('ItemList', {id});

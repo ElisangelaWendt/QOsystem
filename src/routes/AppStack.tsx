@@ -11,7 +11,7 @@ import EmployeeRegister from '../pages/EmployeeRegister';
 import ItemList from '../pages/itemList';
 import Home from '../pages/home';
 import ItemDetails from '../pages/itemDetails';
-import CloseOrder from '../pages/closeOrder';
+import OpenOrder from '../pages/openOrder';
 import CategoryRegister from '../pages/categoryRegister';
 import JobRegister from '../pages/JobRegister';
 import Employee from '../pages/employee';
@@ -46,7 +46,7 @@ function AppStack() {
         <Screen name="ItemList" component={ItemList} />
         <Screen name="ItemDetails" component={ItemDetails} />
         <Screen name="CategoryRegister" component={CategoryRegister} />
-        <Screen name="CloseOrder" component={CloseOrder} />
+        <Screen name="OpenOrder" component={OpenOrder} />
         <Screen name="JobRegister" component={JobRegister} />
         <Screen name="IngredientRegister" component={IngredientRegister} />
         <Screen name="ItemRegister" component={ItemRegister} />

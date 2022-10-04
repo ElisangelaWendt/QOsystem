@@ -70,7 +70,7 @@ export default function ItemDetails({ navigation }: any) {
   }
 
   function handleNavigateToCloseOrder() {
-    navigation.navigate("CloseOrder")
+    navigation.navigate("OpenOrder")
     
   }
   return (

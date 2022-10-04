@@ -9,6 +9,7 @@ import ErrorModal from "../../../components/Modal";
 import Input from "../../../components/RegisterInput";
 import { baseUrl } from "../../../config/globalConfig";
 import { colors } from "../../../styles/colors";
+import { empresa } from "../../login";
 import { styles } from "./styles";
 
 interface category {
@@ -25,7 +26,9 @@ export default function CategoryExclusion() {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    axios.get(baseUrl + "categoria/listar", {})
+    axios.post(baseUrl + "categoria/buscar/empresa", {
+      id: empresa
+    })
       .then(res => {
         setCategory(res.data)
       }).catch(function (error) {

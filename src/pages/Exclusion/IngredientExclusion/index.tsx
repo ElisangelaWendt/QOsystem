@@ -9,6 +9,7 @@ import ErrorModal from "../../../components/Modal";
 import Input from "../../../components/RegisterInput";
 import { baseUrl } from "../../../config/globalConfig";
 import { colors } from "../../../styles/colors";
+import { empresa } from "../../login";
 import { styles } from "./styles";
 
 interface Ingredient {
@@ -24,7 +25,9 @@ export default function IngredientExclusion({navigation}: any) {
   const [ingredient, setIngredient] = useState<Ingredient[]>([]);
 
   useEffect(() => {
-    axios.get(baseUrl + "ingrediente/listar", {})
+    axios.post(baseUrl + "ingrediente/buscar/empresa", {
+      id: empresa
+    })
       .then(res => {
         setIngredient(res.data)
       }).catch(function (error) {

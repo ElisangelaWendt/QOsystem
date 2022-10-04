@@ -6,7 +6,7 @@ import Header from "../../components/Header";
 import { ItensPedido } from "../itemDetails";
 import styles from "./styles";
 
-export default function CloseOrder({navigation}: any){
+export default function OpenOrder({navigation}: any){
 
   useEffect(() => {
     // axios.get(baseUrl + "pedidoItem/listar", {

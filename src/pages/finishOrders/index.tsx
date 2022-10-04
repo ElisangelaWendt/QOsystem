@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView, View, Text } from "react-native";
 import Button from "../../components/Button";
 import Header from "../../components/Header";
@@ -6,12 +6,25 @@ import { styles } from "./styles";
 import { Table, Row, Rows } from 'react-native-table-component';
 import { colors } from "../../styles/colors";
 import DropDownPicker from "react-native-dropdown-picker";
+import axios from "axios";
+import { baseUrl } from "../../config/globalConfig";
+
+interface Pedido{
+  id: number,
+  observacao: string,
+  
+}
 
 export default function FinishOrders({ navigation }) {
   const HeadTable = ['Quantidade', 'Item', 'R$']
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState()
 
+  const [pedido, setPedido] = useState<Pedido>()
+
+  useEffect(() => {
+    axios.get(baseUrl + "/pedido/listar")
+  },[])
 
   // Trazer dados da API
   const DataTable = [
@@ -32,6 +45,11 @@ export default function FinishOrders({ navigation }) {
     ['', 'Total', '27,30'],
   ]
 
+  function SetOrderClosed(){
+    //colocar com status de finalizada
+    axios.put(baseUrl + "")
+  }
+
   return (
     <View style={{ height: "100%", justifyContent: "space-between" }}>
       <View>
@@ -51,6 +69,7 @@ export default function FinishOrders({ navigation }) {
           dropDownContainerStyle={{ borderColor: colors.dividor }}
           selectedItemContainerStyle={{ height: 35 }}
         />
+        {value && 
         <ScrollView>
         <View style={styles.container}>
           <View style={styles.table}>
@@ -61,10 +80,11 @@ export default function FinishOrders({ navigation }) {
             </Table>
           </View>
           <View style={styles.footer}>
-            <Button title="Finalizar Venda" />
+            <Button title="Finalizar Venda" onPress={SetOrderClosed}/>
           </View>
           </View>
         </ScrollView>
+        }
       </View>
 
     </View>

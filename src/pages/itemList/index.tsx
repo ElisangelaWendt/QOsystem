@@ -19,8 +19,13 @@ interface CategoryId {
   id: number
 }
 
+interface Categoria{
+nome: string,
+}
+
 export default function ItemList({ navigation }: any) {
   const [item, setItem] = useState<Item[]>([]);
+  const [nomeCategoria, setNomeCategoria] = useState<Categoria>()
   const route = useRoute();
   const params = route.params as CategoryId;
   const [emptyList, setEmptyList] = useState(true)
@@ -30,6 +35,15 @@ export default function ItemList({ navigation }: any) {
   }
 
   useEffect(() => {
+    axios.post(baseUrl + "categoria/buscar", {
+      id: params.id
+    })
+      .then(res => {
+        setNomeCategoria(res.data)
+      }).catch(function (error) {
+        console.log(error);
+      })
+
     axios.post(baseUrl + "item/buscar/categoria", {
       id: params.id
     })
@@ -40,12 +54,14 @@ export default function ItemList({ navigation }: any) {
         console.log(error);
         setEmptyList(true)
       })
-  }, [item])
+  }, [])
 
 
   return (
     <>
-      <Header title="Lanches" canGoBack={true} />
+    {nomeCategoria &&
+    <>
+      <Header title={nomeCategoria.nome} canGoBack={true} />
       <View style={styles.container}>
         <View>
           {emptyList && 
@@ -69,6 +85,8 @@ export default function ItemList({ navigation }: any) {
           <AddButton isAdding={false} />
         </View>
       </View>
+      </>
+    }
     </>
   )
 }
