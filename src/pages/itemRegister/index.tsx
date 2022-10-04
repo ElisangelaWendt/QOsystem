@@ -8,6 +8,7 @@ import ErrorModal from "../../components/Modal";
 import Input from "../../components/RegisterInput";
 import { baseUrl } from "../../config/globalConfig";
 import { colors } from "../../styles/colors";
+import { empresa } from "../login";
 import styles from "./styles";
 
 interface Category{
@@ -40,7 +41,9 @@ useEffect(() => {
     console.log(error);
   })
 
-  axios.get(baseUrl + "ingrediente/listar", {})
+  axios.post(baseUrl + "ingrediente/buscar/empresa", {
+    id: empresa
+  })
   .then(res => {
     setIngrediente(res.data)
   }).catch(function (error) {
@@ -53,14 +56,12 @@ useEffect(() => {
 
 
 function Register(){
-  var categoria ={
-    id: valueCategory,
-}
+
   axios.post(baseUrl + "item/cadastrar", {
     nome: name,
-    categoria:categoria,
+    categoria:valueCategory,
     valor: valor,
-    // ingredientes: valueIngredient
+    ingredientes: [{valueIngredient}]
   })
   .then(res => {
     setCategoria(res.data)

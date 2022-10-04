@@ -6,6 +6,7 @@ import styles from "./styles";
 import Header from "../../components/Header";
 import axios from "axios";
 import { baseUrl } from "../../config/globalConfig";
+import { empresa } from "../login";
 
 interface Categoria{
   nome: string,
@@ -18,16 +19,18 @@ export default function Home({ navigation }: any) {
   const [categoria, setCategoria] = useState<Categoria[]>([]);
 
   useEffect(() => {
-    axios.get(baseUrl + "categoria/listar", {})
+    axios.post(baseUrl + "categoria/buscar/empresa", {
+      id: empresa
+    })
       .then(res => {
         setCategoria(res.data)
       }).catch(function (error) {
         console.log(error);
       })
-  },[categoria])
+  },[])
 
   function handleNavigateToItemList(id: number){
-    navigation.navigate('ItemList');
+    navigation.navigate('ItemList', {id});
   }
 
   return (
@@ -39,6 +42,12 @@ export default function Home({ navigation }: any) {
           <Feather name="search" style={styles.icon} size={24} />
         </View>
         <Text style={styles.text}>Categorias</Text>
+        {!categoria && 
+        <>
+        <Text>Sem categoria Cadastrada</Text> 
+        <Feather name="alert-circle" style={styles.icon} size={24} />
+        </>
+        }
         {/* Categorias de lanches */}
         {categoria.map(categoria => (
         <TouchableOpacity style={styles.categoryButton} onPress={() => handleNavigateToItemList(categoria.id)} key={categoria.id}>

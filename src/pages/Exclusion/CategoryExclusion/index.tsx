@@ -31,7 +31,7 @@ export default function CategoryExclusion() {
       }).catch(function (error) {
         console.log(error);
       })
-  }, [category])
+  }, [])
 
 
   function Delete(){
@@ -40,7 +40,9 @@ export default function CategoryExclusion() {
       data:{
         id: value
       }
-    }).then(
+    }).then(res => {
+
+    }
     ).catch(function (error){
       console.log(error);
     })
@@ -60,8 +62,6 @@ export default function CategoryExclusion() {
       <View style={styles.content}>
       <Text style={styles.text}>Excluir Categoria</Text>
         <DropDownPicker
-          
-          
           placeholder="Selecione o Categoria"
           textStyle={styles.dropdownText}
           labelStyle={styles.dropdownText}

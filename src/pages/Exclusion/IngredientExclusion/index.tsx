@@ -5,6 +5,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 import { Divider } from "react-native-paper";
 import Button from "../../../components/Button";
 import Header from "../../../components/Header";
+import ErrorModal from "../../../components/Modal";
 import Input from "../../../components/RegisterInput";
 import { baseUrl } from "../../../config/globalConfig";
 import { colors } from "../../../styles/colors";
@@ -16,11 +17,8 @@ interface Ingredient {
 }
 
 
-export default function IngredientExclusion() {
-  const [open, setOpen] = useState(false);
-  const [openEmployee, setOpenEmployee] = useState(false);
-  const [openCategory, setOpenCategory] = useState(false);
-  const [openCargo, setOpenCargo] = useState(false);
+export default function IngredientExclusion({navigation}: any) {
+  const [visible, setVisible] = useState(false);
   const [openIngredient, setOpenIngredient] = useState(false);
   const [value, setValue] = useState(null);
   const [ingredient, setIngredient] = useState<Ingredient[]>([]);
@@ -37,20 +35,26 @@ export default function IngredientExclusion() {
 
   function Delete(){
     
-    axios.delete(baseUrl + "ingredient/deletar",{
+    axios.delete(baseUrl + "ingrediente/deletar",{
       data:{
         id: value
       }
-    }).then(
+    }).then(res => {
+      setVisible(true)
+    }
     ).catch(function (error){
       console.log(error);
     })
   }
 
+  function OnRequestClose(){
+    setVisible(false)
+  }
 
   return (
     <>
       <Header title="Excluir Ingrediente" canGoBack={true} />
+      <ErrorModal visible={visible} text="Ingrediente excluído com sucesso!" functionOnRequestClose={OnRequestClose} />
       <View style={styles.content}>
 
       <Text style={styles.text}>Excluir Ingrediente</Text>

@@ -5,9 +5,11 @@ import DropDownPicker from "react-native-dropdown-picker";
 import { Divider } from "react-native-paper";
 import Button from "../../../components/Button";
 import Header from "../../../components/Header";
+import ErrorModal from "../../../components/Modal";
 import Input from "../../../components/RegisterInput";
 import { baseUrl } from "../../../config/globalConfig";
 import { colors } from "../../../styles/colors";
+import { empresa } from "../../login";
 import { styles } from "./styles";
 
 interface Cargos {
@@ -20,9 +22,12 @@ export default function JobExclusion() {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [cargos, setCargos] = useState<Cargos[]>([]);
+  const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    axios.get(baseUrl + "cargo/listar", {})
+    axios.post(baseUrl + "cargo/buscar/empresa", {
+      id: empresa
+    })
       .then(res => {
         setCargos(res.data)
       }).catch(function (error) {
@@ -37,16 +42,22 @@ export default function JobExclusion() {
       data:{
         id: value
       }
-    }).then(
+    }).then(res => {
+      setVisible(true)
+    }
     ).catch(function (error){
       console.log(error);
     })
   }
 
+  function OnRequestClose(){
+    setVisible(false)
+  }
 
   return (
     <>
       <Header title="Exclusões" canGoBack={true} />
+      <ErrorModal visible={visible} functionOnRequestClose={OnRequestClose} />
       <View style={styles.content}>
 
       <Text style={styles.text}>Excluir Cargo</Text>

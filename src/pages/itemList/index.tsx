@@ -1,3 +1,4 @@
+import { useRoute } from "@react-navigation/native";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
@@ -5,6 +6,7 @@ import AddButton from "../../components/AddButton";
 import Header from "../../components/Header";
 import { baseUrl } from "../../config/globalConfig";
 import styles from "./styles";
+import { Feather } from "@expo/vector-icons";
 
 interface Item {
   nome: string,
@@ -13,20 +15,30 @@ interface Item {
   id: number
 }
 
+interface CategoryId {
+  id: number
+}
+
 export default function ItemList({ navigation }: any) {
   const [item, setItem] = useState<Item[]>([]);
+  const route = useRoute();
+  const params = route.params as CategoryId;
+  const [emptyList, setEmptyList] = useState(true)
 
   function handleNavigateToItemDetails(id: number) {
     navigation.navigate("ItemDetails",{id})
   }
 
   useEffect(() => {
-    axios.get(baseUrl + "item/listar", {})
+    axios.post(baseUrl + "item/buscar/categoria", {
+      id: params.id
+    })
       .then(res => {
+        setEmptyList(false)
         setItem(res.data)
-        // console.log(employee)
       }).catch(function (error) {
         console.log(error);
+        setEmptyList(true)
       })
   }, [item])
 
@@ -36,7 +48,12 @@ export default function ItemList({ navigation }: any) {
       <Header title="Lanches" canGoBack={true} />
       <View style={styles.container}>
         <View>
-          {/* trazer informações do banco */}
+          {emptyList && 
+          <View style={styles.emptyList}>
+          <Text style={styles.textEmpty}>Nenhum Item Cadastrado para essa Categoria</Text>
+          <Feather name="meh" size={40} />
+          </View>
+          }
           {item.map(itens => (
             <TouchableOpacity style={styles.content} onPress={() => handleNavigateToItemDetails(itens.id)} key={itens.id}>
               <View style={styles.text}>

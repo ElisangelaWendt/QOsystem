@@ -37,6 +37,16 @@ footer:
   alignSelf:"flex-end",
   paddingBottom:20,
   paddingRight: 20
+},
+emptyList:{
+  alignItems:"center",
+  marginVertical: 60,
+  opacity:0.5
+
+},
+textEmpty:{
+  fontSize: 20,
+  marginBottom:10
 }
 })
 export default styles;
