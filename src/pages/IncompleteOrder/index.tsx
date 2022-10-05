@@ -15,7 +15,7 @@ interface PedidoItem{
   id: number
 }
 
-export default function CompleteOrder(){
+export default function IncompleteOrder(){
   const HeadTable = ['Quantidade', 'Item', 'Adicional', 'Remover']
   const [pedido, setPedido] = useState<PedidoItem[]>([])
   const [open, setOpen] = useState(false)
@@ -23,6 +23,14 @@ export default function CompleteOrder(){
 
 
 // Trazer dados da API
+
+useEffect(() => {
+  axios.post(baseUrl + "pedido/buscar/mesa",{
+    //id da mesa
+  }).then(res => {
+    
+  })
+})
 
 const DataTable = [
   ['1', 'Nome do lanche', '', ''],

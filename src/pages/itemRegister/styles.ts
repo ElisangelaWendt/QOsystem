@@ -24,6 +24,18 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: colors.text,
   },
+  table:{
+    backgroundColor: colors.backgroundButtonAdd,
+    height:100,
+    width: 227,
+    alignSelf:"center",
+    elevation: 10,
+    marginVertical: 15
+  },
+  tableText:{
+    color:colors.green,
+    margin:10
+  }
 })
 
 export default styles;

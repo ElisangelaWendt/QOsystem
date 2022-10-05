@@ -10,7 +10,7 @@ import { styles } from "./styles";
 export default function Menu({navigation}: any) {
 
   function handleNavigateToCompleteOrder(){
-    navigation.navigate("CompleteOrder")
+    navigation.navigate("IncompleteOrder")
   }
 
   function handleNavigateToEmployeeRegister(){

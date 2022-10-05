@@ -1,7 +1,6 @@
 import Header from "../../components/Header";
 import React, { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View, Image } from 'react-native'
-import Input from "../../components/textInput";
 import RegisterInput from "../../components/RegisterInput";
 import { styles } from "./styles";
 import { Feather } from '@expo/vector-icons';

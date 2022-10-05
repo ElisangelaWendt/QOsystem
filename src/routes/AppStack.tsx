@@ -7,22 +7,21 @@ import {useFonts, SairaStencilOne_400Regular,
 } from '@expo-google-fonts/dev';
 import MyTab from '../components/BottomTab';
 import AppLoading from 'expo-app-loading';
-import EmployeeRegister from '../pages/EmployeeRegister';
 import ItemList from '../pages/itemList';
-import Home from '../pages/home';
 import ItemDetails from '../pages/itemDetails';
 import OpenOrder from '../pages/openOrder';
-import CategoryRegister from '../pages/categoryRegister';
-import JobRegister from '../pages/JobRegister';
 import Employee from '../pages/employee';
-import IngredientRegister from '../pages/ingredientRegister';
-import ItemRegister from '../pages/itemRegister';
-import CompleteOrder from '../pages/CompleteOrder';
+import IncompleteOrder from '../pages/IncompleteOrder';
 import EditEmployee from '../pages/editEployee';
 import JobExclusion from '../pages/Exclusion/JobExclusion';
 import ItemExclusion from '../pages/Exclusion/ItemExclusion';
 import EmployeeExclusion from '../pages/Exclusion/EmployeeExclusion';
 import IngredientExclusion from '../pages/Exclusion/IngredientExclusion';
+import EmployeeRegister from '../pages/EmployeeRegister/index';
+import CategoryRegister from '../pages/categoryRegister';
+import JobRegister from '../pages/JobRegister';
+import IngredientRegister from '../pages/ingredientRegister';
+import ItemRegister from '../pages/itemRegister';
 import CategoryExclusion from '../pages/Exclusion/CategoryExclusion';
 const { Navigator, Screen } = createStackNavigator();
 
@@ -50,7 +49,7 @@ function AppStack() {
         <Screen name="JobRegister" component={JobRegister} />
         <Screen name="IngredientRegister" component={IngredientRegister} />
         <Screen name="ItemRegister" component={ItemRegister} />
-        <Screen name="CompleteOrder" component={CompleteOrder} />
+        <Screen name="IncompleteOrder" component={IncompleteOrder} />
         <Screen name="EditEmployee" component={EditEmployee} />
         <Screen name="JobExclusion" component={JobExclusion} />
         <Screen name="ItemExclusion" component={ItemExclusion} />
