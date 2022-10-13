@@ -35,6 +35,9 @@ export default function Menu({navigation}: any) {
   function handleNavigateToItemRegister(){
     navigation.navigate("ItemRegister")
   }
+  function handleNavigateToTableRegister(){
+    navigation.navigate("TableRegister")
+  }
   function handleNavigateToEmployeeExclusion(){
     navigation.navigate("EmployeeExclusion")
   }
@@ -49,6 +52,9 @@ export default function Menu({navigation}: any) {
   }
   function handleNavigateToIngredientExclusion(){
     navigation.navigate("IngredientExclusion")
+  }
+  function handleNavigateToTableExclusion(){
+    navigation.navigate("TableExclusion")
   }
 
   function LogOut(){
@@ -67,6 +73,7 @@ export default function Menu({navigation}: any) {
         <MenuButton title="Cadastrar Cargo" onPress={handleNavigateToJobRegister}/>
         <MenuButton title="Cadastrar Ingrediente" onPress={handleNavigateToIngredientRegister}/>
         <MenuButton title="Cadastrar Item" onPress={handleNavigateToItemRegister}/>
+        <MenuButton title="Cadastrar Mesa" onPress={handleNavigateToTableRegister}/>
         
         <Text style={styles.text}>---------------- Exclusões ----------------</Text>
         <MenuButton title="Excluir Funcionário" onPress={handleNavigateToEmployeeExclusion}/>
@@ -74,6 +81,7 @@ export default function Menu({navigation}: any) {
         <MenuButton title="Excluir Cargo" onPress={handleNavigateToJobExclusion}/>
         <MenuButton title="Excluir Ingrediente" onPress={handleNavigateToIngredientExclusion}/>
         <MenuButton title="Excluir Item" onPress={handleNavigateToItemExclusion}/>
+        <MenuButton title="Excluir Mesa" onPress={handleNavigateToTableExclusion}/>
         <Text style={styles.text}>-------------------------------------------</Text>
 
         <MenuButton title="Sair" onPress={LogOut}/>

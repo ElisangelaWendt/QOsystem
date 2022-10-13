@@ -35,7 +35,7 @@ const [valueIngredient, setValueIngredient] = useState([]);
 const [open, setOpen] = useState(false);
 const [open1, setOpen1] = useState(false);
 const ingredienteobjeto = {id: ''}
-const [ingredientObj, setIngredientObj] = useState(ingredienteobjeto);
+const [ingredientObj, setIngredientObj] = useState([]);
 
 const [visible, setVisible] = useState(false)
 
@@ -73,44 +73,48 @@ useEffect(() => {
 
 
 function Register(){
-//  setIngredientObj(valueIngredient)
 
-//  console.log(valueIngredient)
-
-  // var ingredientObjs = ingredientObj.map((number) => {
-  //   [{id: number.id}]
-  // })
-
-  
   for(let x =0; x < valueIngredient.length; x++){
-    console.log(valueIngredient[x])
-    
-    setIngredientObj({...ingredientObj,
-      id: valueIngredient[x]
-    })
-    const newObj = [{...ingredientObj, id: valueIngredient}]
-    console.log("-----------------------")
-    console.log(newObj)
+    setIngredientObj((prev) => {
+      return [...prev, { id: valueIngredient[x] }];
+    });
+   // const newObj = [{...ingredientObj, id: valueIngredient}]
+    // console.log("-----------------------")
+    // console.log(ingredientObj)
   }
 
-  // axios.post(baseUrl + "item/cadastrar", {
-  //   nome: name,
-  //   categoria:valueCategory,
-  //   valor: valor,
-  //   ingredientes: ingredientObj
-  // })
-  // .then(res => {
-  //   setCategoria(res.data)
-  //   setVisible(true)
-  //   navigation.navigate("Menu")
-  // }).catch(function (error) {
-  //   console.log(error);
-  // })
+  axios.post(baseUrl + "item/cadastrar", {
+    nome: name,
+    categoria: {
+      id: valueCategory
+    },
+    valor: valor,
+    ingredientes: ingredientObj
+  })
+  .then(res => {
+    console.log(res.data)
+    setVisible(true)
+  }).catch(function (error) {
+    console.log(error);
+  })
 }
 
 function onRequestClose(){
   setVisible(false)
   navigation.navigate("Menu")
+}
+
+function findArray(array, value) {
+  return array.find((element) => {
+    return element.id === value;
+  })
+}
+
+
+function atualiza_tabela(){
+
+return (valueIngredient.map(Valueingrediente => (findArray(ingrediente,Valueingrediente).nome + '\n')))
+
 }
 
   return (
@@ -147,18 +151,15 @@ function onRequestClose(){
           setValue={setValueIngredient}
           style={styles.dropdown}
           placeholderStyle={{ color: colors.dividor }}
-          dropDownContainerStyle={{ borderColor: colors.dividor }}
+          dropDownContainerStyle={{ borderColor: colors.dividor, paddingBottom:20 }}
           selectedItemContainerStyle={{ height: 35 }}
           multiple={true}
-          min={1}
-          max={20}
           zIndex={2000}
           zIndexInverse={2000}
-          labelProps={{}}
         />
-        {selectedIngrediente &&
+        {valueIngredient &&
       <View style={styles.table}>
-        <Text style={styles.tableText}>{selectedIngrediente.nome}</Text>
+        <Text style={styles.tableText}>{atualiza_tabela()}</Text>
       </View>
         }
       </View>

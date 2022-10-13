@@ -46,17 +46,18 @@ useEffect(() => {
 },[])
 
 async function Register(){
-  var conta  = {
-    conta: email,
-    senha: password
-  }
 
   // cadastrar informações da conta
-  await axios.post(baseUrl + "pessoa/cadastrar", {
-    nome: name,
-    conta: conta,
-    cargo: value,
-    salario: salary
+  await axios.post(baseUrl + "conta/cadastrar", {
+    conta: email,
+    senha: password,
+    pessoa:{
+      nome: name,
+      salario: salary,
+      cargo:{
+        id: value,
+      } 
+    }
   }).then((res => {
     console.log(res)
     setVisibleSuccess(true)
@@ -65,16 +66,6 @@ async function Register(){
     console.log(error);
     setVisibleError(true)
   })
-
-//   axios.post(baseUrl + "pessoa/cadastrar", {
-//     nome: name,
-//     salario: salary,
-    
-//   })
-// .catch(function (error) {
-//     console.log(error);
-//   })
-
 
 }
 

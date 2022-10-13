@@ -20,6 +20,7 @@ interface EmployeeId {
 interface Employee {
   conta: string,
   id: number,
+  senha: string,
   pessoa: {
     nome: string,
     id: number,
@@ -68,9 +69,8 @@ export default function EditEmployee({ navigation }: any) {
 
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
-  const [salary, setSalary] = useState(0)
+  const [salary, setSalary] = useState('')
   const [password, setPassword] = useState('')
-  const [selectedCargo, setSelectedCargo] = useState<Cargo>()
   const [image, setImage] = useState('');
 
   useEffect(() => {
@@ -104,7 +104,9 @@ export default function EditEmployee({ navigation }: any) {
       if(!email){
         setEmail(employee.conta)
       }
-
+      if(password === ''){
+        setPassword(employee.senha)
+      }
     }
   })
 
@@ -122,23 +124,20 @@ export default function EditEmployee({ navigation }: any) {
   }
 
   function Save() {
-    // if(email === ''){
-    //   setEmail(employee.conta)
-    // }
-    // if(name === ''){
-    //   setName(employee.pessoa.nome)
-    // }
-    console.log("--------------")
-    console.log(name)
-    console.log(email)
-    // console.log(employee.conta)
+    //converter a string salario para inteiro
+    const salaryConverted = parseFloat(salary)
 
+    //está setando todas 
     axios.put(baseUrl + "conta/editar", {
       id: params.id,
       conta: email, 
       senha: password,
       pessoa:{
         nome: name,
+        salario: salaryConverted,
+        cargo:{
+          id: value
+        }
         
       }
     }).catch(function (error) {
@@ -190,7 +189,9 @@ export default function EditEmployee({ navigation }: any) {
           />
           <RegisterInput
             labelName="Informe o salário do funcionário"
-            title="Salário" ><Text>{employee.pessoa.salario}</Text></RegisterInput>
+            title="Salário"
+            onChangeText={setSalary}
+            ><Text>{employee.pessoa.salario}</Text></RegisterInput>
           <RegisterInput
             labelName="Informe o email do Funcionário"
             title="Email" onChangeText={setEmail} ><Text>{employee.conta}</Text></RegisterInput>

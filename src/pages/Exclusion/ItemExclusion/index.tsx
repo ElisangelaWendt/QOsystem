@@ -49,13 +49,11 @@ export default function ItemExclusion() {
       }).catch(function (error) {
         console.log(error);
       })
-
-      console.log(valueCategory)
-  }, [valueCategory])
+  }, [valueCategory, value])
 
 
   function Delete(){
-    
+    console.log(value)
     axios.delete(baseUrl + "item/deletar",{
       data:{
         id: value
@@ -73,7 +71,7 @@ export default function ItemExclusion() {
 
   return (
     <>
-      <Header title="Exclusões" canGoBack={true} />
+      <Header title="Excluir Item" canGoBack={true} />
       <ErrorModal visible={visible} text="Item Excluído com Sucesso!" functionOnRequestClose={OnRequestClose}/>
       <View style={styles.content}>
       <Text style={styles.text}>De qual categoria deseja excluir o item?</Text>
@@ -90,7 +88,8 @@ export default function ItemExclusion() {
           placeholderStyle={{ color: colors.dividor }}
           dropDownContainerStyle={{ borderColor: colors.dividor }}
           selectedItemContainerStyle={{ height: 35 }}
-
+          zIndex={3000}
+          zIndexInverse={1000}
         />
         {valueCategory && <>
         <Text style={styles.text}>Excluir Item</Text>
@@ -107,7 +106,8 @@ export default function ItemExclusion() {
           placeholderStyle={{ color: colors.dividor }}
           dropDownContainerStyle={{ borderColor: colors.dividor }}
           selectedItemContainerStyle={{ height: 35 }}
-
+          zIndex={2000}
+          zIndexInverse={2000}
         />
         </>
         }

@@ -11,6 +11,7 @@ import ErrorModal from "../../components/Modal";
 
 //pode ser acessado por qualquer função de qualquer arquivo
 export var empresa;
+export var userID;
 
 export default function Login({ navigation }: any) {
   const [email, setEmail] = useState("");
@@ -32,8 +33,10 @@ export default function Login({ navigation }: any) {
       .then(res => {
         // console.log(res.data);
         empresa = (res.data[0].pessoa.cargo.empresa.id);
+        userID = (res.data[0].pessoa.id);
         navigation.navigate('BottomTab');
     console.log(empresa)
+    console.log(userID)
       }).catch(function (error) {
         console.log(error);
         //login ou senha incorretos

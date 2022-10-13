@@ -10,14 +10,15 @@ import axios from "axios";
 import { baseUrl } from "../../config/globalConfig";
 import { useRoute } from "@react-navigation/native";
 import DropDownPicker from "react-native-dropdown-picker";
+import { userID } from "../login";
 
 interface Item {
   nome: string,
   ingredientes:
-  {
+  [{
     nome: string,
     id: number
-  },
+  }],
   valor: number,
   id: number
 }
@@ -26,6 +27,7 @@ interface ItemId {
 }
 
 export var ItensPedido = [ '' ,'' , '',''];
+export var pedido = null;
 
 export default function ItemDetails({ navigation }: any) {
   const [isChecked1, setIsChecked1] = useState(false)
@@ -69,10 +71,34 @@ export default function ItemDetails({ navigation }: any) {
     }
   }
 
-  function handleNavigateToCloseOrder() {
+  function handleNavigateToOpenOrder() {
     navigation.navigate("OpenOrder")
-    
+    if(pedido == null){
+      axios.post(baseUrl + "pedido/cadastrar",{
+        pessoa:{
+          id: userID
+        },
+        status: 0
+      }).then(res => {
+        console.log(res.data)
+        console.log(pedido)
+      }).catch(function (error){
+        console.log(error)
+      })
+    }
   }
+
+
+  function findArray(array, value) {
+    return array.find((element) => {
+      return element.id === value;
+    })
+  }
+
+  function atualiza_tabela(){
+    return (removedItem.map(removed => (findArray(removedItem,removed).nome + '\n')))
+    }
+
   return (
     <>
     {item && 
@@ -87,18 +113,22 @@ export default function ItemDetails({ navigation }: any) {
             <Checkbox status={isChecked1 ? 'checked' : 'unchecked'} onPress={check1} color={colors.dividor} />
             </View>
             <DropDownPicker
-          placeholder={item.ingredientes.nome}
+          placeholder="Selecione os itens"
           textStyle={styles.dropdownText}
           labelStyle={styles.dropdownText}
           open={openRemove}
-          value={value}
-          items={[{label: item.ingredientes.nome, value: item.ingredientes.id }]}
+          value={removedItem}
+          items={item.ingredientes.map(ingredient => ({
+            label: ingredient.nome,
+            value: ingredient.id
+          }))}
           setOpen={setOpenRemove}
-          setValue={setValue}
+          setValue={setRemovedItem}
           style={styles.dropdown}
           placeholderStyle={{ color: colors.dividor }}
           dropDownContainerStyle={{ borderColor: colors.dividor }}
           selectedItemContainerStyle={{ height: 35 }}
+          multiple={true}
         />
             <View style={styles.table}></View>
             <View style={styles.row}>
@@ -108,24 +138,28 @@ export default function ItemDetails({ navigation }: any) {
             </View>
 
             <DropDownPicker
-          placeholder={item.ingredientes.nome}
+          placeholder="Selecione os itens"
           textStyle={styles.dropdownText}
           labelStyle={styles.dropdownText}
           open={openAdd}
           value={value}
-          items={[{label: item.ingredientes.nome, value: item.ingredientes.id }]}
+          items={item.ingredientes.map(ingredient => ({
+            label: ingredient.nome,
+            value: ingredient.id
+          }))}
           setOpen={setOpenAdd}
           setValue={setValue}
           style={styles.dropdown}
           placeholderStyle={{ color: colors.dividor }}
           dropDownContainerStyle={{ borderColor: colors.dividor }}
           selectedItemContainerStyle={{ height: 35 }}
+          
         />
-            <View style={styles.table}></View>
+            <View style={styles.table}><Text style={styles.tableText}>{atualiza_tabela()}</Text></View>
 
           </View>
           <View style={styles.footer}>
-            <Button title="Adicionar item" onPress={handleNavigateToCloseOrder} />
+            <Button title="Adicionar item" onPress={handleNavigateToOpenOrder} />
           </View>
       </View>
     </>

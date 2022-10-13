@@ -15,6 +15,8 @@ interface PedidoItem{
   id: number
 }
 
+
+
 export default function IncompleteOrder(){
   const HeadTable = ['Quantidade', 'Item', 'Adicional', 'Remover']
   const [pedido, setPedido] = useState<PedidoItem[]>([])

@@ -33,7 +33,6 @@ export const styles = StyleSheet.create({
   dropdown: {
     backgroundColor: colors.inputBackground,
     borderColor: colors.dividor,
-    height: 35,
     marginVertical: 20,
     borderRadius: 4,
     color: colors.dividor,

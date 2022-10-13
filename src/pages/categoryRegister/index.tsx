@@ -19,20 +19,19 @@ export default function CategoryRegister({navigation}: any) {
   const [visible, setVisible] = useState(false)
 
   function Register() {
-
+    const formData = new FormData()
+  // formData.append('nome', name)
+  formData.append('Arquivo', image)
+  // console.log(formData)
     //ajustar para registrar na empresa do usuário logado
 
-    axios.post(baseUrl + "/categoria/cadastrar", {
-      nome: name,
-      // imagemUrl: image
-      empresa: {
-        id: empresa
-      }
+    axios.post("https://isoft.com.br/" + "api/pedidos/upload.php", {
+      data: formData
       //quando estiver ajustado, cadastrar imagem também
     })
       .then(res => {
         console.log(res.data);
-        console.log(image);
+        // console.log(image);
         setVisible(true)
       }).catch(function (error) {
         console.log(error);

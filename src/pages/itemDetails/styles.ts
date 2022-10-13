@@ -51,5 +51,9 @@ dropdownText: {
   fontSize: 20,
   color: colors.text,
 },
+tableText:{
+  color:colors.green,
+  margin:10
+}
 })
 export default styles;

@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   },
   table:{
     backgroundColor: colors.backgroundButtonAdd,
-    height:100,
+    // minHeight:100,
     width: 227,
     alignSelf:"center",
     elevation: 10,

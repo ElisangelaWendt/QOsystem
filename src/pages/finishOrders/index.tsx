@@ -8,6 +8,7 @@ import { colors } from "../../styles/colors";
 import DropDownPicker from "react-native-dropdown-picker";
 import axios from "axios";
 import { baseUrl } from "../../config/globalConfig";
+import { empresa } from "../login";
 
 interface Pedido{
   id: number,
@@ -15,16 +16,34 @@ interface Pedido{
   
 }
 
+interface Table{
+  nome: string,
+  id: number
+}
+
 export default function FinishOrders({ navigation }) {
   const HeadTable = ['Quantidade', 'Item', 'R$']
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState()
+  const [table, setTable] = useState<Table[]>([])
 
   const [pedido, setPedido] = useState<Pedido>()
 
   useEffect(() => {
-    axios.get(baseUrl + "/pedido/listar")
+    // axios.get(baseUrl + "/pedido/listar")
+    axios.post(baseUrl + "mesa/buscar/empresa",{
+      id: empresa
+    }).then(res => {
+      setTable(res.data)
+    }).catch(function (error){
+      console.log(error)
+    })
   },[])
+
+  useEffect(() => {
+    //arrumar
+    // axios.post(baseUrl + "pedidoItem/buscar/pedido/mesa")
+  },[value])
 
   // Trazer dados da API
   const DataTable = [
@@ -61,13 +80,15 @@ export default function FinishOrders({ navigation }) {
           labelStyle={styles.dropdownText}
           open={open}
           value={value}
-          items={[{ label: "mesa 1", value: 1 }]}
+          items={table.map(table => ({
+            label: table.nome,
+            value: table.id
+          }))}
           setOpen={setOpen}
           setValue={setValue}
           style={styles.dropdown}
           placeholderStyle={{ color: colors.dividor }}
-          dropDownContainerStyle={{ borderColor: colors.dividor }}
-          selectedItemContainerStyle={{ height: 35 }}
+          dropDownContainerStyle={{ borderColor: colors.dividor, marginVertical: 20, }}
         />
         {value && 
         <ScrollView>
