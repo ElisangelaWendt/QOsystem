@@ -1,4 +1,5 @@
 import { StyleSheet, Dimensions } from "react-native";
+import { colors } from "../../styles/colors";
 
 export const styles = StyleSheet.create({
   content:{
@@ -11,6 +12,9 @@ export const styles = StyleSheet.create({
     alignItems:"center",
     alignContent:'flex-end',
     marginBottom: 40
+  },
+  warning:{
+    color: colors.red
   }
  
 });

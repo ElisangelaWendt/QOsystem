@@ -57,7 +57,7 @@ export default function TableExclusion(){
     <ErrorModal visible={visible} functionOnRequestClose={OnRequestClose} text="Mesa Excluída com Sucesso!" />
       <View style={styles.content}>
 
-      <Text style={styles.text}>Excluir Cargo</Text>
+      <Text style={styles.text}>Excluir Mesa</Text>
         <DropDownPicker
           placeholder="Selecione a mesa"
           textStyle={styles.dropdownText}

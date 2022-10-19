@@ -19,23 +19,23 @@ export default function CategoryRegister({navigation}: any) {
   const [visible, setVisible] = useState(false)
 
   function Register() {
-    const formData = new FormData()
-  // formData.append('nome', name)
-  formData.append('Arquivo', image)
+    let filename = image.split('/').pop();
+  
+    let match = /\.(\w+)$/.exec(filename);
+    let type = match ? `image/${match[1]}` : `image`;
+  
+    let formData = new FormData();
+    
+    formData.append('Arquivo', { uri: image, name: filename, type });
+  
   // console.log(formData)
     //ajustar para registrar na empresa do usuário logado
 
-    axios.post("https://isoft.com.br/" + "api/pedidos/upload.php", {
-      data: formData
-      //quando estiver ajustado, cadastrar imagem também
-    })
-      .then(res => {
-        console.log(res.data);
-        // console.log(image);
-        setVisible(true)
-      }).catch(function (error) {
-        console.log(error);
-      })
+    return fetch('http://10.10.1.17/upload.php', {
+      method: 'POST',
+      body: formData,
+      
+    });
   }
 
   async function handleSelecionarFoto() {
