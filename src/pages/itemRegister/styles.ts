@@ -35,6 +35,37 @@ const styles = StyleSheet.create({
   tableText:{
     color:colors.green,
     margin:10
+  },
+  title: {
+    fontSize: 13,
+    marginTop: 40,
+    alignSelf: "center",
+  },
+  imageSelector: {
+    borderWidth: 1,
+    borderRadius: 15,
+    height: 100,
+    width: 100,
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "center",
+    marginTop: 10,
+  },
+  dashedBox: {
+    borderWidth: 1,
+    width: 86,
+    height: 86,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 15,
+    borderStyle: "dashed",
+  },
+  image:{
+    alignSelf:'center',
+    height: 120,
+    width: 120,
+    borderRadius:15,
+    marginTop:20
   }
 })
 

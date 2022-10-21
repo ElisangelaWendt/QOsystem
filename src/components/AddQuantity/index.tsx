@@ -3,26 +3,14 @@ import { TouchableOpacity, Text, View } from "react-native";
 import styles from "./styles";
 
 interface AddQuantityProps {
-  title: boolean
+  title: boolean,
+  functionRemove: any;
+  functionAdd: any;
+  quantity: number
 }
 
-export var quantity= 0;
+export default function AddQuantity({ title, functionRemove,functionAdd, quantity }: AddQuantityProps) {
 
-export default function AddQuantity({ title }: AddQuantityProps) {
-
-  function handleAddQuantity() {
-    quantity = quantity + 1
-  }
-
-  function handleRemoveQuantity() {
-    if(quantity <= 0){
-      quantity = 0
-
-    }else{
-      quantity = quantity - 1
-
-    }
-  }
 
   return (
     <View style={styles.container}>
@@ -31,14 +19,14 @@ export default function AddQuantity({ title }: AddQuantityProps) {
           Quantidade
         </Text>
       }
-      <TouchableOpacity style={styles.removeButton} onPress={handleRemoveQuantity}>
+      <TouchableOpacity style={styles.removeButton} onPress={functionRemove}>
         <Text style={styles.remove}>-</Text>
       </TouchableOpacity>
       <View style={styles.textQuantity}>
 
         <Text >{quantity}</Text>
       </View>
-      <TouchableOpacity style={styles.addButton} onPress={handleAddQuantity}>
+      <TouchableOpacity style={styles.addButton} onPress={functionAdd}>
         <Text style={styles.add}>+</Text>
       </TouchableOpacity>
     </View>

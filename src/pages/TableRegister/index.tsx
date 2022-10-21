@@ -38,14 +38,17 @@ export default function TableRegister({ navigation }: any) {
     console.log(quantityConverted)
     for (var x = 1; x <= quantityConverted; x++) {
       let exist = false;
+      //verifica na listagem se a mesa já está cadastrada
       for (var y = 0; y < tables.length; y++) {
         if (("Mesa " + x) === (tables[y].nome)) {
           exist=true;
         } 
       }
+      //se ela já estiver cadastrada cai no if
       if (exist){
         console.log('Tem a ' + "Mesa " + x)
         setWarning(true)
+        //senão ela é cadastrada
       } else {
         console.log(x)
          axios.post(baseUrl + "mesa/cadastrar", {

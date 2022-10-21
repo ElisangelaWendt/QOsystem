@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity, Image } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import Button from "../../components/Button";
 import Header from "../../components/Header";
@@ -10,6 +10,8 @@ import { baseUrl } from "../../config/globalConfig";
 import { colors } from "../../styles/colors";
 import { empresa } from "../login";
 import styles from "./styles";
+import * as ImagePicker from 'expo-image-picker';
+import { Feather } from "@expo/vector-icons";
 
 interface Category{
   nome: string,
@@ -36,6 +38,8 @@ const [open, setOpen] = useState(false);
 const [open1, setOpen1] = useState(false);
 const ingredienteobjeto = {id: ''}
 const [ingredientObj, setIngredientObj] = useState([]);
+
+const [image,setImage] = useState('');
 
 const [visible, setVisible] = useState(false)
 
@@ -90,6 +94,7 @@ function Register(){
     },
     valor: valor,
     ingredientes: ingredientObj
+    //cadastrar imagem
   })
   .then(res => {
     console.log(res.data)
@@ -97,6 +102,23 @@ function Register(){
   }).catch(function (error) {
     console.log(error);
   })
+}
+
+async function handleSelecionarFoto(){
+  let result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.All,
+    allowsEditing: true,
+    aspect: [4, 4],
+    quality: 1,
+  });
+
+  console.log(result);
+
+  if (!result.cancelled) {
+    //caso apareça erro no uri, IGNORAR, o problema é no visual studio (compila normalmente)
+    setImage(result.uri);
+  }
+
 }
 
 function onRequestClose(){
@@ -162,6 +184,32 @@ return (valueIngredient.map(Valueingrediente => (findArray(ingrediente,Valueingr
         <Text style={styles.tableText}>{atualiza_tabela()}</Text>
       </View>
         }
+      <Text style={styles.title}> Imagem do item</Text>
+        {/* se não existe imagem, mostrar o botão */}
+        {!image ?     
+        <View
+          style={styles.imageSelector}
+          
+          >
+          <TouchableOpacity
+          onPress={handleSelecionarFoto}
+          // disabled={disableButton}
+          // style={disableButton ? { display: "none" } : styles.imageSelector}
+          >
+            <View style={styles.dashedBox}>
+
+              <Feather name="plus" size={60} color={colors.text} />
+            </View>
+          </TouchableOpacity>
+        </View>
+        :
+        // se existe imagem, mostrar a imagem
+        <TouchableOpacity
+          onPress={handleSelecionarFoto}
+          >
+            <Image source={{uri: image}} style={styles.image}/>
+          </TouchableOpacity>
+      }
       </View>
       <View style={styles.footer}>
         <Button title="Cadastrar" onPress={Register}/>

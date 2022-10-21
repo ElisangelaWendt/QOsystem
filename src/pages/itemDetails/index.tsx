@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Image, ScrollView, Text, TouchableOpacity, Dimensions } from "react-native";
-import AddQuantity, { quantity } from "../../components/AddQuantity";
+import AddQuantity from "../../components/AddQuantity";
 import Button from "../../components/Button";
 import Header from "../../components/Header";
 import styles from "./styles";
@@ -11,6 +11,7 @@ import { baseUrl } from "../../config/globalConfig";
 import { useRoute } from "@react-navigation/native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { userID } from "../login";
+
 
 interface Item {
   nome: string,
@@ -26,7 +27,15 @@ interface ItemId {
   id: number
 }
 
-export var ItensPedido = [ '' ,'' , '',''];
+interface Order {
+  id: number,
+  mesa: {
+    id: number
+  }
+}
+
+
+export let lastOrder = null;
 export var pedido = null;
 
 export default function ItemDetails({ navigation }: any) {
@@ -41,7 +50,8 @@ export default function ItemDetails({ navigation }: any) {
   const [value, setValue] = useState();
 
   const [removedItem, setRemovedItem] = useState([])
-
+  const [openOrder, setOpenOrder] = useState<Order>()
+  const [quantity, setQuantity] = useState(0)
   
   useEffect(() => {
     axios.post(baseUrl + "item/buscar", {
@@ -53,7 +63,23 @@ export default function ItemDetails({ navigation }: any) {
       }).catch(function (error) {
         console.log(error);
       })
-  }, [item])
+
+    //verificar se já há um pedido aberto para o usuário que está logado
+    axios.post(baseUrl + "pedido/buscar/status/pessoa", {
+      status: 0,
+      pessoa: {
+        id: userID
+      }
+    })
+      .then(res => {
+        setOpenOrder(res.data)
+        lastOrder = null;
+        // console.log(res.data)
+      }).catch(function (error) {
+        console.log(error);
+      })
+      console.log(quantity)
+  }, [])
 
 
   function check1() {
@@ -72,16 +98,32 @@ export default function ItemDetails({ navigation }: any) {
   }
 
   function handleNavigateToOpenOrder() {
-    navigation.navigate("OpenOrder")
-    if(pedido == null){
-      axios.post(baseUrl + "pedido/cadastrar",{
-        pessoa:{
-          id: userID
+    if(pedido === null){
+      axios.post(baseUrl + "pedidoItem/cadastrar",{
+        item:{
+          id: params.id
         },
-        status: 0
+        quantidade: quantity
       }).then(res => {
         console.log(res.data)
         console.log(pedido)
+        navigation.navigate("OpenOrder")
+      }).catch(function (error){
+        console.log(error)
+      })
+    }else{
+      axios.post(baseUrl + "pedidoItem/cadastrar",{
+        item:{
+          id: params.id
+        },
+        quantidade: quantity,
+        pedido:{
+          id: openOrder.id
+        }
+      }).then(res => {
+        console.log(res.data)
+        console.log(pedido)
+    navigation.navigate("OpenOrder")
       }).catch(function (error){
         console.log(error)
       })
@@ -99,6 +141,19 @@ export default function ItemDetails({ navigation }: any) {
     return (removedItem.map(removed => (findArray(removedItem,removed).nome + '\n')))
     }
 
+    function handleAddQuantity() {
+      setQuantity(quantity + 1) 
+    }
+  
+    function handleRemoveQuantity() {
+      if(quantity <= 0){
+        setQuantity(0)
+      }else{
+        setQuantity(quantity - 1) 
+      }
+    }
+
+
   return (
     <>
     {item && 
@@ -107,7 +162,7 @@ export default function ItemDetails({ navigation }: any) {
       <View style={styles.content}>
           <Image style={styles.image} source={require("../../images/lanche2.png")} />
           <View style={styles.properties}>
-            <AddQuantity title={true} />
+            <AddQuantity quantity={quantity} title={true} functionAdd={handleAddQuantity} functionRemove={handleRemoveQuantity} />
             <View style={styles.row}>
             <Text style={styles.text}>Remover Algum Item?</Text>
             <Checkbox status={isChecked1 ? 'checked' : 'unchecked'} onPress={check1} color={colors.dividor} />
