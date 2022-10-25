@@ -36,7 +36,7 @@ interface Order {
 
 
 export let lastOrder = null;
-export var pedido = null;
+var pedidoItem = null;
 
 export default function ItemDetails({ navigation }: any) {
   const [isChecked1, setIsChecked1] = useState(false)
@@ -78,7 +78,6 @@ export default function ItemDetails({ navigation }: any) {
       }).catch(function (error) {
         console.log(error);
       })
-      console.log(quantity)
   }, [])
 
 
@@ -98,7 +97,8 @@ export default function ItemDetails({ navigation }: any) {
   }
 
   function handleNavigateToOpenOrder() {
-    if(pedido === null){
+    if(!openOrder || !openOrder[0].id){
+      console.log("Entrou no if sem pedido")
       axios.post(baseUrl + "pedidoItem/cadastrar",{
         item:{
           id: params.id
@@ -106,24 +106,25 @@ export default function ItemDetails({ navigation }: any) {
         quantidade: quantity
       }).then(res => {
         console.log(res.data)
-        console.log(pedido)
+        pedidoItem = res.data
         navigation.navigate("OpenOrder")
       }).catch(function (error){
         console.log(error)
       })
     }else{
+      console.log("Entrou no if com pedido")
       axios.post(baseUrl + "pedidoItem/cadastrar",{
         item:{
           id: params.id
         },
         quantidade: quantity,
         pedido:{
-          id: openOrder.id
+          id: openOrder[0].id
         }
       }).then(res => {
         console.log(res.data)
-        console.log(pedido)
-    navigation.navigate("OpenOrder")
+        pedidoItem= null;
+        navigation.navigate("OpenOrder")
       }).catch(function (error){
         console.log(error)
       })

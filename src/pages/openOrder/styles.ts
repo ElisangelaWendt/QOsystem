@@ -44,7 +44,7 @@ footer:
 {
   paddingBottom:40,
   justifyContent:"flex-end",
-  flex:1
+  flexDirection:"row"
 },
 dropdown: {
   backgroundColor: colors.inputBackground,
