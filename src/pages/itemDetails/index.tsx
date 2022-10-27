@@ -50,7 +50,7 @@ export default function ItemDetails({ navigation }: any) {
   const [removedItem, setRemovedItem] = useState([])
   const [openOrder, setOpenOrder] = useState<Order>()
   const [quantity, setQuantity] = useState(0)
-  
+
   useEffect(() => {
     axios.post(baseUrl + "item/buscar", {
       id: params.id
@@ -95,36 +95,36 @@ export default function ItemDetails({ navigation }: any) {
   }
 
   function handleNavigateToOpenOrder() {
-    if(!openOrder[0].id){
-        console.log("Entrou no if sem pedido")
-        axios.post(baseUrl + "pedidoItem/cadastrar",{
-          item:{
-            id: params.id
-          },
-          quantidade: quantity
-        }).then(res => {
-          console.log(res.data)
-          pedidoItem = (res.data.id)
-          console.log(pedidoItem)
-          navigation.navigate("OpenOrder")
-        }).catch(function (error){
-          console.log(error)
-        })
-    }else{
+    if (openOrder === undefined || !openOrder.id) {
+      console.log("Entrou no if sem pedido")
+      // axios.post(baseUrl + "pedidoItem/cadastrar", {
+      //   item: {
+      //     id: params.id
+      //   },
+      //   quantidade: quantity
+      // }).then(res => {
+      //   console.log(res.data)
+      //   pedidoItem = (res.data.id)
+      //   console.log(pedidoItem)
+        navigation.navigate("OpenOrder")
+      // }).catch(function (error) {
+      //   console.log(error)
+      // })
+    } else {
       console.log("Entrou no if com pedido")
-      axios.post(baseUrl + "pedidoItem/cadastrar",{
-        item:{
+      axios.post(baseUrl + "pedidoItem/cadastrar", {
+        item: {
           id: params.id
         },
         quantidade: quantity,
-        pedido:{
+        pedido: {
           id: openOrder[0].id
         }
       }).then(res => {
         console.log(res.data)
-        pedidoItem= null;
+        pedidoItem = null;
         navigation.navigate("OpenOrder")
-      }).catch(function (error){
+      }).catch(function (error) {
         console.log(error)
       })
     }
@@ -137,88 +137,88 @@ export default function ItemDetails({ navigation }: any) {
     })
   }
 
-  function atualiza_tabela(){
-    return (removedItem.map(removed => (findArray(removedItem,removed).nome + '\n')))
-    }
+  function atualiza_tabela() {
+    return (removedItem.map(removed => (findArray(removedItem, removed).nome + '\n')))
+  }
 
-    function handleAddQuantity() {
-      setQuantity(quantity + 1) 
+  function handleAddQuantity() {
+    setQuantity(quantity + 1)
+  }
+
+  function handleRemoveQuantity() {
+    if (quantity <= 0) {
+      setQuantity(0)
+    } else {
+      setQuantity(quantity - 1)
     }
-  
-    function handleRemoveQuantity() {
-      if(quantity <= 0){
-        setQuantity(0)
-      }else{
-        setQuantity(quantity - 1) 
-      }
-    }
+  }
 
 
   return (
     <>
-    {item && 
-    <>
-      <Header title={item.nome} canGoBack={true} key={item.id}/>
-      <View style={styles.content}>
-          <Image style={styles.image} source={require("../../images/lanche2.png")} />
-          <View style={styles.properties}>
-            <AddQuantity quantity={quantity} title={true} functionAdd={handleAddQuantity} functionRemove={handleRemoveQuantity} />
-            <View style={styles.row}>
-            <Text style={styles.text}>Remover Algum Item?</Text>
-            <Checkbox status={isChecked1 ? 'checked' : 'unchecked'} onPress={check1} color={colors.dividor} />
+      {item &&
+        <>
+          <Header title={item.nome} canGoBack={true} key={item.id} />
+          <View style={styles.content}>
+            <Image style={styles.image} source={require("../../images/lanche2.png")} />
+            <View style={styles.properties}>
+              <AddQuantity quantity={quantity} title={true} functionAdd={handleAddQuantity} functionRemove={handleRemoveQuantity} />
+              <View style={styles.row}>
+                <Text style={styles.text}>Remover Algum Item?</Text>
+                <Checkbox status={isChecked1 ? 'checked' : 'unchecked'} onPress={check1} color={colors.dividor} />
+              </View>
+              <DropDownPicker
+                placeholder="Selecione os itens"
+                textStyle={styles.dropdownText}
+                labelStyle={styles.dropdownText}
+                open={openRemove}
+                value={removedItem}
+                items={item.ingredientes.map(ingredient => ({
+                  label: ingredient.nome,
+                  value: ingredient.id
+                }))}
+                setOpen={setOpenRemove}
+                setValue={setRemovedItem}
+                style={styles.dropdown}
+                placeholderStyle={{ color: colors.dividor }}
+                dropDownContainerStyle={{ borderColor: colors.dividor }}
+                selectedItemContainerStyle={{ height: 35 }}
+                multiple={true}
+              />
+              <View style={styles.table}></View>
+              <View style={styles.row}>
+
+                <Text style={styles.text}>Deseja Algum Item Adicional?</Text>
+                <Checkbox status={isChecked2 ? 'checked' : 'unchecked'} onPress={check2} color={colors.dividor} />
+              </View>
+
+              <DropDownPicker
+                placeholder="Selecione os itens"
+                textStyle={styles.dropdownText}
+                labelStyle={styles.dropdownText}
+                open={openAdd}
+                value={value}
+                items={item.ingredientes.map(ingredient => ({
+                  label: ingredient.nome,
+                  value: ingredient.id
+                }))}
+                setOpen={setOpenAdd}
+                setValue={setValue}
+                style={styles.dropdown}
+                placeholderStyle={{ color: colors.dividor }}
+                dropDownContainerStyle={{ borderColor: colors.dividor }}
+                selectedItemContainerStyle={{ height: 35 }}
+
+              />
+              <View style={styles.table}><Text style={styles.tableText}>{atualiza_tabela()}</Text></View>
+
             </View>
-            <DropDownPicker
-          placeholder="Selecione os itens"
-          textStyle={styles.dropdownText}
-          labelStyle={styles.dropdownText}
-          open={openRemove}
-          value={removedItem}
-          items={item.ingredientes.map(ingredient => ({
-            label: ingredient.nome,
-            value: ingredient.id
-          }))}
-          setOpen={setOpenRemove}
-          setValue={setRemovedItem}
-          style={styles.dropdown}
-          placeholderStyle={{ color: colors.dividor }}
-          dropDownContainerStyle={{ borderColor: colors.dividor }}
-          selectedItemContainerStyle={{ height: 35 }}
-          multiple={true}
-        />
-            <View style={styles.table}></View>
-            <View style={styles.row}>
-
-            <Text style={styles.text}>Deseja Algum Item Adicional?</Text>
-            <Checkbox status={isChecked2 ? 'checked' : 'unchecked'} onPress={check2} color={colors.dividor} />
+            <View style={styles.footer}>
+              <Button title="Adicionar item" onPress={handleNavigateToOpenOrder} />
             </View>
-
-            <DropDownPicker
-          placeholder="Selecione os itens"
-          textStyle={styles.dropdownText}
-          labelStyle={styles.dropdownText}
-          open={openAdd}
-          value={value}
-          items={item.ingredientes.map(ingredient => ({
-            label: ingredient.nome,
-            value: ingredient.id
-          }))}
-          setOpen={setOpenAdd}
-          setValue={setValue}
-          style={styles.dropdown}
-          placeholderStyle={{ color: colors.dividor }}
-          dropDownContainerStyle={{ borderColor: colors.dividor }}
-          selectedItemContainerStyle={{ height: 35 }}
-          
-        />
-            <View style={styles.table}><Text style={styles.tableText}>{atualiza_tabela()}</Text></View>
-
           </View>
-          <View style={styles.footer}>
-            <Button title="Adicionar item" onPress={handleNavigateToOpenOrder} />
-          </View>
-      </View>
-    </>
-    }
+        </>
+      }
     </>
   )
 }

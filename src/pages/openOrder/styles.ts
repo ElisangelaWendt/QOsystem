@@ -44,11 +44,11 @@ image:{
 footer:
 {
   paddingBottom:40,
-  justifyContent:"flex-end",
+  // justifyContent:"flex-end",
   flexDirection:"row",
   marginVertical: 20,
   alignItems:"flex-end",
-  flex:1
+  // flex:1
 },
 dropdown: {
   backgroundColor: colors.inputBackground,
@@ -62,5 +62,8 @@ dropdownText: {
   fontSize: 20,
   color: colors.text,
 },
+scrollview:{
+  width: "100%"
+}
 })
 export default styles;
