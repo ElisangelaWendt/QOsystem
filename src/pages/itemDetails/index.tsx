@@ -95,7 +95,7 @@ export default function ItemDetails({ navigation }: any) {
   }
 
   function handleNavigateToOpenOrder() {
-    if(pedidoItem === null){
+    if(!openOrder[0].id){
         console.log("Entrou no if sem pedido")
         axios.post(baseUrl + "pedidoItem/cadastrar",{
           item:{

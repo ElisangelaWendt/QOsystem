@@ -14,7 +14,8 @@ content:{
   justifyContent:'space-between',
   alignItems:"center",
   width:"100%",
-  paddingTop:10
+  paddingTop:10,
+
 },
 text:{
   marginLeft:20,
@@ -44,13 +45,16 @@ footer:
 {
   paddingBottom:40,
   justifyContent:"flex-end",
-  flexDirection:"row"
+  flexDirection:"row",
+  marginVertical: 20,
+  alignItems:"flex-end",
+  flex:1
 },
 dropdown: {
   backgroundColor: colors.inputBackground,
   borderColor: colors.dividor,
   height: 35,
-  marginBottom: 20,
+  marginVertical: 30,
   borderRadius: 4,
   color: colors.dividor,
 },

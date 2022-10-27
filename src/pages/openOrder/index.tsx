@@ -10,6 +10,7 @@ import { empresa, userID } from '../login'
 import DropDownPicker from "react-native-dropdown-picker";
 import { colors } from "../../styles/colors";
 import pedidoItem from '../itemDetails'
+import { ScrollView } from "react-native-gesture-handler";
 
 interface Order {
   id: number,
@@ -23,6 +24,18 @@ interface Table {
   id: number
 }
 
+interface Pedido{
+  id: number,
+  quantidade: number,
+  item:{
+    nome: string,
+    ingredientes:{
+      id:number,
+      nome: string
+    }
+  }
+}
+
 export default function OpenOrder({ navigation }: any) {
   const [openOrder, setOpenOrder] = useState<Order>()
   const [open, setOpen] = useState(false)
@@ -30,6 +43,7 @@ export default function OpenOrder({ navigation }: any) {
   const [tables, setTables] = useState<Table[]>([])
   const [quantity, setQuantity] = useState(0)
   const [order, setOrder] = useState(false)
+  const [pedido, setPedido] = useState<Pedido[]>([])
 
   useEffect(() => {
     //buscar todas as mesas daquela empresa
@@ -52,45 +66,53 @@ export default function OpenOrder({ navigation }: any) {
       .then(res => {
         setOpenOrder(res.data)
         setOrder(true)
-        // console.log(res.data)
       }).catch(function (error) {
-        console.log(error);
+        // console.log(error);
       })
 
     // console.log(openOrder)
+    if(!order){
+      console.log("criou novo pedido")
+      // axios.post(baseUrl + "pedidoItem/buscar",{
+      //   id: pedidoItem
+      // }).then(res => {
+      //   setPedido(res.data)
+      // }).then(function (error){
+      //   console.log(error)
+      // })
+
+      // axios.post(baseUrl + "pedido/cadastrar",{
+      //   status: 0,
+      //   pessoa:{
+      //     id: userID
+      //   }
+      // }).then(res =>{
+      //   setOpenOrder(res.data)
+      //   setOrder(true)
+      //   //alterar o pedido item feito para vincular ao pedido
+      // }).catch(function (error) {
+      //   console.log(error)
+      // })
+      
+    }
     
   }, [])
   
   useEffect(() => {
-    //se não tiver nenhum pedido aberto para aquele usuário, criar um novo
+    //se não tiver nenhum pedido aberto para aquele usuário, criar um novo sem a mesa
+    if(openOrder != undefined){
 
-    if(!order){
-      console.log("criou novo pedido")
-      axios.post(baseUrl + "pedido/cadastrar",{
-        status: 0,
-        mesa:{
-          id: value
-        },
-        pessoa:{
-          id: userID
+    axios.post(baseUrl + "pedidoItem/buscar/pedido",{
+        pedido:{
+          id: openOrder[0].id
         }
-      }).then(res =>{
-        console.log(res.data)
-        setOpenOrder(res.data)
-        //alterar o pedido item feito para vincular ao pedido
-        axios.put(baseUrl + "pedidoItem/editar",{
-          id: pedidoItem,
-          pedido:{
-            id: (res.data.id)
-          }
-        })
-      }).catch(function (error) {
-        console.log(error)
-      })
-      
-    }else{
-    console.log("não criou pedido")
-    }
+    }).then(res => {
+      setPedido(res.data)
+    }).then(function (error){
+      // console.log(error)
+    })
+  }
+  
   })
   
   function handleNavigateToHome() {
@@ -112,24 +134,34 @@ export default function OpenOrder({ navigation }: any) {
   function handleSendToKitchen(){
     // altera o status do pedido para 1 (envia para a cozinha)
     console.log("enviou para a cozinha")
-    axios.put(baseUrl + "pedido/editar",{
-      id: openOrder[0].id,
-      status: 1
-    }).then(res => {
-      console.log(res.data)
-      navigation.navigate("Home")
-    })
+  //   if(value && openOrder[0].id){
+  //   axios.put(baseUrl + "pedido/editar",{
+  //     id: openOrder[0].id,
+  //     status: 1,
+  //     mesa:{
+  //       id: value
+  //     }
+  //   }).then(res => {
+  //     navigation.navigate("Home")
+  //   })
+  // }else{
+
+  // }
+
   }
 
   return (
     <View style={styles.container}>
       <Header title="Concluir Pedido" canGoBack={true} />
-      <View style={styles.content}>
-        <View style={styles.text}>
-          <Text style={styles.title}>Nome do lanche</Text>
-          <Text style={styles.ingredients}>Ingredientes</Text>
-          <Text style={styles.add}>Adicionar: ...</Text>
-          <Text style={styles.remove}>Remover: ...</Text>
+      <ScrollView >
+        {pedido.map(order => (
+      <View style={styles.content} key={order.id}>
+
+        <View style={styles.text} >
+          <Text style={styles.title}>{order.item.nome}</Text>
+          <Text style={styles.ingredients}>{order.item.ingredientes.nome}</Text>
+          {/* <Text style={styles.add}>Adicionar: ...</Text> */}
+          {/* <Text style={styles.remove}>Remover: ...</Text> */}
         </View>
         <View style={{ alignItems: "center", marginRight: 20, marginBottom: 10 }}>
 
@@ -137,6 +169,9 @@ export default function OpenOrder({ navigation }: any) {
           <AddQuantity quantity={quantity} title={true} functionAdd={handleAddQuantity} functionRemove={handleRemoveQuantity} />
         </View>
       </View>
+        ))}
+        </ScrollView>
+
       <DropDownPicker
         placeholder="Selecione a mesa"
         textStyle={styles.dropdownText}
