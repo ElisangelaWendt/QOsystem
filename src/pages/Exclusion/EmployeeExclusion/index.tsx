@@ -5,6 +5,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 import { Divider } from "react-native-paper";
 import Button from "../../../components/Button";
 import Header from "../../../components/Header";
+import ErrorModal from "../../../components/Modal";
 import Input from "../../../components/RegisterInput";
 import { baseUrl } from "../../../config/globalConfig";
 import { colors } from "../../../styles/colors";
@@ -20,6 +21,7 @@ export default function EmployeeExclusion() {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [employee, setEmployee] = useState<Employee[]>([]);
+  const [visible, setVisible] = useState(false)
 
   useEffect(() => {
     axios.get(baseUrl + "conta/listar", {})
@@ -39,15 +41,20 @@ export default function EmployeeExclusion() {
       }
     }).then(res => {
       console.log(res)
+      setVisible(true)
     }).catch(function (error){
       console.log(error);
     })
   }
 
+  function OnRequestClose(){
+    setVisible(false)
+  }
 
   return (
     <>
       <Header title="Excluir Funcionário" canGoBack={true} />
+      <ErrorModal visible={visible} functionOnRequestClose={OnRequestClose} text="Funcionário excluído com sucesso!" />
       <View style={styles.content}>
       <Text style={styles.text}>Excluir funcionário</Text>
         <DropDownPicker

@@ -44,13 +44,13 @@ export default function CategoryExclusion() {
         id: value
       }
     }).then(res => {
-
+      setVisible(true)
     }
     ).catch(function (error){
       console.log(error);
     })
 
-    setVisible(true)
+
   }
 
   
@@ -61,7 +61,7 @@ export default function CategoryExclusion() {
   return (
     <>
       <Header title="Excluir Categoria" canGoBack={true} />
-      <ErrorModal visible={visible} text={"Excluído com Sucesso"} functionOnRequestClose={CloseModal}/>
+      <ErrorModal visible={visible} text={"Categoria excluída com Sucesso"} functionOnRequestClose={CloseModal}/>
       <View style={styles.content}>
       <Text style={styles.text}>Excluir Categoria</Text>
         <DropDownPicker

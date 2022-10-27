@@ -4,7 +4,7 @@ import { TouchableOpacity, View, Text, Image } from "react-native";
 import AddQuantity from "../../components/AddQuantity";
 import Button from "../../components/Button";
 import Header from "../../components/Header";
-import { baseUrl } from "../../config/globalConfig";
+import { baseUrl, Ordena } from "../../config/globalConfig";
 import styles from "./styles";
 import { empresa, userID } from '../login'
 import DropDownPicker from "react-native-dropdown-picker";
@@ -29,13 +29,14 @@ export default function OpenOrder({ navigation }: any) {
   const [value, setValue] = useState()
   const [tables, setTables] = useState<Table[]>([])
   const [quantity, setQuantity] = useState(0)
+  const [order, setOrder] = useState(false)
 
   useEffect(() => {
     //buscar todas as mesas daquela empresa
     axios.post(baseUrl + "mesa/buscar/empresa", {
       id: empresa
     }).then(res => {
-      setTables(res.data)
+      setTables(Ordena(res.data))
     }).catch(function (error) {
       // console.log(error)
     })
@@ -50,41 +51,47 @@ export default function OpenOrder({ navigation }: any) {
     })
       .then(res => {
         setOpenOrder(res.data)
+        setOrder(true)
         // console.log(res.data)
       }).catch(function (error) {
         console.log(error);
       })
 
     // console.log(openOrder)
-    //se não tiver nenhum pedido aberto para aquele usuário, criar um novo
     
   }, [])
-
+  
   useEffect(() => {
-    if (!openOrder || !openOrder[0].id) {
+    //se não tiver nenhum pedido aberto para aquele usuário, criar um novo
+
+    if(!order){
       console.log("criou novo pedido")
-      // axios.post(baseUrl + "pedido/cadastrar",{
-      //   status: 0,
-      //   mesa:{
-      //     id: table
-      //   },
-      //   pessoa:{
-      //     id: userID
-      //   }
-      // }).then(res =>{
-      //   console.log(res.data)
-      //   setOpenOrder(res.data)
-      // }).catch(function (error) {
-      //   console.log(error)
-      // })
-      if (openOrder && openOrder[0].id && pedidoItem != null) {
-        console
-      }
+      axios.post(baseUrl + "pedido/cadastrar",{
+        status: 0,
+        mesa:{
+          id: value
+        },
+        pessoa:{
+          id: userID
+        }
+      }).then(res =>{
+        console.log(res.data)
+        setOpenOrder(res.data)
+        //alterar o pedido item feito para vincular ao pedido
+        axios.put(baseUrl + "pedidoItem/editar",{
+          id: pedidoItem,
+          pedido:{
+            id: (res.data.id)
+          }
+        })
+      }).catch(function (error) {
+        console.log(error)
+      })
+      
     }else{
     console.log("não criou pedido")
-
     }
-  },[])
+  })
   
   function handleNavigateToHome() {
     navigation.navigate("Home")
@@ -105,13 +112,13 @@ export default function OpenOrder({ navigation }: any) {
   function handleSendToKitchen(){
     // altera o status do pedido para 1 (envia para a cozinha)
     console.log("enviou para a cozinha")
-    // axios.put(baseUrl + "pedido/editar",{
-    //   id: openOrder[0].id,
-    //   status: 1
-    // }).then(res => {
-    //   console.log(res.data)
-    //   navigation.navigate("Home")
-    // })
+    axios.put(baseUrl + "pedido/editar",{
+      id: openOrder[0].id,
+      status: 1
+    }).then(res => {
+      console.log(res.data)
+      navigation.navigate("Home")
+    })
   }
 
   return (

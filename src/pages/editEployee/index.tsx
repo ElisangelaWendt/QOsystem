@@ -12,6 +12,7 @@ import { baseUrl } from "../../config/globalConfig";
 import DropDownPicker from "react-native-dropdown-picker";
 import * as ImagePicker from 'expo-image-picker';
 import { empresa } from "../login";
+import ErrorModal from "../../components/Modal";
 
 interface EmployeeId {
   id: number
@@ -72,6 +73,7 @@ export default function EditEmployee({ navigation }: any) {
   const [salary, setSalary] = useState('')
   const [password, setPassword] = useState('')
   const [image, setImage] = useState('');
+  const[visible, setVisible] = useState(false)
 
   useEffect(() => {
     axios.post(baseUrl + "conta/buscarID", {
@@ -140,6 +142,9 @@ export default function EditEmployee({ navigation }: any) {
         }
         
       }
+    }).then(res => {
+
+      setVisible(true)
     }).catch(function (error) {
       console.log(error);
     })
@@ -164,10 +169,16 @@ export default function EditEmployee({ navigation }: any) {
 
   }
 
+  function OnRequestClose(){
+    setVisible(false)
+    navigation.navigate("Menu")
+  }
   return (
     <>
       {!employee ? <Text>Erro</Text> :
-        <><Header title="Editar Funcionário" canGoBack={true} /><View style={styles.container}>
+        <><Header title="Editar Funcionário" canGoBack={true} />
+        <ErrorModal visible={visible} functionOnRequestClose={OnRequestClose} text="Alterado com sucesso!" />
+        <View style={styles.container}>
           <RegisterInput
             labelName=""
             title="Nome"

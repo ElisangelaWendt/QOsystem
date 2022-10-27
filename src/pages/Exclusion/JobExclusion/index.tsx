@@ -56,8 +56,8 @@ export default function JobExclusion() {
 
   return (
     <>
-      <Header title="Exclusões" canGoBack={true} />
-      <ErrorModal visible={visible} functionOnRequestClose={OnRequestClose} />
+      <Header title="Excluir cargo" canGoBack={true} />
+      <ErrorModal visible={visible} functionOnRequestClose={OnRequestClose} text="Cargo excluído com sucesso!" />
       <View style={styles.content}>
 
       <Text style={styles.text}>Excluir Cargo</Text>

@@ -34,8 +34,6 @@ interface Order {
   }
 }
 
-
-export let lastOrder = null;
 var pedidoItem = null;
 
 export default function ItemDetails({ navigation }: any) {
@@ -73,7 +71,7 @@ export default function ItemDetails({ navigation }: any) {
     })
       .then(res => {
         setOpenOrder(res.data)
-        lastOrder = null;
+        pedidoItem = null;
         // console.log(res.data)
       }).catch(function (error) {
         console.log(error);
@@ -97,20 +95,21 @@ export default function ItemDetails({ navigation }: any) {
   }
 
   function handleNavigateToOpenOrder() {
-    if(!openOrder || !openOrder[0].id){
-      console.log("Entrou no if sem pedido")
-      axios.post(baseUrl + "pedidoItem/cadastrar",{
-        item:{
-          id: params.id
-        },
-        quantidade: quantity
-      }).then(res => {
-        console.log(res.data)
-        pedidoItem = res.data
-        navigation.navigate("OpenOrder")
-      }).catch(function (error){
-        console.log(error)
-      })
+    if(pedidoItem === null){
+        console.log("Entrou no if sem pedido")
+        axios.post(baseUrl + "pedidoItem/cadastrar",{
+          item:{
+            id: params.id
+          },
+          quantidade: quantity
+        }).then(res => {
+          console.log(res.data)
+          pedidoItem = (res.data.id)
+          console.log(pedidoItem)
+          navigation.navigate("OpenOrder")
+        }).catch(function (error){
+          console.log(error)
+        })
     }else{
       console.log("Entrou no if com pedido")
       axios.post(baseUrl + "pedidoItem/cadastrar",{

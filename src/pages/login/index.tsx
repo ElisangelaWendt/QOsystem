@@ -19,9 +19,9 @@ export default function Login({ navigation }: any) {
   const secondInput = useRef(null);
   const [visible, setVisible] = useState(false)
 
-  function handleNavigateToPasswordRecovery() {
-    navigation.navigate('PasswordRecovery');
-  }
+  // function handleNavigateToPasswordRecovery() {
+  //   navigation.navigate('PasswordRecovery');
+  // }
 
 
   function logar() {
@@ -71,9 +71,9 @@ export default function Login({ navigation }: any) {
           reference={secondInput}
 
         />
-        <Text onPress={handleNavigateToPasswordRecovery}>
+        {/* <Text onPress={handleNavigateToPasswordRecovery}>
           Esqueceu sua senha?
-        </Text>
+        </Text> */}
         <View style={{ alignItems: 'center', paddingTop: 60 }}>
           <TouchableOpacity onPress={logar}>
             <Feather name="arrow-right-circle" size={60} color={colors.text} />
