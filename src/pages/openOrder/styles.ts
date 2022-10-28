@@ -64,6 +64,9 @@ dropdownText: {
 },
 scrollview:{
   width: "100%"
+},
+warning:{
+  color: colors.red
 }
 })
 export default styles;

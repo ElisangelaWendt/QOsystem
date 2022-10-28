@@ -34,7 +34,9 @@ interface Order {
   }
 }
 
-var pedidoItem = null;
+export var pedidoItem = null;
+export var quantidadeItem = null;
+export var idItemSelected = null;
 
 export default function ItemDetails({ navigation }: any) {
   const [isChecked1, setIsChecked1] = useState(false)
@@ -50,6 +52,8 @@ export default function ItemDetails({ navigation }: any) {
   const [removedItem, setRemovedItem] = useState([])
   const [openOrder, setOpenOrder] = useState<Order>()
   const [quantity, setQuantity] = useState(0)
+  var itemId = false;
+  const [warning, setWarning] = useState(false)
 
   useEffect(() => {
     axios.post(baseUrl + "item/buscar", {
@@ -72,7 +76,8 @@ export default function ItemDetails({ navigation }: any) {
       .then(res => {
         setOpenOrder(res.data)
         pedidoItem = null;
-        // console.log(res.data)
+        quantidadeItem = null;
+        idItemSelected = null;
       }).catch(function (error) {
         console.log(error);
       })
@@ -95,21 +100,38 @@ export default function ItemDetails({ navigation }: any) {
   }
 
   function handleNavigateToOpenOrder() {
-    if (openOrder === undefined || !openOrder.id) {
+    console.log(openOrder)
+    try {
+      if (openOrder[0].id)
+      {
+        itemId= true;
+      }
+      
+   } catch (error) {
+    // console.log(error)
+     itemId = false;
+     
+   }
+   //se a quantidade não estiver zerada, prosegue para o cadastro
+   if(quantity != 0 && quantity != null){
+    setWarning(false)
+    if (!itemId) {
       console.log("Entrou no if sem pedido")
-      // axios.post(baseUrl + "pedidoItem/cadastrar", {
-      //   item: {
-      //     id: params.id
-      //   },
-      //   quantidade: quantity
-      // }).then(res => {
-      //   console.log(res.data)
-      //   pedidoItem = (res.data.id)
-      //   console.log(pedidoItem)
+      axios.post(baseUrl + "pedidoItem/cadastrar", {
+        item: {
+          id: params.id
+        },
+        quantidade: quantity
+      }).then(res => {
+        console.log(res.data)
+        pedidoItem = (res.data.id)
+        quantidadeItem = (res.data.quantidade)
+        idItemSelected = (res.data.item.id)
+        console.log(idItemSelected)
         navigation.navigate("OpenOrder")
-      // }).catch(function (error) {
-      //   console.log(error)
-      // })
+      }).catch(function (error) {
+        console.log(error)
+      })
     } else {
       console.log("Entrou no if com pedido")
       axios.post(baseUrl + "pedidoItem/cadastrar", {
@@ -123,11 +145,17 @@ export default function ItemDetails({ navigation }: any) {
       }).then(res => {
         console.log(res.data)
         pedidoItem = null;
+        quantidadeItem = null;
+        idItemSelected = null;
         navigation.navigate("OpenOrder")
       }).catch(function (error) {
         console.log(error)
       })
     }
+   }else{
+    setWarning(true)
+   }
+
   }
 
 
@@ -163,6 +191,8 @@ export default function ItemDetails({ navigation }: any) {
             <Image style={styles.image} source={require("../../images/lanche2.png")} />
             <View style={styles.properties}>
               <AddQuantity quantity={quantity} title={true} functionAdd={handleAddQuantity} functionRemove={handleRemoveQuantity} />
+              {warning &&
+              <Text style={styles.warning}>A quantidade deve ser maior que zero</Text>}
               <View style={styles.row}>
                 <Text style={styles.text}>Remover Algum Item?</Text>
                 <Checkbox status={isChecked1 ? 'checked' : 'unchecked'} onPress={check1} color={colors.dividor} />

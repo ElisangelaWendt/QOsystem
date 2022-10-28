@@ -9,8 +9,8 @@ import styles from "./styles";
 import { empresa, userID } from '../login'
 import DropDownPicker from "react-native-dropdown-picker";
 import { colors } from "../../styles/colors";
-import pedidoItem from '../itemDetails'
 import { ScrollView } from "react-native-gesture-handler";
+import { idItemSelected, pedidoItem, quantidadeItem } from "../itemDetails";
 
 interface Order {
   id: number,
@@ -42,14 +42,17 @@ export default function OpenOrder({ navigation }: any) {
   const [value, setValue] = useState()
   const [tables, setTables] = useState<Table[]>([])
   const [quantity, setQuantity] = useState(0)
-  const [order, setOrder] = useState(false)
   const [pedido, setPedido] = useState<Pedido[]>([])
+  const [idPedido, setIdPedido] = useState(0)
+  const [warning, setWarning] = useState(false)
+  var procurar = 0;
 
   useEffect(() => {
     //buscar todas as mesas daquela empresa
     axios.post(baseUrl + "mesa/buscar/empresa", {
       id: empresa
     }).then(res => {
+      procurar = 1;
       setTables(Ordena(res.data))
     }).catch(function (error) {
       console.log(error)
@@ -64,57 +67,80 @@ export default function OpenOrder({ navigation }: any) {
       }
     })
       .then(res => {
+        procurar = 2;
         setOpenOrder(res.data)
-        setOrder(true)
       }).catch(function (error) {
         console.log(error);
       })
 
-  //se não tiver nenhum pedido aberto para aquele usuário, criar um novo sem a mesa
-    if (!order || openOrder === undefined) {
+    //se não tiver nenhum pedido aberto para aquele usuário, criar um novo sem a mesa
+    if (pedidoItem != null) {
       console.log("criou novo pedido")
-      // axios.post(baseUrl + "pedidoItem/buscar",{
-      //   id: pedidoItem
-      // }).then(res => {
-      //   setPedido(res.data)
-      // }).then(function (error){
-      //   console.log(error)
-      // })
-
-      // axios.post(baseUrl + "pedido/cadastrar",{
-      //   status: 0,
-      //   pessoa:{
-      //     id: userID
-      //   }
-      // }).then(res =>{
-      //   setOpenOrder(res.data)
-      //   setOrder(true)
-      //   //alterar o pedido item feito para vincular ao pedido
-      // }).catch(function (error) {
-      //   console.log(error)
-      // })
-
+      axios.post(baseUrl + "pedido/cadastrar", {
+        status: 0,
+        pessoa: {
+          id: userID
+        }
+      }).then(res => {
+        setOpenOrder(res.data)
+        setIdPedido(res.data.id)
+        procurar = 3;
+      }).catch(function (error) {
+        console.log(error)
+      })
+            
+    } else {
+      console.log("NÃO criou novo pedido")
+      procurar = 4;
     }
 
   }, [])
 
   useEffect(() => {
-  
-    if (openOrder.id != undefined) {
-      console.log("entrou procurar os itens")
-      console.log(openOrder.id)
-      // axios.post(baseUrl + "pedidoItem/buscar/pedido", {
-      //   pedido: {
-      //     id: openOrder[0].id
-      //   }
-      // }).then(res => {
-      //   setPedido(res.data)
-      // }).then(function (error) {
-      //   console.log(error)
-      // })
+    try{
+    if(pedidoItem != null && idPedido){
+      //alterar o pedido item feito para vincular ao pedido
+      axios.put(baseUrl + "pedidoItem/editar", {
+        id: pedidoItem,
+        quantidade: quantidadeItem,
+        pedido: {
+          id: idPedido
+        },
+        item:{
+          id: idItemSelected
+        }
+      }).then(res => {
+        setPedido(res.data)
+        procurar = 5;
+      }).catch(function (error) {
+        console.log(error)
+      })
     }
+  }catch(error){
+    console.log(error)
+  }
+  },[idPedido])
 
-  }, [openOrder])
+  useEffect(() => {
+    try{
+    if (openOrder != undefined && openOrder[0].id != undefined) {
+      console.log("entrou procurar os itens")
+      axios.post(baseUrl + "pedidoItem/buscar/pedido", {
+        pedido: {
+          id: openOrder[0].id
+        }
+      }).then(res => {
+        setPedido(res.data)
+        procurar = 6;
+      }).then(function (error) {
+        console.log(error)
+      })
+    }
+  }catch(error){
+    // console.log(error)
+  }
+
+})
 
   function handleNavigateToHome() {
     navigation.navigate("Home")
@@ -143,10 +169,11 @@ export default function OpenOrder({ navigation }: any) {
           id: value
         }
       }).then(res => {
+        setWarning(false)
         navigation.navigate("Home")
       })
     } else {
-
+      setWarning(true)
     }
 
   }
@@ -154,6 +181,7 @@ export default function OpenOrder({ navigation }: any) {
   return (
     <View style={styles.container}>
       <Header title="Concluir Pedido" canGoBack={true} />
+      {pedido.map != undefined && 
       <ScrollView style={styles.scrollview}>
         {pedido.map(order => (
           <View style={styles.content} key={order.id}>
@@ -172,6 +200,7 @@ export default function OpenOrder({ navigation }: any) {
           </View>
         ))}
       </ScrollView>
+      }
 
       <DropDownPicker
         placeholder="Selecione a mesa"
@@ -190,6 +219,9 @@ export default function OpenOrder({ navigation }: any) {
         dropDownContainerStyle={{ borderColor: colors.dividor }}
         selectedItemContainerStyle={{ height: 35 }}
       />
+      {warning &&
+      <Text style={styles.warning}>A mesa deve ser selecionada</Text>
+      }
       <View style={styles.footer}>
         <View style={{ marginRight: 15 }}>
 

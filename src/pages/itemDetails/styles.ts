@@ -54,6 +54,9 @@ dropdownText: {
 tableText:{
   color:colors.green,
   margin:10
+},
+warning:{
+  color: colors.red
 }
 })
 export default styles;
