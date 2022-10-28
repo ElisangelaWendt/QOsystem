@@ -19,23 +19,33 @@ export default function CategoryRegister({navigation}: any) {
   const [visible, setVisible] = useState(false)
 
   function Register() {
-    let filename = image.split('/').pop();
+    axios.post(baseUrl + "categoria/cadastrar",{
+      nome: name,
+      empresa:{
+        id: empresa
+      }
+    }).then(res => {
+      setVisible(true)
+    }).catch(function (error){
+      console.log(error)
+    })
+    // let filename = image.split('/').pop();
   
-    let match = /\.(\w+)$/.exec(filename);
-    let type = match ? `image/${match[1]}` : `image`;
+    // let match = /\.(\w+)$/.exec(filename);
+    // let type = match ? `image/${match[1]}` : `image`;
   
-    let formData = new FormData();
+    // let formData = new FormData();
     
-    formData.append('Arquivo', { uri: image, name: filename, type });
+    // formData.append('Arquivo', { uri: image, name: filename, type });
   
   // console.log(formData)
     //ajustar para registrar na empresa do usuário logado
 
-    return fetch('http://10.10.1.17/upload.php', {
-      method: 'POST',
-      body: formData,
+    // return fetch('http://10.10.1.17/upload.php', {
+    //   method: 'POST',
+    //   body: formData,
       
-    });
+    // });
   }
 
   async function handleSelecionarFoto() {
@@ -56,6 +66,7 @@ export default function CategoryRegister({navigation}: any) {
   }
 
   function OnRequestClose(){
+    setVisible(false)
     navigation.navigate("Menu")
   }
 

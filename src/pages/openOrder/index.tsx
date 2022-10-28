@@ -45,14 +45,13 @@ export default function OpenOrder({ navigation }: any) {
   const [pedido, setPedido] = useState<Pedido[]>([])
   const [idPedido, setIdPedido] = useState(0)
   const [warning, setWarning] = useState(false)
-  var procurar = 0;
+  const [procurar, setProcurar] = useState(0)
 
   useEffect(() => {
     //buscar todas as mesas daquela empresa
     axios.post(baseUrl + "mesa/buscar/empresa", {
       id: empresa
     }).then(res => {
-      procurar = 1;
       setTables(Ordena(res.data))
     }).catch(function (error) {
       console.log(error)
@@ -67,7 +66,6 @@ export default function OpenOrder({ navigation }: any) {
       }
     })
       .then(res => {
-        procurar = 2;
         setOpenOrder(res.data)
       }).catch(function (error) {
         console.log(error);
@@ -84,14 +82,10 @@ export default function OpenOrder({ navigation }: any) {
       }).then(res => {
         setOpenOrder(res.data)
         setIdPedido(res.data.id)
-        procurar = 3;
       }).catch(function (error) {
         console.log(error)
       })
             
-    } else {
-      console.log("NÃO criou novo pedido")
-      procurar = 4;
     }
 
   }, [])
@@ -111,7 +105,6 @@ export default function OpenOrder({ navigation }: any) {
         }
       }).then(res => {
         setPedido(res.data)
-        procurar = 5;
       }).catch(function (error) {
         console.log(error)
       })
@@ -124,15 +117,13 @@ export default function OpenOrder({ navigation }: any) {
   useEffect(() => {
     try{
     if (openOrder != undefined && openOrder[0].id != undefined) {
-      console.log("entrou procurar os itens")
       axios.post(baseUrl + "pedidoItem/buscar/pedido", {
         pedido: {
           id: openOrder[0].id
         }
       }).then(res => {
         setPedido(res.data)
-        procurar = 6;
-      }).then(function (error) {
+      }).catch(function (error) {
         console.log(error)
       })
     }
@@ -160,10 +151,11 @@ export default function OpenOrder({ navigation }: any) {
 
   function handleSendToKitchen() {
     // altera o status do pedido para 1 (envia para a cozinha)
-    console.log("enviou para a cozinha")
-    if (value && openOrder[0].id) {
+    var pedido = (openOrder[0].id)
+    console.log(pedido)
+    if (value && pedido) {
       axios.put(baseUrl + "pedido/editar", {
-        id: openOrder[0].id,
+        id: pedido,
         status: 1,
         mesa: {
           id: value

@@ -7,16 +7,28 @@ import { Table, Row, Rows } from 'react-native-table-component';
 import { colors } from "../../styles/colors";
 import DropDownPicker from "react-native-dropdown-picker";
 import axios from "axios";
-import { baseUrl } from "../../config/globalConfig";
+import { baseUrl, Ordena } from "../../config/globalConfig";
 import { empresa } from "../login";
 
-interface Pedido{
+interface Pedido {
   id: number,
-  observacao: string,
-  
+  quantidade: number,
+  pedido: {
+    id: number,
+    status: number
+  },
+  mesa: {
+    id: number,
+    nome: string
+  },
+  item: {
+    id: number,
+    nome: string,
+    valor: number
+  }
 }
 
-interface Table{
+interface Table {
   nome: string,
   id: number
 }
@@ -27,44 +39,65 @@ export default function FinishOrders({ navigation }) {
   const [value, setValue] = useState()
   const [table, setTable] = useState<Table[]>([])
 
-  const [pedido, setPedido] = useState<Pedido>()
+  const [pedido, setPedido] = useState<Pedido[]>([])
+  const [empty, setEmpty] = useState(true)
+  const [status, setStatus] = useState([])
+
+  var total = 0;
 
   useEffect(() => {
     // axios.get(baseUrl + "/pedido/listar")
-    axios.post(baseUrl + "mesa/buscar/empresa",{
+    axios.post(baseUrl + "mesa/buscar/empresa", {
       id: empresa
     }).then(res => {
-      setTable(res.data)
-    }).catch(function (error){
+      setTable(Ordena(res.data))
+      verifica_situacao(Ordena(res.data))
+    }).catch(function (error) {
       console.log(error)
     })
-  },[])
+  }, [])
+
+  function verifica_situacao(data){
+    //var situacao
+    data.map((json)=>{
+    //console.log(json.id)  
+  
+    axios.post(baseUrl + "pedidoItem/buscar/pedido/mesa",{
+      pedido:{
+        mesa:{
+          id: json.id
+        }
+      }
+    }).then(res => {
+      
+      setStatus(current => [...current,  res.data[0].pedido.status]);
+      
+    }).catch((error) => setStatus(current => [...current,  0]))
+    
+  }) 
+  console.log(status) 
+  }
 
   useEffect(() => {
-    //arrumar
-    // axios.post(baseUrl + "pedidoItem/buscar/pedido/mesa")
-  },[value])
+    console.log(value)
+    axios.post(baseUrl + "pedidoItem/buscar/pedido/mesa", {
+      pedido: {
+        mesa: {
+          id: value
+        }
+      }
+    }).then(res => {
+      setPedido(res.data)
+      setEmpty(false)
+    }).catch(function (error) {
+      console.log(error)
+      setEmpty(true)
+    })
+  }, [value])
 
-  // Trazer dados da API
-  const DataTable = [
-    ['1', 'Nome do lanche', '10,80'],
-    ['2', 'Exemplo maior de nome de lanche', '16,50'],
-    ['3', 'Exemplo maior de nome de lanche', '16,50'],
-    ['4', 'Exemplo maior de nome de lanche', '16,50'],
-    ['5', 'Exemplo maior de nome de lanche', '16,50'],
-    ['6', 'Exemplo maior de nome de lanche', '16,50'],
-    ['7', 'Exemplo maior de nome de lanche', '16,50'],
-    ['7', 'Exemplo maior de nome de lanche', '16,50'],
-    ['7', 'Exemplo maior de nome de lanche', '16,50'],
-    ['7', 'Exemplo maior de nome de lanche', '16,50'],
-    ['7', 'Exemplo maior de nome de lanche', '16,50'],
-    ['8', 'Exemplo maior de nome de lanche', '16,50']
-  ]
-  const Total = [
-    ['', 'Total', '27,30'],
-  ]
 
-  function SetOrderClosed(){
+
+  function SetOrderClosed() {
     //colocar com status de finalizada
     axios.put(baseUrl + "")
   }
@@ -75,7 +108,7 @@ export default function FinishOrders({ navigation }) {
         <Header title="Pedidos em aberto" canGoBack={false} />
 
         <DropDownPicker
-          placeholder="mesa"
+          placeholder="Selecione a mesa"
           textStyle={styles.dropdownText}
           labelStyle={styles.dropdownText}
           open={open}
@@ -90,21 +123,32 @@ export default function FinishOrders({ navigation }) {
           placeholderStyle={{ color: colors.dividor }}
           dropDownContainerStyle={{ borderColor: colors.dividor, marginVertical: 20, }}
         />
-        {value && 
-        <ScrollView>
-        <View style={styles.container}>
-          <View style={styles.table}>
-            <Table borderStyle={{ borderWidth: 1, borderColor: colors.dividor }}>
-              <Row data={HeadTable} style={styles.headStyle} textStyle={styles.tableText} />
-              <Rows data={DataTable} textStyle={styles.tableText} />
-              <Rows data={Total} textStyle={styles.totalText} />
-            </Table>
-          </View>
-          <View style={styles.footer}>
-            <Button title="Finalizar Venda" onPress={SetOrderClosed}/>
-          </View>
-          </View>
-        </ScrollView>
+        {value &&
+          <ScrollView>
+            <View style={styles.container}>
+              <View style={styles.table}>
+
+                <Table borderStyle={{ borderWidth: 1, borderColor: colors.dividor }}>
+                  <Row data={HeadTable} style={styles.headStyle} textStyle={styles.tableText} />
+            {empty ? <Text>Nenhum pedido para essa mesa</Text> :
+
+                  <Rows data={pedido.map(pedido => {
+                    total = total + +pedido.item.valor;
+                    return [pedido.quantidade,
+                    pedido.item.nome,
+                    pedido.item.valor]
+                  })} textStyle={styles.tableText} />
+                }
+                   <Row data={['Valor Total','','R$ ' + total]} textStyle={styles.totalText} />
+                </Table>
+              </View>
+              <View>
+              </View>
+              <View style={styles.footer}>
+                <Button title="Finalizar Venda" onPress={SetOrderClosed} />
+              </View>
+            </View>
+          </ScrollView>
         }
       </View>
 

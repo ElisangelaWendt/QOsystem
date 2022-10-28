@@ -7,7 +7,7 @@ import Button from "../../../components/Button";
 import Header from "../../../components/Header";
 import ErrorModal from "../../../components/Modal";
 import Input from "../../../components/RegisterInput";
-import { baseUrl } from "../../../config/globalConfig";
+import { baseUrl, Ordena } from "../../../config/globalConfig";
 import { colors } from "../../../styles/colors";
 import { empresa } from "../../login";
 import { styles } from "./styles";
@@ -28,7 +28,7 @@ export default function TableExclusion(){
       id: empresa
     })
     .then(res => {
-      setTable(res.data)
+      setTable(Ordena(res.data))
       // console.log(res.data)
     }).catch(function(error){
       console.log(error)

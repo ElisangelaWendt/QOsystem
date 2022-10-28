@@ -13,7 +13,10 @@ import { styles } from "./styles";
 
 interface Employee {
   conta: string,
-  id: number
+  id: number,
+  pessoa:{
+    nome: string
+  }
 }
 
 
@@ -64,7 +67,7 @@ export default function EmployeeExclusion() {
           labelStyle={styles.dropdownText}
           open={open}
           value={value}
-          items={employee.map(employee => ({ label: employee.conta, value: employee.id }))}
+          items={employee.map(employee => ({ label: employee.pessoa.nome, value: employee.id }))}
           setOpen={setOpen}
           setValue={setValue}
           style={styles.dropdown}
