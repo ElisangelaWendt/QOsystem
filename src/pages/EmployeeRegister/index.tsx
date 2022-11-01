@@ -26,7 +26,7 @@ export default function EmployeeRegister() {
 
   const [name,setName] = useState("")
   const [salary,setSalary] = useState("")
-  const [email,setEmail] = useState("")
+  const [user,setUser] = useState("")
   const [password,setPassword] = useState("")
   const [image,setImage] = useState('');
   const [visibleError, setVisibleError] = useState(false)
@@ -39,7 +39,6 @@ useEffect(() => {
   })
     .then(res => {
       setCargos(res.data)
-      console.log(res.data)
     }).catch(function (error) {
       console.log(error);
     })
@@ -49,7 +48,7 @@ async function Register(){
 
   // cadastrar informações da conta
   await axios.post(baseUrl + "conta/cadastrar", {
-    conta: email,
+    conta: user,
     senha: password,
     pessoa:{
       nome: name,
@@ -59,7 +58,6 @@ async function Register(){
       } 
     }
   }).then((res => {
-    console.log(res)
     setVisibleSuccess(true)
   }))
 .catch(function (error) {
@@ -124,10 +122,9 @@ function CloseModal(){
           keyboardType="numeric"
         />
         <RegisterInput
-          labelName="Informe o email do Funcionário"
-          title="Email"
-          onChangeText={setEmail}
-          keyboardType="email-address"
+          labelName="Informe o usuário do Funcionário"
+          title="Usuário"
+          onChangeText={setUser}
         />
         <RegisterInput
           labelName="Informe a senha do Funcionário"

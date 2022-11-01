@@ -10,6 +10,7 @@ import axios from "axios";
 import { baseUrl, Ordena } from "../../config/globalConfig";
 import DropDownPicker from "react-native-dropdown-picker";
 import { empresa } from "../login";
+import ErrorModal from "../../components/Modal";
 
 interface Pedido {
   id: number,
@@ -35,13 +36,16 @@ interface Table {
 }
 
 
-export default function IncompleteOrder() {
+export default function IncompleteOrder({navigation}: any) {
   const HeadTable = ['Quantidade', 'Item']
   const [pedido, setPedido] = useState<Pedido[]>([])
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState()
   const [table, setTable] = useState<Table[]>([])
   const [empty, setEmpty] = useState(true)
+  const [orderNumber, setOrderNumber] = useState([])
+  const [visible, setVisible] = useState(false)
+
 
   // Trazer dados da API
 
@@ -57,26 +61,48 @@ export default function IncompleteOrder() {
   }, [])
 
   useEffect(() => {
-    console.log(value)
-    axios.post(baseUrl + "pedidoItem/buscar/pedido/mesa", {
+    axios.post(baseUrl + "pedidoItem/buscar/pedido/mesa/status", {
       pedido: {
         mesa: {
           id: value
+        },
+        status: 1
+    }
+  }).then(res => {
+    setPedido(res.data)
+    setEmpty(false)
+    setOrderNumber(res.data[0].pedido.id)
+  }).catch(function (error) {
+    console.log(error)
+    setEmpty(true)
+  })
+}, [value])
+
+function handleSendToCash(){
+  try{
+      axios.put(baseUrl + "pedido/editar", {
+        id: orderNumber,
+        status: 2,
+        mesa: {
+          id: value
         }
-      }
-    }).then(res => {
-      setPedido(res.data)
-      setEmpty(false)
-    }).catch(function (error) {
-      console.log(error)
-      setEmpty(true)
-    })
-  }, [value])
+      }).then(res => {
+        setVisible(true)
+      })
+  }catch(error){
+
+  }
+}
+
+function OnRequestClose(){
+  setVisible(false)
+}
 
   return (
     <View style={{ height: "100%", flex: 1, justifyContent: "space-between" }}>
 
       <Header title="Pedido 01" canGoBack={true} />
+      <ErrorModal visible={visible} functionOnRequestClose={OnRequestClose} text="Pedido enviado para o frente de caixa" />
       <DropDownPicker
         placeholder="Selecione a mesa"
         textStyle={styles.dropdownText}
@@ -108,9 +134,9 @@ export default function IncompleteOrder() {
         </View>
       </ScrollView>
       <View style={styles.footer}>
-        <Feather name="arrow-left" size={30} style={{ marginRight: 30 }} />
-        <Button title="Finalizar Venda" />
-        <Feather name="arrow-right" size={30} style={{ marginLeft: 30 }} />
+        {/* <Feather name="arrow-left" size={30} style={{ marginRight: 30 }} /> */}
+        <Button title="Enviar para Frente de caixa" onPress={handleSendToCash} />
+        {/* <Feather name="arrow-right" size={30} style={{ marginLeft: 30 }} /> */}
       </View>
     </View>
   )

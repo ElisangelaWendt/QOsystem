@@ -58,8 +58,7 @@ export default function Login({ navigation }: any) {
           Bem-vindo ao QO SYSTEM
         </Text>
         <Input
-          labelName="Email"
-          tipoTeclado={"email-address"}
+          labelName="Usuário"
           onChangeText={setEmail}
           onSubmitEditing={() => { secondInput.current.focus() }}
         />

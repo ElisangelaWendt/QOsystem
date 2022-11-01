@@ -151,6 +151,7 @@ export default function OpenOrder({ navigation }: any) {
 
   function handleSendToKitchen() {
     // altera o status do pedido para 1 (envia para a cozinha)
+    try{
     var pedido = (openOrder[0].id)
     console.log(pedido)
     if (value && pedido) {
@@ -167,6 +168,9 @@ export default function OpenOrder({ navigation }: any) {
     } else {
       setWarning(true)
     }
+  }catch(error){
+
+  }
 
   }
 

@@ -40,7 +40,6 @@ const [visible, setVisible] = useState(false)
 
   function onRequestClose(){
     setVisible(false)
-    navigation.navigate("Menu")
   }
 
   return (

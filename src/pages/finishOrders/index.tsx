@@ -9,6 +9,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 import axios from "axios";
 import { baseUrl, Ordena } from "../../config/globalConfig";
 import { empresa } from "../login";
+import ErrorModal from "../../components/Modal";
 
 interface Pedido {
   id: number,
@@ -41,7 +42,8 @@ export default function FinishOrders({ navigation }) {
 
   const [pedido, setPedido] = useState<Pedido[]>([])
   const [empty, setEmpty] = useState(true)
-  const [status, setStatus] = useState([])
+  const [visible, setVisible] = useState(false)
+  const [orderNumber, setOrderNumber] = useState([])
 
   var total = 0;
 
@@ -51,44 +53,23 @@ export default function FinishOrders({ navigation }) {
       id: empresa
     }).then(res => {
       setTable(Ordena(res.data))
-      verifica_situacao(Ordena(res.data))
     }).catch(function (error) {
       console.log(error)
     })
   }, [])
 
-  function verifica_situacao(data){
-    //var situacao
-    data.map((json)=>{
-    //console.log(json.id)  
-  
-    axios.post(baseUrl + "pedidoItem/buscar/pedido/mesa",{
-      pedido:{
-        mesa:{
-          id: json.id
-        }
-      }
-    }).then(res => {
-      
-      setStatus(current => [...current,  res.data[0].pedido.status]);
-      
-    }).catch((error) => setStatus(current => [...current,  0]))
-    
-  }) 
-  console.log(status) 
-  }
-
   useEffect(() => {
-    console.log(value)
-    axios.post(baseUrl + "pedidoItem/buscar/pedido/mesa", {
+    axios.post(baseUrl + "pedidoItem/buscar/pedido/mesa/status", {
       pedido: {
         mesa: {
           id: value
-        }
+        },
+        status: 2
       }
     }).then(res => {
       setPedido(res.data)
       setEmpty(false)
+    setOrderNumber(res.data[0].pedido.id)
     }).catch(function (error) {
       console.log(error)
       setEmpty(true)
@@ -99,14 +80,31 @@ export default function FinishOrders({ navigation }) {
 
   function SetOrderClosed() {
     //colocar com status de finalizada
-    axios.put(baseUrl + "")
+    try{
+      axios.put(baseUrl + "pedido/editar", {
+        id: orderNumber,
+        status: 3,
+        mesa: {
+          id: value
+        }
+      }).then(res => {
+        setVisible(true)
+      })
+  }catch(error){
+
+  }
+
+  }
+
+  function OnRequestClose(){
+    setVisible(false)
   }
 
   return (
     <View style={{ height: "100%", justifyContent: "space-between" }}>
       <View>
         <Header title="Pedidos em aberto" canGoBack={false} />
-
+        <ErrorModal visible={visible} functionOnRequestClose={OnRequestClose} text="Pedido encerrado!" />
         <DropDownPicker
           placeholder="Selecione a mesa"
           textStyle={styles.dropdownText}
