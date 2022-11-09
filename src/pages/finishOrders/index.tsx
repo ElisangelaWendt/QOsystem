@@ -10,6 +10,7 @@ import axios from "axios";
 import { baseUrl, Ordena } from "../../config/globalConfig";
 import { empresa } from "../login";
 import ErrorModal from "../../components/Modal";
+import { Feather } from "@expo/vector-icons";
 
 interface Pedido {
   id: number,
@@ -43,6 +44,7 @@ export default function FinishOrders({ navigation }) {
   const [pedido, setPedido] = useState<Pedido[]>([])
   const [empty, setEmpty] = useState(true)
   const [visible, setVisible] = useState(false)
+  const [visibleError, setVisibleError] = useState(false)
   const [orderNumber, setOrderNumber] = useState([])
 
   var total = 0;
@@ -74,12 +76,13 @@ export default function FinishOrders({ navigation }) {
       console.log(error)
       setEmpty(true)
     })
-  }, [value])
+  }, [value, visible, visibleError])
 
 
 
   function SetOrderClosed() {
     //colocar com status de finalizada
+    if(!empty){
     try{
       axios.put(baseUrl + "pedido/editar", {
         id: orderNumber,
@@ -93,18 +96,27 @@ export default function FinishOrders({ navigation }) {
   }catch(error){
 
   }
+}else{
+  setVisibleError(true)
+}
 
   }
 
   function OnRequestClose(){
     setVisible(false)
+    setVisibleError(false)
   }
+
+  function currencyFormat(num) {
+    return 'R$' + num.toFixed(2).replace('.',',',' ')
+ }
 
   return (
     <View style={{ height: "100%", justifyContent: "space-between" }}>
       <View>
         <Header title="Pedidos em aberto" canGoBack={false} />
         <ErrorModal visible={visible} functionOnRequestClose={OnRequestClose} text="Pedido encerrado!" />
+        <ErrorModal visible={visibleError} functionOnRequestClose={OnRequestClose} text="Não há nenhum pedido para essa mesa!" />
         <DropDownPicker
           placeholder="Selecione a mesa"
           textStyle={styles.dropdownText}
@@ -125,20 +137,23 @@ export default function FinishOrders({ navigation }) {
           <ScrollView>
             <View style={styles.container}>
               <View style={styles.table}>
-
+              {empty ? 
+        <View style={styles.warning}>
+        <Text style={styles.textWarning} >Nenhum pedido aberto para essa mesa</Text> 
+        <Feather name="alert-triangle" size={26} style={styles.textWarning} />
+        </View>
+        :
                 <Table borderStyle={{ borderWidth: 1, borderColor: colors.dividor }}>
                   <Row data={HeadTable} style={styles.headStyle} textStyle={styles.tableText} />
-            {empty ? <Text>Nenhum pedido para essa mesa</Text> :
-
                   <Rows data={pedido.map(pedido => {
                     total = total + +pedido.item.valor;
                     return [pedido.quantidade,
                     pedido.item.nome,
-                    pedido.item.valor]
+                    currencyFormat(pedido.item.valor)]
                   })} textStyle={styles.tableText} />
-                }
-                   <Row data={['Valor Total','','R$ ' + total]} textStyle={styles.totalText} />
+                   <Row data={['Valor Total','',currencyFormat(total)]} textStyle={styles.totalText} />
                 </Table>
+                }
               </View>
               <View>
               </View>

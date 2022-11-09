@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.inputBackground,
     borderColor: colors.dividor,
     height: 35,
-    marginBottom: 20,
+    marginVertical: 20,
     borderRadius: 4,
     color: colors.dividor,
   },
@@ -31,5 +31,15 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: colors.text,
   },
+  warning:{
+    alignSelf:"center",
+    marginVertical: 20,
+    opacity:0.7
+  },
+  textWarning:{
+    color: colors.red,
+    alignSelf:"center",
+    margin:5
+  }
 })
 export default styles;

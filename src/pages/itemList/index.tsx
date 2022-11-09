@@ -56,6 +56,9 @@ export default function ItemList({ navigation }: any) {
       })
   }, [])
 
+  function currencyFormat(num) {
+    return num.toFixed(2).replace('.',',',' ')
+ }
 
   return (
     <>
@@ -75,15 +78,15 @@ export default function ItemList({ navigation }: any) {
               <View style={styles.text}>
                 <Text style={styles.title}>{itens.nome}</Text>
                 <Text style={styles.ingredients}>{itens.ingredientes}</Text>
-                <Text style={styles.title}>R$: {itens.valor}</Text>
+                <Text style={styles.title}>R$: {currencyFormat(itens.valor)}</Text>
               </View>
               <Image style={styles.image} source={require("../../images/lanche1.png")} />
             </TouchableOpacity>
           ))}
         </View>
-        <View style={styles.footer}>
+        {/* <View style={styles.footer}>
           <AddButton isAdding={false} />
-        </View>
+        </View> */}
       </View>
       </>
     }

@@ -51,7 +51,19 @@ export default function TableRegister({ navigation }: any) {
         //senão ela é cadastrada
       } else {
         console.log(x)
+        if(x < 10){
          axios.post(baseUrl + "mesa/cadastrar", {
+            nome: "Mesa 0" + x,
+            empresa: {
+              id: empresa
+            }
+          }).then(res => {
+            setVisible(true)
+          }).catch(function (error) {
+            console.log(error)
+          })
+        }else{
+          axios.post(baseUrl + "mesa/cadastrar", {
             nome: "Mesa " + x,
             empresa: {
               id: empresa
@@ -61,6 +73,7 @@ export default function TableRegister({ navigation }: any) {
           }).catch(function (error) {
             console.log(error)
           })
+        }
         }
     }
   }

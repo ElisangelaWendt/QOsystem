@@ -57,6 +57,11 @@ tableText:{
 },
 warning:{
   color: colors.red
-}
+},
+// observacao:{
+//   minHeight: 80,
+//   alignSelf:'flex-start',
+
+// }
 })
 export default styles;

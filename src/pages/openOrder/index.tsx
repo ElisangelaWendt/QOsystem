@@ -72,7 +72,7 @@ export default function OpenOrder({ navigation }: any) {
       })
 
     //se não tiver nenhum pedido aberto para aquele usuário, criar um novo sem a mesa
-    if (pedidoItem != null) {
+    if (pedidoItem != null && idPedido === 0) {
       console.log("criou novo pedido")
       axios.post(baseUrl + "pedido/cadastrar", {
         status: 0,
@@ -126,12 +126,23 @@ export default function OpenOrder({ navigation }: any) {
       }).catch(function (error) {
         console.log(error)
       })
+    }else{
+      if(idPedido != 0){
+        axios.post(baseUrl + "pedidoItem/buscar/pedido", {
+          pedido: {
+            id: idPedido
+          }
+        }).then(res => {
+          setPedido(res.data)
+        }).catch(function (error) {
+          console.log(error)
+        })
+      }
     }
   }catch(error){
     // console.log(error)
   }
-
-})
+},[pedido])
 
   function handleNavigateToHome() {
     navigation.navigate("Home")
@@ -191,7 +202,7 @@ export default function OpenOrder({ navigation }: any) {
             <View style={{ alignItems: "center", marginRight: 20, marginBottom: 10 }}>
 
               <Image style={styles.image} source={require("../../images/lanche1.png")} />
-              <AddQuantity quantity={quantity} title={true} functionAdd={handleAddQuantity} functionRemove={handleRemoveQuantity} />
+              <AddQuantity quantity={order.quantidade} title={true} functionAdd={handleAddQuantity} functionRemove={handleRemoveQuantity} />
             </View>
           </View>
         ))}

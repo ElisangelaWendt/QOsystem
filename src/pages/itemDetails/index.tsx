@@ -11,6 +11,7 @@ import { baseUrl } from "../../config/globalConfig";
 import { useRoute } from "@react-navigation/native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { userID } from "../login";
+import Input from "../../components/RegisterInput";
 
 
 interface Item {
@@ -45,6 +46,7 @@ export default function ItemDetails({ navigation }: any) {
   const route = useRoute();
   const params = route.params as ItemId;
 
+  const [observacao, setObservacao] = useState()
   const [openRemove, setOpenRemove] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);
   const [value, setValue] = useState();
@@ -102,59 +104,55 @@ export default function ItemDetails({ navigation }: any) {
   function handleNavigateToOpenOrder() {
     console.log(openOrder)
     try {
-      if (openOrder[0].id)
-      {
-        itemId= true;
+      if (openOrder[0].id) {
+        itemId = true;
       }
-      
-   } catch (error) {
-    // console.log(error)
-     itemId = false;
-     
-   }
-   //se a quantidade não estiver zerada, prosegue para o cadastro
-   if(quantity != 0 && quantity != null){
-    setWarning(false)
-    if (!itemId) {
-      console.log("Entrou no if sem pedido")
-      axios.post(baseUrl + "pedidoItem/cadastrar", {
-        item: {
-          id: params.id
-        },
-        quantidade: quantity
-      }).then(res => {
-        console.log(res.data)
-        pedidoItem = (res.data.id)
-        quantidadeItem = (res.data.quantidade)
-        idItemSelected = (res.data.item.id)
-        console.log(idItemSelected)
-        navigation.navigate("OpenOrder")
-      }).catch(function (error) {
-        console.log(error)
-      })
-    } else {
-      console.log("Entrou no if com pedido")
-      axios.post(baseUrl + "pedidoItem/cadastrar", {
-        item: {
-          id: params.id
-        },
-        quantidade: quantity,
-        pedido: {
-          id: openOrder[0].id
-        }
-      }).then(res => {
-        console.log(res.data)
-        pedidoItem = null;
-        quantidadeItem = null;
-        idItemSelected = null;
-        navigation.navigate("OpenOrder")
-      }).catch(function (error) {
-        console.log(error)
-      })
+
+    } catch (error) {
+      // console.log(error)
+      itemId = false;
+
     }
-   }else{
-    setWarning(true)
-   }
+    //se a quantidade não estiver zerada, prosegue para o cadastro
+    if (quantity != 0 && quantity != null) {
+      setWarning(false)
+      if (!itemId) {
+        axios.post(baseUrl + "pedidoItem/cadastrar", {
+          item: {
+            id: params.id
+          },
+          quantidade: quantity
+        }).then(res => {
+          pedidoItem = (res.data.id)
+          quantidadeItem = (res.data.quantidade)
+          idItemSelected = (res.data.item.id)
+          console.log(idItemSelected)
+          navigation.navigate("OpenOrder")
+        }).catch(function (error) {
+          console.log(error)
+        })
+      } else {
+        console.log("Entrou no if com pedido")
+        axios.post(baseUrl + "pedidoItem/cadastrar", {
+          item: {
+            id: params.id
+          },
+          quantidade: quantity,
+          pedido: {
+            id: openOrder[0].id
+          }
+        }).then(res => {
+          pedidoItem = null;
+          quantidadeItem = null;
+          idItemSelected = null;
+          navigation.navigate("OpenOrder")
+        }).catch(function (error) {
+          console.log(error)
+        })
+      }
+    } else {
+      setWarning(true)
+    }
 
   }
 
@@ -190,12 +188,19 @@ export default function ItemDetails({ navigation }: any) {
           <View style={styles.content}>
             <Image style={styles.image} source={require("../../images/lanche2.png")} />
             <View style={styles.properties}>
+              <View style={{ flexDirection: 'row', marginVertical: 20 }}>
+              <Text>Ingredientes: </Text>
+                {item.ingredientes.map(ingredients => (
+                  <Text key={ingredients.id}>{ingredients.nome}, </Text>
+                ))}
+              </View>
               <AddQuantity quantity={quantity} title={true} functionAdd={handleAddQuantity} functionRemove={handleRemoveQuantity} />
               {warning &&
-              <Text style={styles.warning}>A quantidade deve ser maior que zero</Text>}
+                <Text style={styles.warning}>A quantidade deve ser maior que zero</Text>}
+              {/* <Input labelName="Retirar Alface, adicionar carne..." title="Observações" onChangeText={observacao} multiline style={styles.observacao} /> */}
               <View style={styles.row}>
                 <Text style={styles.text}>Remover Algum Item?</Text>
-                <Checkbox status={isChecked1 ? 'checked' : 'unchecked'} onPress={check1} color={colors.dividor} />
+                {/* <Checkbox status={isChecked1 ? 'checked' : 'unchecked'} onPress={check1} color={colors.dividor} /> */}
               </View>
               <DropDownPicker
                 placeholder="Selecione os itens"
@@ -219,7 +224,7 @@ export default function ItemDetails({ navigation }: any) {
               <View style={styles.row}>
 
                 <Text style={styles.text}>Deseja Algum Item Adicional?</Text>
-                <Checkbox status={isChecked2 ? 'checked' : 'unchecked'} onPress={check2} color={colors.dividor} />
+                {/* <Checkbox status={isChecked2 ? 'checked' : 'unchecked'} onPress={check2} color={colors.dividor} /> */}
               </View>
 
               <DropDownPicker

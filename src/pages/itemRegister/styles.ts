@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     width: 227,
     alignSelf:"center",
     elevation: 10,
-    marginVertical: 15
+    marginVertical: 20
   },
   tableText:{
     color:colors.green,

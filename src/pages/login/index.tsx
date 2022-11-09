@@ -61,6 +61,7 @@ export default function Login({ navigation }: any) {
           labelName="Usuário"
           onChangeText={setEmail}
           onSubmitEditing={() => { secondInput.current.focus() }}
+          tipoTeclado={"email-address"}
         />
         <Input
           icon={true}

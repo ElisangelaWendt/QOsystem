@@ -3,9 +3,17 @@
     "name": "qosystem",
     "slug": "qosystem",
     "version": "1.0.0",
-    "plugins": ["expo-image-picker"],
+    "plugins": [
+      "expo-image-picker"
+    ],
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "android": {
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.elisangela_wendt.qosystem"
+    }
   }
 }

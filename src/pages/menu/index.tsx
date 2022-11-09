@@ -76,7 +76,7 @@ export default function Menu({navigation}: any) {
         <MenuButton title="Cadastrar Mesa" onPress={handleNavigateToTableRegister}/>
         
         <Text style={styles.text}>---------------- Exclusões ----------------</Text>
-        <MenuButton title="Excluir Funcionário" onPress={handleNavigateToEmployeeExclusion}/>
+        {/* <MenuButton title="Excluir Funcionário" onPress={handleNavigateToEmployeeExclusion}/> */}
         <MenuButton title="Excluir Categoria" onPress={handleNavigateToCategoryExclusion}/>
         <MenuButton title="Excluir Cargo" onPress={handleNavigateToJobExclusion}/>
         <MenuButton title="Excluir Ingrediente" onPress={handleNavigateToIngredientExclusion}/>

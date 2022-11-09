@@ -45,6 +45,7 @@ export default function IncompleteOrder({navigation}: any) {
   const [empty, setEmpty] = useState(true)
   const [orderNumber, setOrderNumber] = useState([])
   const [visible, setVisible] = useState(false)
+  const [visibleError, setVisibleError] = useState(false)
 
 
   // Trazer dados da API
@@ -76,9 +77,10 @@ export default function IncompleteOrder({navigation}: any) {
     console.log(error)
     setEmpty(true)
   })
-}, [value])
+}, [value,visible])
 
 function handleSendToCash(){
+  if(!empty){
   try{
       axios.put(baseUrl + "pedido/editar", {
         id: orderNumber,
@@ -92,10 +94,14 @@ function handleSendToCash(){
   }catch(error){
 
   }
+}else{
+  setVisibleError(true)
+}
 }
 
 function OnRequestClose(){
   setVisible(false)
+  setVisibleError(false)
 }
 
   return (
@@ -103,6 +109,7 @@ function OnRequestClose(){
 
       <Header title="Pedido 01" canGoBack={true} />
       <ErrorModal visible={visible} functionOnRequestClose={OnRequestClose} text="Pedido enviado para o frente de caixa" />
+      <ErrorModal visible={visibleError} functionOnRequestClose={OnRequestClose} text="Não há nenhum pedido para essa mesa!" />
       <DropDownPicker
         placeholder="Selecione a mesa"
         textStyle={styles.dropdownText}
@@ -121,16 +128,20 @@ function OnRequestClose(){
       />
       <ScrollView>
         <View style={styles.table}>
+        {empty ? 
+        <View style={styles.warning}>
+        <Text style={styles.textWarning} >Nenhum pedido aberto para essa mesa</Text> 
+        <Feather name="alert-triangle" size={26} style={styles.textWarning} />
+        </View>
+        :
           <Table borderStyle={{ borderWidth: 1, borderColor: colors.dividor }}>
             <Row data={HeadTable} style={styles.headStyle} textStyle={styles.tableText} />
-            {/* estilizar */}
-            {empty ? <Text>Nenhum pedido para essa mesa</Text> :
               <Rows data={pedido.map(pedido => {
                 return [pedido.quantidade,
                 pedido.item.nome]
               })} textStyle={styles.tableText} />
-            }
           </Table>
+            }
         </View>
       </ScrollView>
       <View style={styles.footer}>
