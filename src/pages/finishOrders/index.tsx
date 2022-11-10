@@ -71,7 +71,7 @@ export default function FinishOrders({ navigation }) {
     }).then(res => {
       setPedido(res.data)
       setEmpty(false)
-    setOrderNumber(res.data[0].pedido.id)
+      setOrderNumber(res.data[0].pedido.id)
     }).catch(function (error) {
       console.log(error)
       setEmpty(true)
@@ -82,34 +82,34 @@ export default function FinishOrders({ navigation }) {
 
   function SetOrderClosed() {
     //colocar com status de finalizada
-    if(!empty){
-    try{
-      axios.put(baseUrl + "pedido/editar", {
-        id: orderNumber,
-        status: 3,
-        mesa: {
-          id: value
-        }
-      }).then(res => {
-        setVisible(true)
-      })
-  }catch(error){
+    if (!empty) {
+      try {
+        axios.put(baseUrl + "pedido/editar", {
+          id: orderNumber,
+          status: 3,
+          mesa: {
+            id: value
+          }
+        }).then(res => {
+          setVisible(true)
+        })
+      } catch (error) {
+
+      }
+    } else {
+      setVisibleError(true)
+    }
 
   }
-}else{
-  setVisibleError(true)
-}
 
-  }
-
-  function OnRequestClose(){
+  function OnRequestClose() {
     setVisible(false)
     setVisibleError(false)
   }
 
   function currencyFormat(num) {
-    return 'R$' + num.toFixed(2).replace('.',',',' ')
- }
+    return 'R$' + num.toFixed(2).replace('.', ',', ' ')
+  }
 
   return (
     <View style={{ height: "100%", justifyContent: "space-between" }}>
@@ -137,29 +137,31 @@ export default function FinishOrders({ navigation }) {
           <ScrollView>
             <View style={styles.container}>
               <View style={styles.table}>
-              {empty ? 
-        <View style={styles.warning}>
-        <Text style={styles.textWarning} >Nenhum pedido aberto para essa mesa</Text> 
-        <Feather name="alert-triangle" size={26} style={styles.textWarning} />
-        </View>
-        :
-                <Table borderStyle={{ borderWidth: 1, borderColor: colors.dividor }}>
-                  <Row data={HeadTable} style={styles.headStyle} textStyle={styles.tableText} />
-                  <Rows data={pedido.map(pedido => {
-                    total = total + +pedido.item.valor;
-                    return [pedido.quantidade,
-                    pedido.item.nome,
-                    currencyFormat(pedido.item.valor)]
-                  })} textStyle={styles.tableText} />
-                   <Row data={['Valor Total','',currencyFormat(total)]} textStyle={styles.totalText} />
-                </Table>
+                {empty ?
+                  <View style={styles.warning}>
+                    <Text style={styles.textWarning} >Nenhum pedido aberto para essa mesa</Text>
+                    <Feather name="alert-triangle" size={26} style={styles.textWarning} />
+                  </View>
+                  :
+                  <Table borderStyle={{ borderWidth: 1, borderColor: colors.dividor }}>
+                    <Row data={HeadTable} style={styles.headStyle} textStyle={styles.tableText} />
+                    <Rows data={pedido.map(pedido => {
+                      total = total + +pedido.item.valor;
+                      return [pedido.quantidade,
+                      pedido.item.nome,
+                      currencyFormat(pedido.item.valor)]
+                    })} textStyle={styles.tableText} />
+                    <Row data={['Valor Total', '', currencyFormat(total)]} textStyle={styles.totalText} />
+                  </Table>
                 }
               </View>
               <View>
               </View>
-              <View style={styles.footer}>
-                <Button title="Finalizar Venda" onPress={SetOrderClosed} />
-              </View>
+              {!empty &&
+                <View style={styles.footer}>
+                  <Button title="Finalizar Venda" onPress={SetOrderClosed} />
+                </View>
+              }
             </View>
           </ScrollView>
         }

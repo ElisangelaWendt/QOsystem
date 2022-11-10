@@ -12,6 +12,12 @@ import { empresa } from "../login";
 import styles from "./styles";
 import * as ImagePicker from 'expo-image-picker';
 import { Feather } from "@expo/vector-icons";
+import {
+  GDrive,
+  MimeTypes
+} from "@robinbobin/react-native-google-drive-api-wrapper";
+import { Buffer } from "buffer";
+import { TextInputMask } from "react-native-masked-text";
 
 interface Category {
   nome: string,
@@ -22,9 +28,6 @@ interface Ingredient {
   nome: string,
   id: number,
   valor: number
-}
-interface Ingrediente {
-  id: number
 }
 
 export default function ItemRegister({ navigation }: any) {
@@ -41,8 +44,16 @@ export default function ItemRegister({ navigation }: any) {
   var ingredientValues = [];
 
   const [image, setImage] = useState('');
+const [image64,setImage64] = useState('');
 
   const [visible, setVisible] = useState(false)
+
+  const gdrive = new GDrive();
+/* ACESSTOKEN dura 2 horas em Media */
+gdrive.accessToken = 'ya29.a0Aa4xrXNfHG0LsinXWBlnc8IDoYfYotRDjf0JB7kRaNI3AoBemKjQ9uLqfY3_srrtOE8VxfysXifmppYH3Bts0PgmBGSKuFdFBwpFyP_vVu4PY09wDYaeB0xtKRg84KxRIjvrTWBvWVC3M6goQB87jdh3axsqaCgYKAaISARESFQEjDvL9mkpkiDjCrVphuINB_3ACEA0163'
+gdrive.fetchCoercesTypes = true;
+gdrive.fetchRejectsOnHttpErrors = true;
+gdrive.fetchTimeout = 30000; /* Necessario pra nao dar TimeOut */
 
   useEffect(() => {
     axios.get(baseUrl + "categoria/listar", {})
@@ -75,13 +86,40 @@ export default function ItemRegister({ navigation }: any) {
       // console.log(ingredientObj)
     }
 
+  async function teste(){
+    //console.log(await gdrive.files.list()); --- Comando Lista os items do Drive
+    const fileName = image.split('/').pop();
+    // Responsavel pelo Upload
+    const id = (await gdrive.files.newMultipartUploader()
+      .setData(image64, "image/png") // 1° conteudo; 2° Tipo de arquivo 
+      .setIsBase64(true)// identificando se esta mandando texto ou Base64
+      .setRequestBody({
+        //parent:['root'] -- Opcional - Pasta aonde sao salvo os arquivos
+        name: fileName // nome do arquivo
+      })
+      .execute()
+    ).id;
+
+  //-- so pra testar puxando a imagem do Google Drive
+    const retorno = await gdrive.files.getBinary(id) // funcao responsavel por Buscar o Item ( OBRIGATORIO ID do item)
+    const base64Flag = "data:image/jpeg;base64,";
+    const b64Image = await base64Flag + Buffer.from(retorno).toString("base64");
+    setImage(b64Image);
+   ////////////////////////////////////// 
+    
+   return id
+  }
+  const id = teste();
+
+  var valueFormatted = valor.replace(/[^0-9]/g, '')
     axios.post(baseUrl + "item/cadastrar", {
       nome: name,
       categoria: {
         id: valueCategory
       },
-      valor: valor,
-      ingredientes: ingredientObj
+      valor: valueFormatted,
+      ingredientes: ingredientObj,
+      imagem: id
       //cadastrar imagem
     })
       .then(res => {
@@ -94,6 +132,7 @@ export default function ItemRegister({ navigation }: any) {
 
   async function handleSelecionarFoto() {
     let result = await ImagePicker.launchImageLibraryAsync({
+      base64:true,
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 4],
@@ -105,6 +144,7 @@ export default function ItemRegister({ navigation }: any) {
     if (!result.cancelled) {
       //caso apareça erro no uri, IGNORAR, o problema é no visual studio (compila normalmente)
       setImage(result.uri);
+    setImage64(result.base64);
     }
 
   }
@@ -120,20 +160,21 @@ export default function ItemRegister({ navigation }: any) {
     })
   }
 
-
   function atualiza_tabela() {
     ingredientValues = (valueIngredient.map(Valueingrediente => (findArray(ingrediente, Valueingrediente).valor)))
     
     for(var x = 0; x < ingredientValues.length; x++){
       totalValue = totalValue + ingredientValues[x]
     }
-
-    console.log(totalValue)
-
+    totalValue = totalValue/100
     return (valueIngredient.map(Valueingrediente => (findArray(ingrediente, Valueingrediente).nome + '\n')))
 
   }
-// num.toFixed(2).replace(',',','.' ')
+
+  function currencyFormat(num) {
+    return 'R$ ' + num.toFixed(2).replace('.', ',', ' ')
+  }
+
   return (
     <>
       <Header title="Cadastrar Item" canGoBack={true} />
@@ -156,7 +197,14 @@ export default function ItemRegister({ navigation }: any) {
           zIndex={3000}
           zIndexInverse={1000}
         />
-        <Input labelName="Informe o valor do item" title="Valor" onChangeText={setValor} />
+          <View style={styles.inputGroup}>
+        <TextInputMask
+            type={'money'}
+            onChangeText={setValor}
+            style={styles.input}
+            placeholder="R$ 00,00"
+          />
+          </View>
         <DropDownPicker
           placeholder="Ingredientes"
           textStyle={styles.dropdownText}
@@ -180,7 +228,7 @@ export default function ItemRegister({ navigation }: any) {
               <Text style={styles.tableText}>{atualiza_tabela()}</Text>
             </View>
             <View>
-            <Text>Preço de custo: R$ {totalValue}</Text>
+            <Text>Preço de custo:{currencyFormat(totalValue) }</Text>
             </View>
           </>
         }

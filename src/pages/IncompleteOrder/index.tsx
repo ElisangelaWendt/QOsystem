@@ -144,11 +144,14 @@ function OnRequestClose(){
             }
         </View>
       </ScrollView>
+      {!empty &&
       <View style={styles.footer}>
         {/* <Feather name="arrow-left" size={30} style={{ marginRight: 30 }} /> */}
         <Button title="Enviar para Frente de caixa" onPress={handleSendToCash} />
         {/* <Feather name="arrow-right" size={30} style={{ marginLeft: 30 }} /> */}
       </View>
+      }
+
     </View>
   )
 }

@@ -14,7 +14,7 @@ interface TextFieldProps extends TextInputProps {
   secureTextEntry?: boolean;
   icon?: boolean;
   reference?: any;
-  title: string;
+  title?: string;
 }
 
 /**

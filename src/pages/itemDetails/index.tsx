@@ -10,7 +10,7 @@ import axios from "axios";
 import { baseUrl } from "../../config/globalConfig";
 import { useRoute } from "@react-navigation/native";
 import DropDownPicker from "react-native-dropdown-picker";
-import { userID } from "../login";
+import { empresa, userID } from "../login";
 import Input from "../../components/RegisterInput";
 
 
@@ -35,6 +35,7 @@ interface Order {
   }
 }
 
+
 export var pedidoItem = null;
 export var quantidadeItem = null;
 export var idItemSelected = null;
@@ -49,7 +50,7 @@ export default function ItemDetails({ navigation }: any) {
   const [observacao, setObservacao] = useState()
   const [openRemove, setOpenRemove] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);
-  const [value, setValue] = useState();
+  const [value, setValue] = useState([]);
 
   const [removedItem, setRemovedItem] = useState([])
   const [openOrder, setOpenOrder] = useState<Order>()
@@ -83,6 +84,7 @@ export default function ItemDetails({ navigation }: any) {
       }).catch(function (error) {
         console.log(error);
       })
+
   }, [])
 
 
@@ -113,7 +115,7 @@ export default function ItemDetails({ navigation }: any) {
       itemId = false;
 
     }
-    //se a quantidade não estiver zerada, prosegue para o cadastro
+    //se a quantidade não estiver zerada, prossegue para o cadastro
     if (quantity != 0 && quantity != null) {
       setWarning(false)
       if (!itemId) {
@@ -163,12 +165,16 @@ export default function ItemDetails({ navigation }: any) {
     })
   }
 
-  function atualiza_tabela() {
-    return (removedItem.map(removed => (findArray(removedItem, removed).nome + '\n')))
+  function atualiza_tabela_removido() {
+    return (removedItem.map(RemovedItem => (findArray(item.ingredientes, RemovedItem).nome + '\n')))
+  }
+  function atualiza_tabela_adicionado() {
+    return (value.map(Value => (findArray(item.ingredientes, Value).nome + '\n')))
   }
 
   function handleAddQuantity() {
     setQuantity(quantity + 1)
+    console.log(removedItem)
   }
 
   function handleRemoveQuantity() {
@@ -220,7 +226,7 @@ export default function ItemDetails({ navigation }: any) {
                 selectedItemContainerStyle={{ height: 35 }}
                 multiple={true}
               />
-              <View style={styles.table}></View>
+              <View style={styles.table}><Text style={styles.tableText}>{atualiza_tabela_removido()}</Text></View>
               <View style={styles.row}>
 
                 <Text style={styles.text}>Deseja Algum Item Adicional?</Text>
@@ -243,9 +249,9 @@ export default function ItemDetails({ navigation }: any) {
                 placeholderStyle={{ color: colors.dividor }}
                 dropDownContainerStyle={{ borderColor: colors.dividor }}
                 selectedItemContainerStyle={{ height: 35 }}
-
+                multiple
               />
-              <View style={styles.table}><Text style={styles.tableText}>{atualiza_tabela()}</Text></View>
+              <View style={styles.table}><Text style={styles.tableText}>{atualiza_tabela_adicionado()}</Text></View>
 
             </View>
             <View style={styles.footer}>

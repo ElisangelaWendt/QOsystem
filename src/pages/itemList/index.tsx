@@ -10,7 +10,11 @@ import { Feather } from "@expo/vector-icons";
 
 interface Item {
   nome: string,
-  ingredientes: string[],
+  ingredientes:
+  [{
+    nome: string,
+    id: number
+  }],
   valor: number,
   id: number
 }
@@ -77,7 +81,13 @@ export default function ItemList({ navigation }: any) {
             <TouchableOpacity style={styles.content} onPress={() => handleNavigateToItemDetails(itens.id)} key={itens.id}>
               <View style={styles.text}>
                 <Text style={styles.title}>{itens.nome}</Text>
-                <Text style={styles.ingredients}>{itens.ingredientes}</Text>
+
+                <View style={{flexDirection: 'row'}} >
+              {itens.ingredientes.map(ingredient => (
+                <Text style={styles.ingredients} key={ ingredient.id}>{ingredient.nome},</Text>
+                ))}
+                </View>
+
                 <Text style={styles.title}>R$: {currencyFormat(itens.valor)}</Text>
               </View>
               <Image style={styles.image} source={require("../../images/lanche1.png")} />

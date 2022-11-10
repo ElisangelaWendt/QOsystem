@@ -37,10 +37,10 @@ export default function Home({ navigation }: any) {
     <View >
       <Header title="QO SYSTEM" canGoBack={false} />
       <ScrollView style={styles.content}>
-        <View style={styles.inputGroup}>
+        {/* <View style={styles.inputGroup}>
           <TextInput placeholder="Buscar Categoria" style={styles.input} onChangeText={setSearch}/>
           <Feather name="search" style={styles.icon} size={24} />
-        </View>
+        </View> */}
         <Text style={styles.text}>Categorias</Text>
         {!categoria && 
         <>

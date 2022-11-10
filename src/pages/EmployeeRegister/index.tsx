@@ -46,14 +46,14 @@ export default function EmployeeRegister() {
   }, [])
 
   async function Register() {
-
+    var salaryFormatted = salary.replace(/[^0-9]/g, '')
     // cadastrar informações da conta
     await axios.post(baseUrl + "conta/cadastrar", {
       conta: user,
       senha: password,
       pessoa: {
         nome: name,
-        salario: salary,
+        salario: salaryFormatted,
         cargo: {
           id: value,
         }
