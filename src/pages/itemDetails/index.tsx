@@ -104,7 +104,6 @@ export default function ItemDetails({ navigation }: any) {
   }
 
   function handleNavigateToOpenOrder() {
-    console.log(openOrder)
     try {
       if (openOrder[0].id) {
         itemId = true;
@@ -128,13 +127,11 @@ export default function ItemDetails({ navigation }: any) {
           pedidoItem = (res.data.id)
           quantidadeItem = (res.data.quantidade)
           idItemSelected = (res.data.item.id)
-          console.log(idItemSelected)
           navigation.navigate("OpenOrder")
         }).catch(function (error) {
           console.log(error)
         })
       } else {
-        console.log("Entrou no if com pedido")
         axios.post(baseUrl + "pedidoItem/cadastrar", {
           item: {
             id: params.id

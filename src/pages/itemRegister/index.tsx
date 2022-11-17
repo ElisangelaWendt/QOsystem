@@ -1,23 +1,44 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import React, {
+  useEffect,
+  useState
+} from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image
+} from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import Button from "../../components/Button";
 import Header from "../../components/Header";
 import ErrorModal from "../../components/Modal";
 import Input from "../../components/RegisterInput";
-import { baseUrl, gDriveToken } from "../../config/globalConfig";
-import { colors } from "../../styles/colors";
-import { empresa } from "../login";
-import styles from "./styles";
-import * as ImagePicker from 'expo-image-picker';
-import { Feather } from "@expo/vector-icons";
 import {
-  GDrive,
-  MimeTypes
+  baseUrl,
+  gdrive
+} from "../../config/globalConfig";
+import {
+  colors
+} from "../../styles/colors";
+import {
+  empresa
+} from "../login";
+
+import * as ImagePicker from 'expo-image-picker';
+import {
+  Feather
+} from "@expo/vector-icons";
+import {
+  GDrive
 } from "@robinbobin/react-native-google-drive-api-wrapper";
-import { Buffer } from "buffer";
-import { TextInputMask } from "react-native-masked-text";
+import {
+  Buffer
+} from "buffer";
+import {
+  TextInputMask
+} from "react-native-masked-text";
+import styles from "./styles";
 
 interface Category {
   nome: string,
@@ -30,11 +51,9 @@ interface Ingredient {
   valor: number
 }
 
-interface Ingrediente{
-  id: number
-}
-
-export default function ItemRegister({ navigation }: any) {
+export default function ItemRegister({
+  navigation
+}: any) {
   const [name, setName] = useState("")
   const [valor, setValor] = useState("")
   const [categoria, setCategoria] = useState<Category[]>([])
@@ -43,21 +62,15 @@ export default function ItemRegister({ navigation }: any) {
   const [valueIngredient, setValueIngredient] = useState([]);
   const [open, setOpen] = useState(false);
   const [open1, setOpen1] = useState(false);
-  const [ingredientObj, setIngredientObj] = useState<Ingrediente[]>([]);
-  var totalValue= 0;
+  const [ingredientObj, setIngredientObj] = useState([]);
+  var totalValue = 0;
   var ingredientValues = [];
 
   const [image, setImage] = useState('');
-const [image64,setImage64] = useState('');
+  const [image64, setImage64] = useState('');
 
   const [visible, setVisible] = useState(false)
 
-  const gdrive = new GDrive();
-// /* ACESSTOKEN dura 2 horas em Media */
-gdrive.accessToken = gDriveToken
-gdrive.fetchCoercesTypes = true;
-gdrive.fetchRejectsOnHttpErrors = true;
-gdrive.fetchTimeout = 30000; /* Necessario pra nao dar TimeOut */
 
   useEffect(() => {
     axios.get(baseUrl + "categoria/listar", {})
@@ -80,75 +93,75 @@ gdrive.fetchTimeout = 30000; /* Necessario pra nao dar TimeOut */
 
 
   function Register() {
-
     var json = '['
     for (let x = 0; x < valueIngredient.length; x++) {
       json = json + '{"id" :' + valueIngredient[x] + '},'
     }
     json = json.substring(0, json.length - 1) + ']';
 
-    json = (JSON.parse(json))
+    async function teste() {
 
-  // async function teste(){
-  //   //console.log(await gdrive.files.list()); --- Comando Lista os items do Drive
-  //   const fileName = image.split('/').pop();
-  //   // Responsavel pelo Upload
-  //   const id = (await gdrive.files.newMultipartUploader()
-  //     .setData(image64, "image/png") // 1° conteudo; 2° Tipo de arquivo 
-  //     .setIsBase64(true)// identificando se esta mandando texto ou Base64
-  //     .setRequestBody({
-  //       //parent:['root'] -- Opcional - Pasta aonde sao salvo os arquivos
-  //       name: fileName // nome do arquivo
-  //     })
-  //     .execute()
-  //   ).id;
+      // Responsavel pelo Upload
+      const id = (await gdrive.files.newMultipartUploader()
+        .setData(image64, "image/png") // 1° conteudo; 2° Tipo de arquivo 
+        .setIsBase64(true) // identificando se esta mandando texto ou Base64
+        .setRequestBody({
+          //parent:['root'] -- Opcional - Pasta aonde sao salvo os arquivos
+          name: name + '_' + valueCategory + '.png'// nome do arquivo
+        })
+        .execute()
+      ).id;
 
-  // // -- so pra testar puxando a imagem do Google Drive
-  //   const retorno = await gdrive.files.getBinary(id) // funcao responsavel por Buscar o Item ( OBRIGATORIO ID do item)
-  //   const base64Flag = "data:image/jpeg;base64,";
-  //   const b64Image = await base64Flag + Buffer.from(retorno).toString("base64");
-  //   setImage(b64Image);
-  //  ////////////////////////////////////// 
-    
-  //  return id
-  // }
-  // const id = teste();
+      /*/ -- so pra testar puxando a imagem do Google Drive
+      const retorno = await gdrive.files.getBinary(id) // funcao responsavel por Buscar o Item ( OBRIGATORIO ID do item)
+      const base64Flag = "data:image/jpeg;base64,";
+      const b64Image = await base64Flag + Buffer.from(retorno).toString("base64");
+      setImage(b64Image);
+      *////////////////////////////////////// 
 
-  var valueFormatted = valor.replace(/[^0-9]/g, '')
+      var valueFormatted = valor.replace(/[^0-9]/g, '')
+      var fileName = '';// so pra fins de NADA kkk
+      fileName = id;
 
-    axios.post(baseUrl + "item/cadastrar", {
-      nome: name,
-      categoria: {
-        id: valueCategory
-      },
-      valor: valueFormatted,
-      ingredientes: json,
-      // imagem: id
-      //cadastrar imagem
-    })
-      .then(res => {
-        console.log(res.data)
-        setVisible(true)
-      }).catch(function (error) {
-        console.log(error);
+      axios.post(baseUrl + "item/cadastrar", {
+        nome: name,
+        categoria: {
+          id: valueCategory
+        },
+        valor: valueFormatted,
+        ingredientes: JSON.parse(json),
+        imagem: await id
+        //cadastrar imagem
       })
+        .then(res => {
+          console.log(res.data)
+          setVisible(true)
+        }).catch(function (error) {
+          console.log(error);
+        })
+      return id
+    }
+
+    teste();
+
+
   }
 
   async function handleSelecionarFoto() {
     let result = await ImagePicker.launchImageLibraryAsync({
-      base64:true,
+      base64: true,
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 4],
       quality: 1,
     });
 
-    console.log(result);
+    //console.log(result);
 
     if (!result.cancelled) {
       //caso apareça erro no uri, IGNORAR, o problema é no visual studio (compila normalmente)
       setImage(result.uri);
-    setImage64(result.base64);
+      setImage64(result.base64);
     }
 
   }
@@ -167,10 +180,10 @@ gdrive.fetchTimeout = 30000; /* Necessario pra nao dar TimeOut */
   function atualiza_tabela() {
     ingredientValues = (valueIngredient.map(Valueingrediente => (findArray(ingrediente, Valueingrediente).valor)))
 
-    for(var x = 0; x < ingredientValues.length; x++){
+    for (var x = 0; x < ingredientValues.length; x++) {
       totalValue = totalValue + ingredientValues[x]
     }
-    totalValue = totalValue/100
+    totalValue = totalValue / 100
     return (valueIngredient.map(Valueingrediente => (findArray(ingrediente, Valueingrediente).nome + '\n')))
 
   }
@@ -201,14 +214,14 @@ gdrive.fetchTimeout = 30000; /* Necessario pra nao dar TimeOut */
           zIndex={3000}
           zIndexInverse={1000}
         />
-          <View style={styles.inputGroup}>
-        <TextInputMask
+        <View style={styles.inputGroup}>
+          <TextInputMask
             type={'money'}
             onChangeText={setValor}
             style={styles.input}
             placeholder="R$ 00,00"
           />
-          </View>
+        </View>
         <DropDownPicker
           placeholder="Ingredientes"
           textStyle={styles.dropdownText}
@@ -232,7 +245,7 @@ gdrive.fetchTimeout = 30000; /* Necessario pra nao dar TimeOut */
               <Text style={styles.tableText}>{atualiza_tabela()}</Text>
             </View>
             <View>
-            <Text>Preço de custo:{currencyFormat(totalValue) }</Text>
+              <Text>Preço de custo:{currencyFormat(totalValue)}</Text>
             </View>
           </>
         }

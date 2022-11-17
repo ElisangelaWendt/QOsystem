@@ -2,7 +2,7 @@ import {  GDrive } from "@robinbobin/react-native-google-drive-api-wrapper";
 
 export const baseUrl = "https://qossytem.herokuapp.com/";
 
-export const gDriveToken= 'ya29.a0AeTM1idmQebs2jDs-TuY4YLAxCsrS-OPwbvWkuLZ0339CbWHQFNxKYEO4yXrBspZkTwyVsgVCRRwy1JspWfrpnUfolFk155FLNL2pZu87Rih39lvPeEARE6AnkU5eZL001xZbITs-QZCDB3QDuOoFuvfYGcjLQaCgYKAQISARESFQHWtWOmKgj0Ipauevy0O3DcJ_I9bQ0165';
+export const gDriveToken= 'ya29.a0AeTM1idostwmRLtwga2_2YjQXGTrGcvmPxH48b6wn9CnOFaWm0roJN9JVybDIsiBfsq0PlqJ-FSA5MGxApwDFPUuQOegdXx-KHfwqVdbk6mSAfhHdTMClulw_s50AEkgv3OhA32wPR5KD3RynoRrfuICqVrXaQaCgYKAWwSARESFQHWtWOmhw6lgnFIczjXGAy1-I9c-A0165';
 
 export const gdrive = new GDrive();
   // /* ACESSTOKEN dura 2 horas em Media */
