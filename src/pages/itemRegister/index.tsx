@@ -6,7 +6,7 @@ import Button from "../../components/Button";
 import Header from "../../components/Header";
 import ErrorModal from "../../components/Modal";
 import Input from "../../components/RegisterInput";
-import { baseUrl } from "../../config/globalConfig";
+import { baseUrl, gDriveToken } from "../../config/globalConfig";
 import { colors } from "../../styles/colors";
 import { empresa } from "../login";
 import styles from "./styles";
@@ -30,6 +30,10 @@ interface Ingredient {
   valor: number
 }
 
+interface Ingrediente{
+  id: number
+}
+
 export default function ItemRegister({ navigation }: any) {
   const [name, setName] = useState("")
   const [valor, setValor] = useState("")
@@ -39,7 +43,7 @@ export default function ItemRegister({ navigation }: any) {
   const [valueIngredient, setValueIngredient] = useState([]);
   const [open, setOpen] = useState(false);
   const [open1, setOpen1] = useState(false);
-  const [ingredientObj, setIngredientObj] = useState([]);
+  const [ingredientObj, setIngredientObj] = useState<Ingrediente[]>([]);
   var totalValue= 0;
   var ingredientValues = [];
 
@@ -49,8 +53,8 @@ const [image64,setImage64] = useState('');
   const [visible, setVisible] = useState(false)
 
   const gdrive = new GDrive();
-/* ACESSTOKEN dura 2 horas em Media */
-gdrive.accessToken = 'ya29.a0Aa4xrXNfHG0LsinXWBlnc8IDoYfYotRDjf0JB7kRaNI3AoBemKjQ9uLqfY3_srrtOE8VxfysXifmppYH3Bts0PgmBGSKuFdFBwpFyP_vVu4PY09wDYaeB0xtKRg84KxRIjvrTWBvWVC3M6goQB87jdh3axsqaCgYKAaISARESFQEjDvL9mkpkiDjCrVphuINB_3ACEA0163'
+// /* ACESSTOKEN dura 2 horas em Media */
+gdrive.accessToken = gDriveToken
 gdrive.fetchCoercesTypes = true;
 gdrive.fetchRejectsOnHttpErrors = true;
 gdrive.fetchTimeout = 30000; /* Necessario pra nao dar TimeOut */
@@ -77,49 +81,49 @@ gdrive.fetchTimeout = 30000; /* Necessario pra nao dar TimeOut */
 
   function Register() {
 
+    var json = '['
     for (let x = 0; x < valueIngredient.length; x++) {
-      setIngredientObj((prev) => {
-        return [...prev, { id: valueIngredient[x] }];
-      });
-      // const newObj = [{...ingredientObj, id: valueIngredient}]
-      // console.log("-----------------------")
-      // console.log(ingredientObj)
+      json = json + '{"id" :' + valueIngredient[x] + '},'
     }
+    json = json.substring(0, json.length - 1) + ']';
 
-  async function teste(){
-    //console.log(await gdrive.files.list()); --- Comando Lista os items do Drive
-    const fileName = image.split('/').pop();
-    // Responsavel pelo Upload
-    const id = (await gdrive.files.newMultipartUploader()
-      .setData(image64, "image/png") // 1° conteudo; 2° Tipo de arquivo 
-      .setIsBase64(true)// identificando se esta mandando texto ou Base64
-      .setRequestBody({
-        //parent:['root'] -- Opcional - Pasta aonde sao salvo os arquivos
-        name: fileName // nome do arquivo
-      })
-      .execute()
-    ).id;
+    json = (JSON.parse(json))
 
-  //-- so pra testar puxando a imagem do Google Drive
-    const retorno = await gdrive.files.getBinary(id) // funcao responsavel por Buscar o Item ( OBRIGATORIO ID do item)
-    const base64Flag = "data:image/jpeg;base64,";
-    const b64Image = await base64Flag + Buffer.from(retorno).toString("base64");
-    setImage(b64Image);
-   ////////////////////////////////////// 
+  // async function teste(){
+  //   //console.log(await gdrive.files.list()); --- Comando Lista os items do Drive
+  //   const fileName = image.split('/').pop();
+  //   // Responsavel pelo Upload
+  //   const id = (await gdrive.files.newMultipartUploader()
+  //     .setData(image64, "image/png") // 1° conteudo; 2° Tipo de arquivo 
+  //     .setIsBase64(true)// identificando se esta mandando texto ou Base64
+  //     .setRequestBody({
+  //       //parent:['root'] -- Opcional - Pasta aonde sao salvo os arquivos
+  //       name: fileName // nome do arquivo
+  //     })
+  //     .execute()
+  //   ).id;
+
+  // // -- so pra testar puxando a imagem do Google Drive
+  //   const retorno = await gdrive.files.getBinary(id) // funcao responsavel por Buscar o Item ( OBRIGATORIO ID do item)
+  //   const base64Flag = "data:image/jpeg;base64,";
+  //   const b64Image = await base64Flag + Buffer.from(retorno).toString("base64");
+  //   setImage(b64Image);
+  //  ////////////////////////////////////// 
     
-   return id
-  }
-  const id = teste();
+  //  return id
+  // }
+  // const id = teste();
 
   var valueFormatted = valor.replace(/[^0-9]/g, '')
+
     axios.post(baseUrl + "item/cadastrar", {
       nome: name,
       categoria: {
         id: valueCategory
       },
       valor: valueFormatted,
-      ingredientes: ingredientObj,
-      imagem: id
+      ingredientes: json,
+      // imagem: id
       //cadastrar imagem
     })
       .then(res => {
@@ -162,7 +166,7 @@ gdrive.fetchTimeout = 30000; /* Necessario pra nao dar TimeOut */
 
   function atualiza_tabela() {
     ingredientValues = (valueIngredient.map(Valueingrediente => (findArray(ingrediente, Valueingrediente).valor)))
-    
+
     for(var x = 0; x < ingredientValues.length; x++){
       totalValue = totalValue + ingredientValues[x]
     }

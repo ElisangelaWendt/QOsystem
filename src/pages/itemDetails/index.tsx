@@ -195,9 +195,9 @@ export default function ItemDetails({ navigation }: any) {
             <Image style={styles.image} source={require("../../images/lanche2.png")} />
             <View style={styles.properties}>
               <View style={{ flexDirection: 'row', marginVertical: 20 }}>
-              <Text>Ingredientes: </Text>
+              <Text style={{opacity:0.5}}>Ingredientes: </Text>
                 {item.ingredientes.map(ingredients => (
-                  <Text key={ingredients.id}>{ingredients.nome}, </Text>
+                  <Text key={ingredients.id} style={{opacity:0.5}}>{ingredients.nome};</Text>
                 ))}
               </View>
               <AddQuantity quantity={quantity} title={true} functionAdd={handleAddQuantity} functionRemove={handleRemoveQuantity} />

@@ -84,11 +84,11 @@ export default function ItemList({ navigation }: any) {
 
                 <View style={{flexDirection: 'row'}} >
               {itens.ingredientes.map(ingredient => (
-                <Text style={styles.ingredients} key={ ingredient.id}>{ingredient.nome},</Text>
+                <Text style={styles.ingredients} key={ ingredient.id}>{ingredient.nome};</Text>
                 ))}
                 </View>
 
-                <Text style={styles.title}>R$: {currencyFormat(itens.valor)}</Text>
+                <Text style={styles.title}>R$: {currencyFormat(itens.valor/100)}</Text>
               </View>
               <Image style={styles.image} source={require("../../images/lanche1.png")} />
             </TouchableOpacity>

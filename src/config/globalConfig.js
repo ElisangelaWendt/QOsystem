@@ -1,5 +1,15 @@
+import {  GDrive } from "@robinbobin/react-native-google-drive-api-wrapper";
+
 export const baseUrl = "https://qossytem.herokuapp.com/";
 
+export const gDriveToken= 'ya29.a0AeTM1idmQebs2jDs-TuY4YLAxCsrS-OPwbvWkuLZ0339CbWHQFNxKYEO4yXrBspZkTwyVsgVCRRwy1JspWfrpnUfolFk155FLNL2pZu87Rih39lvPeEARE6AnkU5eZL001xZbITs-QZCDB3QDuOoFuvfYGcjLQaCgYKAQISARESFQHWtWOmKgj0Ipauevy0O3DcJ_I9bQ0165';
+
+export const gdrive = new GDrive();
+  // /* ACESSTOKEN dura 2 horas em Media */
+  gdrive.accessToken = gDriveToken
+  gdrive.fetchCoercesTypes = true;
+  gdrive.fetchRejectsOnHttpErrors = true;
+  gdrive.fetchTimeout = 30000;
 
 export function Ordena(data, tipo,campo){
 

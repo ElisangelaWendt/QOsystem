@@ -17,17 +17,23 @@ interface Categoria{
 export default function Home({ navigation }: any) {
   const [search, setSearch] = useState('')
   const [categoria, setCategoria] = useState<Categoria[]>([]);
-
+  const [empty, setEmpty] = useState(true)
+  
   useEffect(() => {
     axios.post(baseUrl + "categoria/buscar/empresa", {
       id: empresa
     })
       .then(res => {
         setCategoria(res.data)
+        setEmpty(false)
       }).catch(function (error) {
         console.log(error);
+        setEmpty(true)
+
       })
+
   },[categoria])
+
 
   function handleNavigateToItemList(id: number){
     navigation.navigate('ItemList', {id});
@@ -42,11 +48,11 @@ export default function Home({ navigation }: any) {
           <Feather name="search" style={styles.icon} size={24} />
         </View> */}
         <Text style={styles.text}>Categorias</Text>
-        {!categoria && 
-        <>
+        {empty && 
+        <View style={{alignItems:'center', justifyContent:"center", opacity: 0.5}}>
         <Text>Sem categoria Cadastrada</Text> 
         <Feather name="alert-circle" style={styles.icon} size={24} />
-        </>
+        </View>
         }
         {/* Categorias de lanches */}
         {categoria.map(categoria => (
