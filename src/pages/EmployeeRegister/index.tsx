@@ -20,7 +20,7 @@ interface Cargos {
   id: number
 }
 
-export default function EmployeeRegister() {
+export default function EmployeeRegister({navigation}) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [cargos, setCargos] = useState<Cargos[]>([]);
@@ -93,10 +93,7 @@ export default function EmployeeRegister() {
         })
       return id
     }
-
     teste();
-
-
   }
 
 
@@ -122,6 +119,7 @@ export default function EmployeeRegister() {
   function CloseModal() {
     setVisibleError(false)
     setVisibleSuccess(false)
+    navigation.navigate("Menu")
   }
 
   return (

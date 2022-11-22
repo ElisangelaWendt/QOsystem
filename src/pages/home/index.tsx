@@ -1,39 +1,72 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 
 import { View, Text, ScrollView, Image, TouchableOpacity, TextInput } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import styles from "./styles";
 import Header from "../../components/Header";
 import axios from "axios";
-import { baseUrl } from "../../config/globalConfig";
+import { baseUrl,gdrive } from "../../config/globalConfig";
 import { empresa } from "../login";
+import {  Buffer} from "buffer";
+
 
 interface Categoria{
   nome: string,
   imagemUrl: string,
+  imagem : string,
   id:number
 }
 
 export default function Home({ navigation }: any) {
   const [search, setSearch] = useState('')
   const [categoria, setCategoria] = useState<Categoria[]>([]);
-  const [empty, setEmpty] = useState(true)
+  var Terminou = 0;
+  var json = '' ;
+
+ function  arruma_esse_caralho(Jsonarray){       
+  Terminou = (Jsonarray.length)// Define quando vai atualizar a Tela
+
+  Jsonarray.map(async categoria => {
+    const retorno = await gdrive.files.getBinary(categoria.imagem) // funcao responsavel por Buscar o Item ( OBRIGATORIO ID do item)
+    const base64Flag = "data:image/png;base64,";
+    const b64Image =  base64Flag + Buffer.from(retorno).toString("base64");
   
-  useEffect(() => {
+    if (json.length > 2 ){ json += ','} // so pra arrumar quando é mais de um Item  
+
+      json +=   `{ "id" : ${categoria.id},"imagem" : "${b64Image}","nome" : "${categoria.nome }"},`;
+
+      if (await  retorno){ setar()}// so pra chamar a funcao quando Terminar // solucao alternativa
+    }
+  )
+} 
+
+
+
+
+
+function setar(){
+  
+  json =  json.substring(0, json.length - 1) ; // Remover Virgula a Mais
+  
+  if (Terminou == JSON.parse('[' + json+ ']').length){
+ 
+    setCategoria(JSON.parse('[' + json+ ']'))
+ 
+  }
+}
+
+useLayoutEffect(() => {
     axios.post(baseUrl + "categoria/buscar/empresa", {
       id: empresa
     })
       .then(res => {
         setCategoria(res.data)
-        setEmpty(false)
+        arruma_esse_caralho(res.data)
+
       }).catch(function (error) {
         console.log(error);
-        setEmpty(true)
-
       })
-
-  },[categoria])
-
+  },[])
 
   function handleNavigateToItemList(id: number){
     navigation.navigate('ItemList', {id});
@@ -43,25 +76,24 @@ export default function Home({ navigation }: any) {
     <View >
       <Header title="QO SYSTEM" canGoBack={false} />
       <ScrollView style={styles.content}>
-        {/* <View style={styles.inputGroup}>
-          <TextInput placeholder="Buscar Categoria" style={styles.input} onChangeText={setSearch}/>
-          <Feather name="search" style={styles.icon} size={24} />
-        </View> */}
+
         <Text style={styles.text}>Categorias</Text>
-        {empty && 
-        <View style={{alignItems:'center', justifyContent:"center", opacity: 0.5}}>
+        {!categoria && 
+        <>
         <Text>Sem categoria Cadastrada</Text> 
         <Feather name="alert-circle" style={styles.icon} size={24} />
-        </View>
+        </>
         }
         {/* Categorias de lanches */}
+        
         {categoria.map(categoria => (
+        
         <TouchableOpacity style={styles.categoryButton} onPress={() => handleNavigateToItemList(categoria.id)} key={categoria.id}>
-          <Image source={{uri: categoria.imagemUrl}} style={styles.image} />
+           <Image source={{uri: categoria.imagem}} style={styles.image} />
           <Text style={styles.categoryText}>{categoria.nome}</Text>
         </TouchableOpacity>
         ))}
-
+        
       </ScrollView>
     </View>
   )

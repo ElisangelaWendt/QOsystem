@@ -7,14 +7,14 @@ import styles from "./styles";
 import { Checkbox } from "react-native-paper";
 import { colors } from "../../styles/colors";
 import axios from "axios";
-import { baseUrl } from "../../config/globalConfig";
+import { baseUrl,gdrive } from "../../config/globalConfig";
 import { useRoute } from "@react-navigation/native";
 import DropDownPicker from "react-native-dropdown-picker";
-import { empresa, userID } from "../login";
-import Input from "../../components/RegisterInput";
-
+import { userID } from "../login";
+import {  Buffer} from "buffer";
 
 interface Item {
+  imagem : string
   nome: string,
   ingredientes:
   [{
@@ -35,7 +35,6 @@ interface Order {
   }
 }
 
-
 export var pedidoItem = null;
 export var quantidadeItem = null;
 export var idItemSelected = null;
@@ -46,7 +45,6 @@ export default function ItemDetails({ navigation }: any) {
   const [item, setItem] = useState<Item>();
   const route = useRoute();
   const params = route.params as ItemId;
-
   const [observacao, setObservacao] = useState()
   const [openRemove, setOpenRemove] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);
@@ -56,6 +54,7 @@ export default function ItemDetails({ navigation }: any) {
   const [openOrder, setOpenOrder] = useState<Order>()
   const [quantity, setQuantity] = useState(0)
   var itemId = false;
+  var json;
   const [warning, setWarning] = useState(false)
 
   useEffect(() => {
@@ -64,11 +63,12 @@ export default function ItemDetails({ navigation }: any) {
     })
       .then(res => {
         setItem(res.data)
-        // console.log(employee)
+        busca_imagem(res.data) 
       }).catch(function (error) {
         console.log(error);
       })
-
+      
+       
     //verificar se já há um pedido aberto para o usuário que está logado
     axios.post(baseUrl + "pedido/buscar/status/pessoa", {
       status: 0,
@@ -84,8 +84,20 @@ export default function ItemDetails({ navigation }: any) {
       }).catch(function (error) {
         console.log(error);
       })
-
+     
+      
   }, [])
+
+async function busca_imagem(categoria){
+
+    const retorno = await gdrive.files.getBinary(categoria.imagem) // funcao responsavel por Buscar o Item ( OBRIGATORIO ID do item)
+    const base64Flag = "data:image/png;base64,";
+    const b64Image =  base64Flag + Buffer.from(retorno).toString("base64");
+
+    json =   `{ "id" : ${categoria.id},"imagem" : "${b64Image}","nome" : "${categoria.nome }","ingredientes" : [${categoria.ingredientes.map(ingrediente =>{ return '{ "nome":"'+ingrediente.nome+'","id":"'+ingrediente.id+'"}'}) }]}`;
+
+    setItem( JSON.parse(`${json}`) ) 
+}
 
 
   function check1() {
@@ -104,6 +116,7 @@ export default function ItemDetails({ navigation }: any) {
   }
 
   function handleNavigateToOpenOrder() {
+   
     try {
       if (openOrder[0].id) {
         itemId = true;
@@ -148,14 +161,11 @@ export default function ItemDetails({ navigation }: any) {
         }).catch(function (error) {
           console.log(error)
         })
-      }
-    } else {
-      setWarning(true)
     }
-
+   }else{
+    setWarning(true)
+   }
   }
-
-
   function findArray(array, value) {
     return array.find((element) => {
       return element.id === value;
@@ -171,7 +181,6 @@ export default function ItemDetails({ navigation }: any) {
 
   function handleAddQuantity() {
     setQuantity(quantity + 1)
-    console.log(removedItem)
   }
 
   function handleRemoveQuantity() {
@@ -189,9 +198,9 @@ export default function ItemDetails({ navigation }: any) {
         <>
           <Header title={item.nome} canGoBack={true} key={item.id} />
           <View style={styles.content}>
-            <Image style={styles.image} source={require("../../images/lanche2.png")} />
+           <Image style={styles.image} source={{uri : item.imagem}} />
             <View style={styles.properties}>
-              <View style={{ flexDirection: 'row', marginVertical: 20 }}>
+            <View style={{ flexDirection: 'row', marginVertical: 20 }}>
               <Text style={{opacity:0.5}}>Ingredientes: </Text>
                 {item.ingredientes.map(ingredients => (
                   <Text key={ingredients.id} style={{opacity:0.5}}>{ingredients.nome};</Text>
@@ -199,8 +208,7 @@ export default function ItemDetails({ navigation }: any) {
               </View>
               <AddQuantity quantity={quantity} title={true} functionAdd={handleAddQuantity} functionRemove={handleRemoveQuantity} />
               {warning &&
-                <Text style={styles.warning}>A quantidade deve ser maior que zero</Text>}
-              {/* <Input labelName="Retirar Alface, adicionar carne..." title="Observações" onChangeText={observacao} multiline style={styles.observacao} /> */}
+              <Text style={styles.warning}>A quantidade deve ser maior que zero</Text>}
               <View style={styles.row}>
                 <Text style={styles.text}>Remover Algum Item?</Text>
                 {/* <Checkbox status={isChecked1 ? 'checked' : 'unchecked'} onPress={check1} color={colors.dividor} /> */}
@@ -246,7 +254,8 @@ export default function ItemDetails({ navigation }: any) {
                 placeholderStyle={{ color: colors.dividor }}
                 dropDownContainerStyle={{ borderColor: colors.dividor }}
                 selectedItemContainerStyle={{ height: 35 }}
-                multiple
+                multiple={true}
+                
               />
               <View style={styles.table}><Text style={styles.tableText}>{atualiza_tabela_adicionado()}</Text></View>
 

@@ -40,9 +40,13 @@ export default function TableRegister({ navigation }: any) {
       let exist = false;
       //verifica na listagem se a mesa já está cadastrada
       for (var y = 0; y < tables.length; y++) {
-        if (("Mesa " + x) === (tables[y].nome)) {
+        if (("Mesa " + 0 + x) === (tables[y].nome)) {
           exist=true;
-        } 
+        }else{
+          if (("Mesa " + x) === (tables[y].nome)) {
+            exist=true;
+          }
+        }
       }
       //se ela já estiver cadastrada cai no if
       if (exist){

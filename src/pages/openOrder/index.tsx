@@ -72,7 +72,6 @@ export default function OpenOrder({ navigation }: any) {
 
     //se não tiver nenhum pedido aberto para aquele usuário, criar um novo sem a mesa
     if (pedidoItem != null && idPedido === 0) {
-      console.log("criou novo pedido")
       axios.post(baseUrl + "pedido/cadastrar", {
         status: 0,
         pessoa: {
@@ -116,7 +115,6 @@ export default function OpenOrder({ navigation }: any) {
   }, [idPedido, openOrder])
 
   useEffect(() => {
-    console.log("executou")
     try {
       if (idPedido != 0 && openOrder === undefined || openOrder[0].id === undefined) {
         //buscar pedido item depois de alterar
@@ -179,7 +177,6 @@ export default function OpenOrder({ navigation }: any) {
     // altera o status do pedido para 1 (envia para a cozinha)
     try {
       var pedido = (openOrder[0].id)
-      console.log(pedido)
       if (value && pedido) {
         axios.put(baseUrl + "pedido/editar", {
           id: pedido,

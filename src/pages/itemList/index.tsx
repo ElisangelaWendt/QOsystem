@@ -4,9 +4,11 @@ import React, { useEffect, useState } from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import AddButton from "../../components/AddButton";
 import Header from "../../components/Header";
-import { baseUrl } from "../../config/globalConfig";
 import styles from "./styles";
 import { Feather } from "@expo/vector-icons";
+import { Buffer } from "buffer";
+import { baseUrl, gdrive } from "../../config/globalConfig";
+
 
 interface Item {
   nome: string,
@@ -17,14 +19,15 @@ interface Item {
   }],
   valor: number,
   id: number
+  imagem: string;
 }
 
 interface CategoryId {
   id: number
 }
 
-interface Categoria{
-nome: string,
+interface Categoria {
+  nome: string,
 }
 
 export default function ItemList({ navigation }: any) {
@@ -33,9 +36,40 @@ export default function ItemList({ navigation }: any) {
   const route = useRoute();
   const params = route.params as CategoryId;
   const [emptyList, setEmptyList] = useState(true)
+  var Terminou = 0;
+  var json = '';
+
+  function arruma_esse_caralho(Jsonarray) {
+    Terminou = (Jsonarray.length)
+
+    Jsonarray.map(async (categoria, idx) => {
+      const retorno = await gdrive.files.getBinary(categoria.imagem) // funcao responsavel por Buscar o Item ( OBRIGATORIO ID do item)
+      const base64Flag = "data:image/png;base64,";
+      const b64Image = base64Flag + Buffer.from(retorno).toString("base64");
+
+      if (json.length > 2) { json += ',' } // so pra arrumar quando é mais de um Item  
+
+      json += `{ "id" : ${categoria.id},"valor" : ${categoria.valor},"nome" : "${categoria.nome}","imagem" : "${b64Image}", "ingredientes" : [${categoria.ingredientes.map(ingrediente => { return '{ "nome":"' + ingrediente.nome + '"}' })}]},`;
+
+      if (await retorno) { setar() }// so pra chamar a funcao quando Terminar // solucao alternativa
+    }
+    )
+  }
+
+  function setar() {
+
+    json = json.substring(0, json.length - 1); // Remover Virgula a Mais
+
+    //console.log('[' + json+ ']')
+    if (Terminou == JSON.parse('[' + json + ']').length) {
+
+
+      setItem(JSON.parse('[' + json + ']'))
+    }
+  }
 
   function handleNavigateToItemDetails(id: number) {
-    navigation.navigate("ItemDetails",{id})
+    navigation.navigate("ItemDetails", { id })
   }
 
   useEffect(() => {
@@ -53,7 +87,8 @@ export default function ItemList({ navigation }: any) {
     })
       .then(res => {
         setEmptyList(false)
-        setItem(res.data)
+        arruma_esse_caralho(res.data)
+        //setItem(res.data)
       }).catch(function (error) {
         console.log(error);
         setEmptyList(true)
@@ -63,43 +98,42 @@ export default function ItemList({ navigation }: any) {
   function currencyFormat(num) {
     return num.toFixed(2).replace('.',',',' ')
  }
-
   return (
     <>
-    {nomeCategoria &&
-    <>
-      <Header title={nomeCategoria.nome} canGoBack={true} />
-      <View style={styles.container}>
-        <View>
-          {emptyList && 
-          <View style={styles.emptyList}>
-          <Text style={styles.textEmpty}>Nenhum Item Cadastrado para essa Categoria</Text>
-          <Feather name="meh" size={40} />
-          </View>
-          }
-          {item.map(itens => (
-            <TouchableOpacity style={styles.content} onPress={() => handleNavigateToItemDetails(itens.id)} key={itens.id}>
-              <View style={styles.text}>
-                <Text style={styles.title}>{itens.nome}</Text>
-
-                <View style={{flexDirection: 'row'}} >
-              {itens.ingredientes.map(ingredient => (
-                <Text style={styles.ingredients} key={ ingredient.id}>{ingredient.nome};</Text>
-                ))}
+      {nomeCategoria &&
+        <>
+          <Header title={nomeCategoria.nome} canGoBack={true} />
+          <View style={styles.container}>
+            <View>
+              {emptyList &&
+                <View style={styles.emptyList}>
+                  <Text style={styles.textEmpty}>Nenhum Item Cadastrado para essa Categoria</Text>
+                  <Feather name="meh" size={40} />
                 </View>
+              }
+              {item.map((itens) => (
+                <TouchableOpacity style={styles.content} onPress={() => handleNavigateToItemDetails(itens.id)} key={itens.id} >
+                  <View style={styles.text}>
+                    <Text style={styles.title}>{itens.nome}</Text>
 
-                <Text style={styles.title}>R$: {currencyFormat(itens.valor/100)}</Text>
-              </View>
-              <Image style={styles.image} source={require("../../images/lanche1.png")} />
-            </TouchableOpacity>
-          ))}
-        </View>
-        {/* <View style={styles.footer}>
+                    <View style={{ flexDirection: 'row' }} >
+                      {itens.ingredientes.map(ingredient => (
+                        <Text style={styles.ingredients} key={ingredient.nome}>{ingredient.nome};</Text>
+                      ))}
+                    </View>
+
+                    <Text style={styles.title}>R$: {currencyFormat(itens.valor / 100)}</Text>
+                  </View>
+                  <Image style={styles.image} source={{ uri: itens.imagem }} />
+                </TouchableOpacity>
+              ))}
+            </View>
+            {/* <View style={styles.footer}>
           <AddButton isAdding={false} />
         </View> */}
-      </View>
-      </>
-    }
+          </View>
+        </>
+      }
     </>
   )
 }

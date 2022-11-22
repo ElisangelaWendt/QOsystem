@@ -42,7 +42,7 @@ function AppStack() {
         {/* <Screen name="Home" component={Home} /> */}
         <Screen name="EmployeeRegister" component={EmployeeRegister} />
         <Screen name="Employee" component={Employee} />
-        <Screen name="PasswordRecovery" component={PasswordRecovery} />
+        {/* <Screen name="PasswordRecovery" component={PasswordRecovery} /> */}
         <Screen name="BottomTab" component={MyTab} />
         <Screen name="ItemList" component={ItemList} />
         <Screen name="ItemDetails" component={ItemDetails} />
