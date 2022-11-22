@@ -108,8 +108,8 @@ export default function FinishOrders({ navigation }) {
   }
 
   function currencyFormat(num) {
-    return 'R$' + num.toFixed(2).replace('.', ',', ' ')
-  }
+    return num.toFixed(2).replace('.',',',' ')
+ }
 
   return (
     <View style={{ height: "100%", justifyContent: "space-between" }}>
@@ -146,12 +146,12 @@ export default function FinishOrders({ navigation }) {
                   <Table borderStyle={{ borderWidth: 1, borderColor: colors.dividor }}>
                     <Row data={HeadTable} style={styles.headStyle} textStyle={styles.tableText} />
                     <Rows data={pedido.map(pedido => {
-                      total = total + +pedido.item.valor;
+                      total = total + (pedido.item.valor * pedido.quantidade);
                       return [pedido.quantidade,
                       pedido.item.nome,
-                      currencyFormat(pedido.item.valor)]
+                      currencyFormat((pedido.quantidade * pedido.item.valor)/100)]
                     })} textStyle={styles.tableText} />
-                    <Row data={['Valor Total', '', currencyFormat(total)]} textStyle={styles.totalText} />
+                    <Row data={['Valor Total', '', currencyFormat(total/100)]} textStyle={styles.totalText} />
                   </Table>
                 }
               </View>

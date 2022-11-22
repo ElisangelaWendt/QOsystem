@@ -6,7 +6,7 @@ import { styles } from "./styles";
 import { Feather } from '@expo/vector-icons';
 import { colors } from "../../styles/colors";
 import axios from "axios";
-import { baseUrl } from "../../config/globalConfig";
+import { baseUrl, gdrive } from "../../config/globalConfig";
 import Button from "../../components/Button";
 import * as ImagePicker from 'expo-image-picker';
 import { empresa } from "../login";
@@ -17,40 +17,56 @@ export default function CategoryRegister({navigation}: any) {
   const [name, setName] = useState("")
   const [image, setImage] = useState('')
   const [visible, setVisible] = useState(false)
+  const [image64, setImage64] = useState('');
 
+  
   function Register() {
-    axios.post(baseUrl + "categoria/cadastrar",{
-      nome: name,
-      empresa:{
-        id: empresa
-      }
-    }).then(res => {
-      setVisible(true)
-    }).catch(function (error){
-      console.log(error)
-    })
-    // let filename = image.split('/').pop();
-  
-    // let match = /\.(\w+)$/.exec(filename);
-    // let type = match ? `image/${match[1]}` : `image`;
-  
-    // let formData = new FormData();
-    
-    // formData.append('Arquivo', { uri: image, name: filename, type });
-  
-  // console.log(formData)
-    //ajustar para registrar na empresa do usuário logado
+    async function teste() {
 
-    // return fetch('http://10.10.1.17/upload.php', {
-    //   method: 'POST',
-    //   body: formData,
-      
-    // });
+      // Responsavel pelo Upload
+      const id = (await gdrive.files.newMultipartUploader()
+        .setData(image64, "image/png") // 1° conteudo; 2° Tipo de arquivo 
+        .setIsBase64(true) // identificando se esta mandando texto ou Base64
+        .setRequestBody({
+          //parent:['root'] -- Opcional - Pasta aonde sao salvo os arquivos
+          name: name + '_' + '.png'// nome do arquivo
+        })
+        .execute()
+      ).id;
+
+      /*/ -- so pra testar puxando a imagem do Google Drive
+      const retorno = await gdrive.files.getBinary(id) // funcao responsavel por Buscar o Item ( OBRIGATORIO ID do item)
+      const base64Flag = "data:image/jpeg;base64,";
+      const b64Image = await base64Flag + Buffer.from(retorno).toString("base64");
+      setImage(b64Image);
+      *////////////////////////////////////// 
+
+      var fileName = '';// so pra fins de NADA kkk
+      fileName = id;
+
+      axios.post(baseUrl + "categoria/cadastrar",{
+    nome: name,
+    empresa:{
+      id: empresa
+    },
+    imagem: id
+  }).then(res => {
+    setVisible(true)
+  }).catch(function (error){
+    console.log(error)
+  })
+      return id
+    }
+
+    teste();
+
+
   }
 
   async function handleSelecionarFoto() {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
+      base64: true,
       allowsEditing: true,
       aspect: [4, 2],
       quality: 1,
@@ -61,6 +77,7 @@ export default function CategoryRegister({navigation}: any) {
     if (!result.cancelled) {
       //caso apareça erro no uri, IGNORAR, o problema é no visual studio (compila normalmente)
       setImage(result.uri);
+      setImage64(result.base64);
     }
 
   }

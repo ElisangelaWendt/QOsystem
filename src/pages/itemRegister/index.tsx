@@ -14,30 +14,15 @@ import Button from "../../components/Button";
 import Header from "../../components/Header";
 import ErrorModal from "../../components/Modal";
 import Input from "../../components/RegisterInput";
-import {
-  baseUrl,
-  gdrive
-} from "../../config/globalConfig";
-import {
-  colors
-} from "../../styles/colors";
-import {
-  empresa
-} from "../login";
+import {baseUrl,gdrive} from "../../config/globalConfig";
+import {colors} from "../../styles/colors";
+import {empresa} from "../login";
 
 import * as ImagePicker from 'expo-image-picker';
-import {
-  Feather
-} from "@expo/vector-icons";
-import {
-  GDrive
-} from "@robinbobin/react-native-google-drive-api-wrapper";
-import {
-  Buffer
-} from "buffer";
-import {
-  TextInputMask
-} from "react-native-masked-text";
+import {Feather} from "@expo/vector-icons";
+import {GDrive} from "@robinbobin/react-native-google-drive-api-wrapper";
+import {Buffer} from "buffer";
+import {TextInputMask} from "react-native-masked-text";
 import styles from "./styles";
 
 interface Category {
@@ -62,7 +47,6 @@ export default function ItemRegister({
   const [valueIngredient, setValueIngredient] = useState([]);
   const [open, setOpen] = useState(false);
   const [open1, setOpen1] = useState(false);
-  const [ingredientObj, setIngredientObj] = useState([]);
   var totalValue = 0;
   var ingredientValues = [];
 
@@ -93,11 +77,11 @@ export default function ItemRegister({
 
 
   function Register() {
-    var json = '['
+    var ingredientObj = '['
     for (let x = 0; x < valueIngredient.length; x++) {
-      json = json + '{"id" :' + valueIngredient[x] + '},'
+      ingredientObj = ingredientObj + '{"id" :' + valueIngredient[x] + '},'
     }
-    json = json.substring(0, json.length - 1) + ']';
+    ingredientObj = ingredientObj.substring(0, ingredientObj.length - 1) + ']';
 
     async function teste() {
 
@@ -129,7 +113,7 @@ export default function ItemRegister({
           id: valueCategory
         },
         valor: valueFormatted,
-        ingredientes: JSON.parse(json),
+        ingredientes: JSON.parse(ingredientObj),
         imagem: await id
         //cadastrar imagem
       })

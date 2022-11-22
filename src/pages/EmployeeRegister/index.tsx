@@ -7,7 +7,7 @@ import { Feather } from "@expo/vector-icons";
 import { colors } from "../../styles/colors";
 import Button from "../../components/Button";
 import axios from "axios";
-import { baseUrl } from "../../config/globalConfig";
+import { baseUrl, gdrive } from "../../config/globalConfig";
 import DropDownPicker from "react-native-dropdown-picker";
 import * as ImagePicker from 'expo-image-picker';
 import ErrorModal from "../../components/Modal";
@@ -32,6 +32,7 @@ export default function EmployeeRegister() {
   const [image, setImage] = useState('');
   const [visibleError, setVisibleError] = useState(false)
   const [visibleSuccess, setVisibleSuccess] = useState(false)
+  const [image64, setImage64] = useState('');
 
 
   useEffect(() => {
@@ -45,32 +46,63 @@ export default function EmployeeRegister() {
       })
   }, [])
 
-  async function Register() {
-    var salaryFormatted = salary.replace(/[^0-9]/g, '')
-    // cadastrar informações da conta
-    await axios.post(baseUrl + "conta/cadastrar", {
-      conta: user,
-      senha: password,
-      pessoa: {
-        nome: name,
-        salario: salaryFormatted,
-        cargo: {
-          id: value,
-        }
-      },
-      ativo: true
-    }).then((res => {
-      setVisibleSuccess(true)
-    }))
-      .catch(function (error) {
-        console.log(error);
-        setVisibleError(true)
-      })
+  function Register() {
+    async function teste() {
+
+      // Responsavel pelo Upload
+      const id = (await gdrive.files.newMultipartUploader()
+        .setData(image64, "image/png") // 1° conteudo; 2° Tipo de arquivo 
+        .setIsBase64(true) // identificando se esta mandando texto ou Base64
+        .setRequestBody({
+          //parent:['root'] -- Opcional - Pasta aonde sao salvo os arquivos
+          name: name + '_' + value + '.png'// nome do arquivo
+        })
+        .execute()
+      ).id;
+
+      /*/ -- so pra testar puxando a imagem do Google Drive
+      const retorno = await gdrive.files.getBinary(id) // funcao responsavel por Buscar o Item ( OBRIGATORIO ID do item)
+      const base64Flag = "data:image/jpeg;base64,";
+      const b64Image = await base64Flag + Buffer.from(retorno).toString("base64");
+      setImage(b64Image);
+      *////////////////////////////////////// 
+
+      var salaryFormatted = salary.replace(/[^0-9]/g, '')
+      var fileName = '';// so pra fins de NADA kkk
+      fileName = id;
+
+      // cadastrar informações da conta
+      await axios.post(baseUrl + "conta/cadastrar", {
+        conta: user,
+        senha: password,
+        pessoa: {
+          nome: name,
+          salario: salaryFormatted,
+          imagem: await id,
+          cargo: {
+            id: value,
+          }
+        },
+        ativo: true
+      }).then((res => {
+        setVisibleSuccess(true)
+      }))
+        .catch(function (error) {
+          console.log(error);
+          setVisibleError(true)
+        })
+      return id
+    }
+
+    teste();
+
 
   }
 
+
   async function handleSelecionarFoto() {
     let result = await ImagePicker.launchImageLibraryAsync({
+      base64: true,
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 4],
@@ -82,6 +114,7 @@ export default function EmployeeRegister() {
     if (!result.cancelled) {
       //caso apareça erro no uri, IGNORAR, o problema é no visual studio (compila normalmente)
       setImage(result.uri);
+      setImage64(result.base64);
     }
 
   }
@@ -117,7 +150,7 @@ export default function EmployeeRegister() {
           selectedItemContainerStyle={{ height: 35 }}
 
         />
-          <Text>Salário</Text>
+        <Text>Salário</Text>
         <View style={styles.inputGroup}>
           <TextInputMask
             type={'money'}

@@ -44,7 +44,7 @@ export default function Employee({navigation}: any) {
 
   return (
     <ScrollView>
-    <Header title="Empregados" canGoBack={true} />
+    <Header title="Funcionários" canGoBack={true} />
     <View style={styles.container}>
 
     {employee.map(employee => (
