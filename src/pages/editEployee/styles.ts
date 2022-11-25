@@ -71,9 +71,25 @@ const styles = StyleSheet.create({
   image:{
     alignSelf:'center',
     height: 120,
-    width: "100%",
+    width: 120,
     borderRadius:15,
     marginTop:20
-  }
+  },
+  inputGroup:{
+    marginBottom: 18,
+    backgroundColor: colors.inputBackground,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    borderRadius:4,
+    borderWidth: 1,
+    elevation:10,
+    borderColor: colors.dividor,
+  },
+  input: {
+    width: 294,
+    height: 35,
+    paddingLeft: 7,
+    fontSize: 20,
+  },
 });
 export default styles;

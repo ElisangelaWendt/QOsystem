@@ -8,11 +8,12 @@ import { colors } from "../../styles/colors";
 import Button from "../../components/Button";
 import { useRoute } from "@react-navigation/native";
 import axios from "axios";
-import { baseUrl } from "../../config/globalConfig";
+import { baseUrl, gdrive } from "../../config/globalConfig";
 import DropDownPicker from "react-native-dropdown-picker";
 import * as ImagePicker from 'expo-image-picker';
 import { empresa } from "../login";
 import ErrorModal from "../../components/Modal";
+import { TextInputMask } from "react-native-masked-text";
 
 interface EmployeeId {
   id: number
@@ -20,10 +21,12 @@ interface EmployeeId {
 
 interface Employee {
   conta: string,
+  ativo: boolean,
   id: number,
   senha: string,
   pessoa: {
     nome: string,
+    imagem: string,
     id: number,
     salario: number,
     cpf: number,
@@ -32,12 +35,12 @@ interface Employee {
     cargo: {
       nome: string,
       id: number,
-      empresa:{
+      empresa: {
         id: number,
         razaoSocial: string,
         telefone: number,
         cnpj: number,
-        endereco:{
+        endereco: {
           id: number,
           rua: string,
           bairro: string,
@@ -73,7 +76,8 @@ export default function EditEmployee({ navigation }: any) {
   const [salary, setSalary] = useState('')
   const [password, setPassword] = useState('')
   const [image, setImage] = useState('');
-  const[visible, setVisible] = useState(false)
+  const [image64, setImage64] = useState('');
+  const [visible, setVisible] = useState(false)
 
   useEffect(() => {
     axios.post(baseUrl + "conta/buscarID", {
@@ -81,9 +85,9 @@ export default function EditEmployee({ navigation }: any) {
     })
       .then(res => {
         setEmployee(res.data)
-
       }).catch(function (error) {
         console.log(error);
+        console.log(params.id)
       })
 
     axios.post(baseUrl + "cargo/buscar/empresa", {
@@ -99,30 +103,69 @@ export default function EditEmployee({ navigation }: any) {
 
   // caso o usuário não tenha alterado algum campo, irá setar com o valor encontrado no bd
   useEffect(() => {
-    if(employee){
-      if(!name){
+    if (employee) {
+      if (!name) {
         setName(employee.pessoa.nome)
       }
-      if(!email){
+      if (!email) {
         setEmail(employee.conta)
       }
-      if(password === ''){
+      if (password === '') {
         setPassword(employee.senha)
+      }
+      if (image64 === '') {
+        setImage64(employee.pessoa.imagem)
       }
     }
   })
 
-  function Delete() {
-    axios.delete(baseUrl + "conta/deletar", {
-      data: {
-        id: params.id
-      }
+  function Unactive() {
+    const salaryConverted = parseFloat(salary)
+
+    axios.put(baseUrl + "conta/editar", {
+      id: params.id,
+      conta: email,
+      senha: password,
+      pessoa: {
+        nome: name,
+        salario: salaryConverted,
+        imagem: image64,
+        cargo: {
+          id: value
+        }
+
+      },
+      ativo: false
     }).then(res => {
-      console.log(res)
+
+      setVisible(true)
     }).catch(function (error) {
       console.log(error);
     })
-    navigation.navigate("Employee")
+  }
+
+  function Active() {
+    const salaryConverted = parseFloat(salary)
+
+    axios.put(baseUrl + "conta/editar", {
+      id: params.id,
+      conta: email,
+      senha: password,
+      pessoa: {
+        nome: name,
+        salario: salaryConverted,
+        imagem: image64,
+        cargo: {
+          id: value
+        }
+
+      },
+      ativo: true
+    }).then(res => {
+      setVisible(true)
+    }).catch(function (error) {
+      console.log(error);
+    })
   }
 
   function Save() {
@@ -132,15 +175,16 @@ export default function EditEmployee({ navigation }: any) {
     //está setando todas 
     axios.put(baseUrl + "conta/editar", {
       id: params.id,
-      conta: email, 
+      conta: email,
       senha: password,
-      pessoa:{
+      pessoa: {
         nome: name,
         salario: salaryConverted,
-        cargo:{
+        imagem: image64,
+        cargo: {
           id: value
         }
-        
+
       }
     }).then(res => {
 
@@ -156,8 +200,9 @@ export default function EditEmployee({ navigation }: any) {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [4, 2],
+      aspect: [4, 4],
       quality: 1,
+      base64: true
     });
 
     console.log(result);
@@ -165,87 +210,110 @@ export default function EditEmployee({ navigation }: any) {
     if (!result.cancelled) {
       //caso apareça erro no uri, IGNORAR, o problema é no visual studio (compila normalmente)
       setImage(result.uri);
+      setImage64(result.uri)
     }
 
   }
 
-  function OnRequestClose(){
+  function OnRequestClose() {
     setVisible(false)
-    navigation.navigate("Menu")
+    navigation.navigate("Employee")
   }
+
+
   return (
     <>
       {!employee ? <Text>Erro</Text> :
         <><Header title="Editar Funcionário" canGoBack={true} />
-        <ErrorModal visible={visible} functionOnRequestClose={OnRequestClose} text="Alterado com sucesso!" />
-        <View style={styles.container}>
-          <RegisterInput
-            labelName=""
-            title="Nome"
-            onChangeText={setName}
+          <ErrorModal visible={visible} functionOnRequestClose={OnRequestClose} text="Alterado com sucesso!" />
+          <View style={styles.container}>
+            <RegisterInput
+              labelName=""
+              title="Nome"
+              onChangeText={setName}
             ><Text>{employee.pessoa.nome}</Text></RegisterInput>
-          <DropDownPicker
-            placeholder={employee.pessoa.cargo.nome}
-            textStyle={styles.dropdownText}
-            labelStyle={styles.dropdownText}
-            open={open}
-            value={value}
-            items={cargos.map(cargo => ({ label: cargo.nome, value: cargo.id }))}
-            setOpen={setOpen}
-            setValue={setValue}
-            style={styles.dropdown}
-            placeholderStyle={{ color: colors.dividor }}
-            dropDownContainerStyle={{ borderColor: colors.dividor }}
-            selectedItemContainerStyle={{ height: 35 }}
-          />
-          <RegisterInput
-            labelName="Informe o salário do funcionário"
-            title="Salário"
+            <DropDownPicker
+              placeholder={employee.pessoa.cargo.nome}
+              textStyle={styles.dropdownText}
+              labelStyle={styles.dropdownText}
+              open={open}
+              value={value}
+              items={cargos.map(cargo => ({ label: cargo.nome, value: cargo.id }))}
+              setOpen={setOpen}
+              setValue={setValue}
+              style={styles.dropdown}
+              placeholderStyle={{ color: colors.dividor }}
+              dropDownContainerStyle={{ borderColor: colors.dividor }}
+              selectedItemContainerStyle={{ height: 35 }}
+            />
+            <Text>Salário</Text>
+            {/* <View style={styles.inputGroup}>
+          <TextInputMask
+            type={'money'}
             onChangeText={setSalary}
-            ><Text>{employee.pessoa.salario}</Text></RegisterInput>
-          <RegisterInput
-            labelName="Informe o email do Funcionário"
-            title="Email" onChangeText={setEmail} ><Text>{employee.conta}</Text></RegisterInput>
-          <RegisterInput
-            labelName="Informe a nova senha"
-            title="Senha"
-            icon={true} 
-            onChangeText={setPassword}/>
+            style={styles.input}
+            placeholder={"R$ 00,00"}
+          />
+        </View> */}
+            <RegisterInput
+              labelName="Informe o email do Funcionário"
+              title="Email" onChangeText={setEmail} ><Text>{employee.conta}</Text></RegisterInput>
+            <RegisterInput
+              labelName="Informe a nova senha"
+              title="Senha"
+              icon={true}
+              onChangeText={setPassword} />
 
-          <Text style={styles.title}> Imagem do Funcionário</Text>
-          {/* se não existe imagem, mostrar o botão */}
-          {!image ?
-            <View
-              style={styles.imageSelector}
+            <Text style={styles.title}> Imagem do Funcionário</Text>
+            {/* se não existe imagem, mostrar o botão */}
+            {!image ?
+              <View
+                style={styles.imageSelector}
 
-            >
+              >
+                <TouchableOpacity
+                  onPress={handleSelecionarFoto}
+                // disabled={disableButton}
+                // style={disableButton ? { display: "none" } : styles.imageSelector}
+                >
+                  <View style={styles.dashedBox}>
+
+                    <Feather name="plus" size={60} color={colors.text} />
+                  </View>
+                </TouchableOpacity>
+              </View>
+              :
+              // se existe imagem, mostrar a imagem
               <TouchableOpacity
                 onPress={handleSelecionarFoto}
-              // disabled={disableButton}
-              // style={disableButton ? { display: "none" } : styles.imageSelector}
               >
-                <View style={styles.dashedBox}>
-
-                  <Feather name="plus" size={60} color={colors.text} />
-                </View>
+                <Image source={{ uri: image }} style={styles.image} />
               </TouchableOpacity>
-            </View>
-            :
-            // se existe imagem, mostrar a imagem
-            <TouchableOpacity
-              onPress={handleSelecionarFoto}
-            >
-              <Image source={{ uri: image }} style={styles.image} />
-            </TouchableOpacity>
-          }
-          <View style={styles.footer}>
-            {/* botão excluir */}
-            <TouchableOpacity style={styles.buttonContainer} onPress={Delete}>
-              <Text style={styles.text}>Excluir Funcionário</Text>
-            </TouchableOpacity>
-            <Button title="Salvar Informações" onPress={Save} />
-          </View>
-        </View></>}
+            }
+            {employee.ativo === false ?
+              <>
+                <Text style={{ color: colors.red, marginVertical: 20 }}>Esse usuário está inativo</Text>
+                <View style={styles.footer}>
+                  {/* botão excluir */}
+                  <TouchableOpacity style={styles.buttonContainer} onPress={Active}>
+                    <Text style={styles.text}>Ativar Funcionário</Text>
+                  </TouchableOpacity>
+                  <Button title="Salvar Informações" onPress={Save} />
+                </View>
+              </>
+              :
+              <>
+                <Text style={{ color: colors.green, marginVertical: 20 }}>Usuário ativo</Text>
+                <View style={styles.footer}>
+                  {/* botão excluir */}
+                  <TouchableOpacity style={styles.buttonContainer} onPress={Unactive}>
+                    <Text style={styles.text}>Inativar Funcionário</Text>
+                  </TouchableOpacity>
+                  <Button title="Salvar Informações" onPress={Save} />
+                </View>
+              </>
+            }
+          </View></>}
     </>
   )
 }

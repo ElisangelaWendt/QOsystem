@@ -30,7 +30,7 @@ export default function Home({ navigation }: any) {
     const retorno = await gdrive.files.getBinary(categoria.imagem) // funcao responsavel por Buscar o Item ( OBRIGATORIO ID do item)
     const base64Flag = "data:image/png;base64,";
     const b64Image =  base64Flag + Buffer.from(retorno).toString("base64");
-  
+    
     if (json.length > 2 ){ json += ','} // so pra arrumar quando é mais de um Item  
 
       json +=   `{ "id" : ${categoria.id},"imagem" : "${b64Image}","nome" : "${categoria.nome }"},`;
@@ -40,18 +40,10 @@ export default function Home({ navigation }: any) {
   )
 } 
 
-
-
-
-
 function setar(){
-  
   json =  json.substring(0, json.length - 1) ; // Remover Virgula a Mais
-  
   if (Terminou == JSON.parse('[' + json+ ']').length){
- 
     setCategoria(JSON.parse('[' + json+ ']'))
- 
   }
 }
 

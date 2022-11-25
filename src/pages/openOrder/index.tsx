@@ -4,13 +4,14 @@ import { TouchableOpacity, View, Text, Image } from "react-native";
 import AddQuantity from "../../components/AddQuantity";
 import Button from "../../components/Button";
 import Header from "../../components/Header";
-import { baseUrl, Ordena } from "../../config/globalConfig";
+import { baseUrl, gdrive, Ordena } from "../../config/globalConfig";
 import styles from "./styles";
 import { empresa, userID } from '../login'
 import DropDownPicker from "react-native-dropdown-picker";
 import { colors } from "../../styles/colors";
 import { ScrollView } from "react-native-gesture-handler";
 import { idItemSelected, pedidoItem, quantidadeItem } from "../itemDetails";
+import { Buffer } from "buffer";
 
 interface Order {
   id: number,
@@ -28,7 +29,10 @@ interface Pedido {
   id: number,
   quantidade: number,
   item: {
+    imagem: string,
     nome: string,
+    quantidade: number,
+    valor: number,
     ingredientes: [{
       id: number,
       nome: string
@@ -45,6 +49,36 @@ export default function OpenOrder({ navigation }: any) {
   const [pedido, setPedido] = useState<Pedido[]>([])
   const [idPedido, setIdPedido] = useState(0)
   const [warning, setWarning] = useState(false)
+  var Terminou = 0;
+  var json = '';
+
+  function arruma_esse_caralho(Jsonarray) {
+    Terminou = (Jsonarray.length)// Definir quando vai Exibir na tela
+
+    Jsonarray.map(async (categoria, idx) => {
+      const retorno = await gdrive.files.getBinary(categoria.item.imagem) // funcao responsavel por Buscar o Item ( OBRIGATORIO ID do item)
+      const base64Flag = "data:image/png;base64,";
+      const b64Image = base64Flag + Buffer.from(retorno).toString("base64");
+
+      if (json.length > 2) { json += ',' } // so pra arrumar quando é mais de um Item  
+
+      json += `{ "id" : ${categoria.id},"quantidade":${categoria.quantidade}, "item":{"valor" : ${categoria.item.valor},"nome" : "${categoria.item.nome}","imagem" : "${b64Image}", "ingredientes" : [${categoria.item.ingredientes.map(ingrediente => { return '{ "nome":"' + ingrediente.nome + '"}' })}]}},`;
+
+      if (await retorno) { setar() }// so pra chamar a funcao quando Terminar // solucao alternativa
+    }
+    )
+  }
+
+  function setar() {// Salvar no "SET"
+
+    json = json.substring(0, json.length - 1); // Remover Virgula a Mais
+
+    if (Terminou == JSON.parse('[' + json + ']').length) { // Evitar da Tela Ficar Carregando Varias vezes( Delay )
+
+      setPedido(JSON.parse('[' + json + ']'))
+
+    }
+  }
 
   useEffect(() => {
     //buscar todas as mesas daquela empresa
@@ -55,7 +89,6 @@ export default function OpenOrder({ navigation }: any) {
     }).catch(function (error) {
       console.log(error)
     })
-
 
     //verificar se já há um pedido aberto para o usuário que está logado
     axios.post(baseUrl + "pedido/buscar/status/pessoa", {
@@ -78,6 +111,7 @@ export default function OpenOrder({ navigation }: any) {
           id: userID
         }
       }).then(res => {
+        console.log(res.data)
         setOpenOrder(res.data)
         setIdPedido(res.data.id)
       }).catch(function (error) {
@@ -123,8 +157,8 @@ export default function OpenOrder({ navigation }: any) {
             id: idPedido
           }
         }).then(res => {
-          setPedido(res.data)
-          console.log(pedido)
+          arruma_esse_caralho(res.data)
+          // setPedido(res.data)
         }).catch(function (error) {
           console.log(error)
         })
@@ -161,16 +195,33 @@ export default function OpenOrder({ navigation }: any) {
     navigation.navigate("Home")
   }
 
-  function handleAddQuantity() {
-    setQuantity(quantity + 1)
+  function handleAddQuantity(idx) {
+    const pedidoIndex = pedido.findIndex((task, id) => { //Buscar Index do Item
+      return id == idx;
+    });
+
+    const Temppedido = [...pedido]; // Recuperar Pedido
+
+    Temppedido[pedidoIndex].quantidade = Temppedido[pedidoIndex].quantidade + 1;// Setar Nova Quantidade
+
+    setPedido(Temppedido)// Salvar Alteraçoes
+
   }
 
-  function handleRemoveQuantity() {
-    if (quantity <= 0) {
-      setQuantity(0)
+  function handleRemoveQuantity(idx) {
+    const pedidoIndex = pedido.findIndex((task, id) => {//Buscar Index do Item
+      return id == idx;
+    });
+
+    const Temppedido = [...pedido]; // Recuperar Pedido
+
+    if (Temppedido[pedidoIndex].quantidade <= 0) {
+      Temppedido[pedidoIndex].quantidade = 0;
     } else {
-      setQuantity(quantity - 1)
+      Temppedido[pedidoIndex].quantidade = Temppedido[pedidoIndex].quantidade - 1;
     }
+
+    setPedido(Temppedido)// Salvar Alteraçoes
   }
 
   function handleSendToKitchen() {
@@ -202,20 +253,19 @@ export default function OpenOrder({ navigation }: any) {
       <Header title="Concluir Pedido" canGoBack={true} />
       {pedido.map != undefined &&
         <ScrollView style={styles.scrollview}>
-          {pedido.map(order => (
+          {pedido.map((order, idx) => (
             <View style={styles.content} key={order.id}>
 
               <View style={styles.text} >
                 <Text style={styles.title}>{order.item.nome}</Text>
-                <Text style={styles.ingredients}>{order.item.ingredientes.map(res => <Text key={res.id}>{res.nome};</Text>)}</Text>
+                <Text style={styles.ingredients}>{order.item.ingredientes.map(res => <Text key={res.id}>{res.nome}{'\n'}</Text>)}</Text>
                 {/* <Text style={styles.add}>Adicionar: ...</Text> */}
                 {/* <Text style={styles.remove}>Remover: ...</Text> */}
               </View>
               <View style={{ alignItems: "center", marginRight: 20, marginBottom: 10 }}>
 
-                <Image style={styles.image} source={require("../../images/lanche1.png")} />
-                {/* <AddQuantity quantity={order.quantidade} title={true} functionAdd={handleAddQuantity} functionRemove={handleRemoveQuantity} /> */}
-                <Text>Quantidade: {order.quantidade}</Text>
+                <Image style={styles.image} source={{ uri: order.item.imagem }} />
+                <AddQuantity quantity={order.quantidade} title={true} functionAdd={() => handleAddQuantity(idx)} functionRemove={() => handleRemoveQuantity(idx)} />
               </View>
             </View>
           ))}

@@ -57,13 +57,9 @@ export default function ItemList({ navigation }: any) {
   }
 
   function setar() {
-
     json = json.substring(0, json.length - 1); // Remover Virgula a Mais
-
     //console.log('[' + json+ ']')
     if (Terminou == JSON.parse('[' + json + ']').length) {
-
-
       setItem(JSON.parse('[' + json + ']'))
     }
   }
