@@ -33,10 +33,13 @@ useEffect(() => {
   }
   // console.log("------------")
   // console.log(ingredient.map(teste => ( console.log(teste.cargo.nome))))
+  function currencyFormat(num) {
+    return num.toFixed(2).replace('.',',',' ')
+ }
 
   return (
     <ScrollView>
-    <Header title="Funcionários" canGoBack={true} />
+    <Header title="Ingredientes" canGoBack={true} />
     <View style={styles.container}>
 
     {ingredient.map(ingredient => (
@@ -47,7 +50,7 @@ useEffect(() => {
           <Text style={styles.title}>
             {ingredient.nome}
           </Text>
-          <Text style={styles.role}>{ingredient.valor}</Text>
+          <Text style={styles.role}>R$ {currencyFormat(ingredient.valor/100)}</Text>
         </View>
       </TouchableOpacity>
         ))}
