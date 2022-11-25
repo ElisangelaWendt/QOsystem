@@ -25,6 +25,10 @@ import ItemRegister from '../pages/itemRegister';
 import CategoryExclusion from '../pages/Exclusion/CategoryExclusion';
 import TableExclusion from '../pages/Exclusion/TableExclusion';
 import TableRegister from '../pages/TableRegister';
+import EditIngredient from '../pages/editIngredient';
+import EditItem from '../pages/editItem';
+import Item from '../pages/Item';
+import Ingredient from '../pages/ingredient';
 const { Navigator, Screen } = createStackNavigator();
 
 function AppStack() {
@@ -60,6 +64,10 @@ function AppStack() {
         <Screen name="CategoryExclusion" component={CategoryExclusion} />
         <Screen name="TableExclusion" component={TableExclusion} />
         <Screen name="TableRegister" component={TableRegister} />
+        <Screen name="EditIngredient" component={EditIngredient} />
+        <Screen name="EditItem" component={EditItem} />
+        <Screen name="Item" component={Item} />
+        <Screen name="Ingredient" component={Ingredient} />
       </Navigator>
 
     );

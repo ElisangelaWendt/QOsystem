@@ -51,10 +51,11 @@ export default function OpenOrder({ navigation }: any) {
   const [warning, setWarning] = useState(false)
   var Terminou = 0;
   var json = '';
-
+  var javeio = 0;
   function arruma_esse_caralho(Jsonarray) {
+    console.log('veio')
     Terminou = (Jsonarray.length)// Definir quando vai Exibir na tela
-
+    javeio = 1
     Jsonarray.map(async (categoria, idx) => {
       const retorno = await gdrive.files.getBinary(categoria.item.imagem) // funcao responsavel por Buscar o Item ( OBRIGATORIO ID do item)
       const base64Flag = "data:image/png;base64,";
@@ -114,6 +115,7 @@ export default function OpenOrder({ navigation }: any) {
         console.log(res.data)
         setOpenOrder(res.data)
         setIdPedido(res.data.id)
+        
       }).catch(function (error) {
         console.log(error)
       })
@@ -121,7 +123,7 @@ export default function OpenOrder({ navigation }: any) {
     }
 
   }, [])
-
+ 
   useEffect(() => {
     try {
       if (pedidoItem != null && idPedido) {
@@ -137,6 +139,7 @@ export default function OpenOrder({ navigation }: any) {
           }
         }).then(res => {
           setPedido(res.data)
+          if (javeio == 0){ arruma_esse_caralho(res.data)}
         }).catch(function (error) {
           console.log(error)
         })
@@ -157,8 +160,8 @@ export default function OpenOrder({ navigation }: any) {
             id: idPedido
           }
         }).then(res => {
-          arruma_esse_caralho(res.data)
-          // setPedido(res.data)
+         if (javeio == 0){ arruma_esse_caralho(res.data)}
+           setPedido(res.data)
         }).catch(function (error) {
           console.log(error)
         })
@@ -169,6 +172,7 @@ export default function OpenOrder({ navigation }: any) {
             id: openOrder[0].id
           }
         }).then(res => {
+          if (javeio == 0){ arruma_esse_caralho(res.data)}
           setPedido(res.data)
         }).catch(function (error) {
           console.log(error)
@@ -180,6 +184,7 @@ export default function OpenOrder({ navigation }: any) {
               id: idPedido
             }
           }).then(res => {
+            if (javeio == 0){ arruma_esse_caralho(res.data)}
             setPedido(res.data)
           }).catch(function (error) {
             console.log(error)
