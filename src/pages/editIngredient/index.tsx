@@ -72,9 +72,19 @@ export default function EditIngredient({ navigation }: any) {
     }
   })
 
+    // caso o usuário não tenha alterado algum campo, irá setar com o valor encontrado no bd
+    useEffect(() => {
+      if (ingredient) {
+        //setar o valor e nome caso esteja vazio
+        if (!name) {
+          setName(ingredient.nome)
+        }
+      }
+    })
+
   function Save() {
     //converter a string salario para inteiro
-    valorConverted = parseFloat(valor)
+    valorConverted = valor.replace(/[^0-9]/g, '')
 
     //está setando todas 
     axios.put(baseUrl + "ingrediente/editar", {
@@ -92,7 +102,7 @@ export default function EditIngredient({ navigation }: any) {
 
   function OnRequestClose() {
     setVisible(false)
-    navigation.navigate("ingredient")
+    navigation.navigate("Menu")
   }
 
 

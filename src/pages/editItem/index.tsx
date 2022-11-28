@@ -67,10 +67,6 @@ export default function EditItem({ navigation }: any) {
       if (!name) {
         setName(item.nome)
       }
-      if (!value) {
-        setValue(item.valor)
-      }
-      
     }
   })
 
