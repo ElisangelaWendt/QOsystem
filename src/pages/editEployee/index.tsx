@@ -120,15 +120,13 @@ export default function EditEmployee({ navigation }: any) {
   })
 
   function Unactive() {
-    const salaryConverted = parseFloat(salary)
-
     axios.put(baseUrl + "conta/editar", {
       id: params.id,
       conta: email,
       senha: password,
       pessoa: {
         nome: name,
-        salario: salaryConverted,
+        salario: employee.pessoa.salario,
         imagem: employee.pessoa.imagem,
         cargo: {
           id: value
@@ -145,7 +143,6 @@ export default function EditEmployee({ navigation }: any) {
   }
 
   function Active() {
-    const salaryConverted = parseFloat(salary)
 
     axios.put(baseUrl + "conta/editar", {
       id: params.id,
@@ -153,7 +150,7 @@ export default function EditEmployee({ navigation }: any) {
       senha: password,
       pessoa: {
         nome: name,
-        salario: salaryConverted,
+        salario: employee.pessoa.salario,
         imagem: employee.pessoa.imagem,
         cargo: {
           id: value

@@ -100,11 +100,9 @@ export default function Item({ navigation }: any) {
                 <View style={styles.text}>
                   <Text style={styles.title}>{itens.nome}</Text>
 
-                  <View style={{ flexDirection: 'row' }} >
                     {itens.ingredientes.map(ingredient => (
-                      <Text style={styles.ingredients} key={ingredient.nome}>{ingredient.nome};</Text>
+                      <Text style={styles.ingredients} key={ingredient.nome}>{ingredient.nome}</Text>
                     ))}
-                  </View>
 
                   <Text style={styles.title}>R$: {currencyFormat(itens.valor / 100)}</Text>
                 </View>

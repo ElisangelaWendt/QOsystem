@@ -9,6 +9,7 @@ import { baseUrl, gdrive } from "../../config/globalConfig";
 import ErrorModal from "../../components/Modal";
 import { TextInputMask } from "react-native-masked-text";
 import {  Buffer} from "buffer";
+import Button from "../../components/Button";
 
 interface ItemID {
   id: number
@@ -32,7 +33,7 @@ export default function EditItem({ navigation }: any) {
   const [item, setItem] = useState<Item>();
 
   const [name, setName] = useState('')
-  const [salary, setSalary] = useState('')
+  const [value, setValue] = useState('')
   const [visible, setVisible] = useState(false)
   var json;
 
@@ -63,24 +64,19 @@ export default function EditItem({ navigation }: any) {
   useEffect(() => {
     if (item) {
       //setar o valor e nome caso esteja vazio
-      // if (!name) {
-      //   setName(item.pessoa.nome)
-      // }
-      // if (!email) {
-      //   setEmail(item.conta)
-      // }
-      // if (password === '') {
-      //   setPassword(item.senha)
-      // }
-      // if (image64 === '') {
-      //   setImage64(item.pessoa.imagem)
-      // }
+      if (!name) {
+        setName(item.nome)
+      }
+      if (!value) {
+        setValue(item.valor)
+      }
+      
     }
   })
 
   function Save() {
     //converter a string salario para inteiro
-    const valorConverted = parseFloat(salary)
+    const valorConverted = value.replace(/[^0-9]/g, '')
 
     //está setando todas 
     axios.put(baseUrl + "item/editar", {
@@ -98,7 +94,7 @@ export default function EditItem({ navigation }: any) {
 
   function OnRequestClose() {
     setVisible(false)
-    navigation.navigate("item")
+    navigation.navigate("Menu")
   }
 
 
@@ -118,12 +114,19 @@ export default function EditItem({ navigation }: any) {
             <View style={styles.inputGroup}>
           <TextInputMask
             type={'money'}
-            onChangeText={setSalary}
+            onChangeText={setValue}
             style={styles.input}
             placeholder={"R$ 00,00"}
           />
         </View>
-          </View></>}
+        <View style={styles.footer}>
+
+        <Button title="Salvar Informações" onPress={Save} />
+        </View>
+
+          </View>
+          </>
+          }
     </>
   )
 }
