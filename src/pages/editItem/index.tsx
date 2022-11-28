@@ -1,318 +1,128 @@
 import React, { useEffect, useState } from "react";
-import { TouchableOpacity, View, Text, Image } from "react-native";
+import { View, Text, Image } from "react-native";
 import Header from "../../components/Header";
 import RegisterInput from "../../components/RegisterInput";
 import styles from "./styles";
-import { Feather } from "@expo/vector-icons";
-import { colors } from "../../styles/colors";
-import Button from "../../components/Button";
 import { useRoute } from "@react-navigation/native";
 import axios from "axios";
 import { baseUrl, gdrive } from "../../config/globalConfig";
-import DropDownPicker from "react-native-dropdown-picker";
-import * as ImagePicker from 'expo-image-picker';
-import { empresa } from "../login";
 import ErrorModal from "../../components/Modal";
 import { TextInputMask } from "react-native-masked-text";
+import {  Buffer} from "buffer";
 
-interface EmployeeId {
+interface ItemID {
   id: number
 }
 
-interface Employee {
-  conta: string,
-  ativo: boolean,
-  id: number,
-  senha: string,
-  pessoa: {
+interface Item {
+  nome: string,
+  ingredientes:
+  [{
     nome: string,
-    imagem: string,
-    id: number,
-    salario: number,
-    cpf: number,
-    genero: string,
-    telefone: number,
-    cargo: {
-      nome: string,
-      id: number,
-      empresa: {
-        id: number,
-        razaoSocial: string,
-        telefone: number,
-        cnpj: number,
-        endereco: {
-          id: number,
-          rua: string,
-          bairro: string,
-          numero: number,
-          uf: string,
-          pais: string,
-          observacao: string
-        }
-      }
-    }
-  }
+    id: number
+  }],
+  valor: number,
+  id: number
+  imagem: string;
 }
 
-interface Cargos {
-  nome: string,
-  id: number
-}
-interface Cargo {
-  nome: string,
-  id: number
-}
-
-export default function EditEmployee({ navigation }: any) {
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
+export default function EditItem({ navigation }: any) {
   const route = useRoute();
-  const params = route.params as EmployeeId;
-  const [employee, setEmployee] = useState<Employee>();
-  const [cargos, setCargos] = useState<Cargos[]>([]);
+  const params = route.params as ItemID;
+  const [item, setItem] = useState<Item>();
 
-  const [email, setEmail] = useState('')
   const [name, setName] = useState('')
   const [salary, setSalary] = useState('')
-  const [password, setPassword] = useState('')
-  const [image, setImage] = useState('');
-  const [image64, setImage64] = useState('');
   const [visible, setVisible] = useState(false)
+  var json;
 
   useEffect(() => {
-    axios.post(baseUrl + "conta/buscarID", {
-      id: params.id
+   //buscar item
+   axios.post(baseUrl + "item/buscar", {
+    id: params.id
+  })
+    .then(res => {
+      setItem(res.data)
+      busca_imagem(res.data) 
+    }).catch(function (error) {
+      console.log(error);
     })
-      .then(res => {
-        setEmployee(res.data)
-      }).catch(function (error) {
-        console.log(error);
-        console.log(params.id)
-      })
+  }, [])
 
-    axios.post(baseUrl + "cargo/buscar/empresa", {
-      id: empresa
-    })
-      .then(res => {
-        setCargos(res.data)
-      }).catch(function (error) {
-        console.log(error);
-      })
+  async function busca_imagem(categoria){
 
-  }, [employee])
+    const retorno = await gdrive.files.getBinary(categoria.imagem) // funcao responsavel por Buscar o Item ( OBRIGATORIO ID do item)
+    const base64Flag = "data:image/png;base64,";
+    const b64Image =  base64Flag + Buffer.from(retorno).toString("base64");
 
+    json =   `{ "id" : ${categoria.id},"imagem" : "${b64Image}","nome" : "${categoria.nome }","ingredientes" : [${categoria.ingredientes.map(ingrediente =>{ return '{ "nome":"'+ingrediente.nome+'","id":"'+ingrediente.id+'"}'}) }]}`;
+
+    setItem( JSON.parse(`${json}`) ) 
+}
   // caso o usuário não tenha alterado algum campo, irá setar com o valor encontrado no bd
   useEffect(() => {
-    if (employee) {
-      if (!name) {
-        setName(employee.pessoa.nome)
-      }
-      if (!email) {
-        setEmail(employee.conta)
-      }
-      if (password === '') {
-        setPassword(employee.senha)
-      }
-      if (image64 === '') {
-        setImage64(employee.pessoa.imagem)
-      }
+    if (item) {
+      //setar o valor e nome caso esteja vazio
+      // if (!name) {
+      //   setName(item.pessoa.nome)
+      // }
+      // if (!email) {
+      //   setEmail(item.conta)
+      // }
+      // if (password === '') {
+      //   setPassword(item.senha)
+      // }
+      // if (image64 === '') {
+      //   setImage64(item.pessoa.imagem)
+      // }
     }
   })
 
-  function Unactive() {
-    const salaryConverted = parseFloat(salary)
-
-    axios.put(baseUrl + "conta/editar", {
-      id: params.id,
-      conta: email,
-      senha: password,
-      pessoa: {
-        nome: name,
-        salario: salaryConverted,
-        imagem: image64,
-        cargo: {
-          id: value
-        }
-
-      },
-      ativo: false
-    }).then(res => {
-
-      setVisible(true)
-    }).catch(function (error) {
-      console.log(error);
-    })
-  }
-
-  function Active() {
-    const salaryConverted = parseFloat(salary)
-
-    axios.put(baseUrl + "conta/editar", {
-      id: params.id,
-      conta: email,
-      senha: password,
-      pessoa: {
-        nome: name,
-        salario: salaryConverted,
-        imagem: image64,
-        cargo: {
-          id: value
-        }
-
-      },
-      ativo: true
-    }).then(res => {
-      setVisible(true)
-    }).catch(function (error) {
-      console.log(error);
-    })
-  }
-
   function Save() {
     //converter a string salario para inteiro
-    const salaryConverted = parseFloat(salary)
+    const valorConverted = parseFloat(salary)
 
     //está setando todas 
-    axios.put(baseUrl + "conta/editar", {
+    axios.put(baseUrl + "item/editar", {
       id: params.id,
-      conta: email,
-      senha: password,
-      pessoa: {
-        nome: name,
-        salario: salaryConverted,
-        imagem: image64,
-        cargo: {
-          id: value
-        }
-
-      }
+      nome: name,
+      valor: valorConverted
     }).then(res => {
-
       setVisible(true)
     }).catch(function (error) {
       console.log(error);
     })
 
-    // navigation.navigate("Employee")
-  }
-
-  async function handleSelecionarFoto() {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 4],
-      quality: 1,
-      base64: true
-    });
-
-    console.log(result);
-
-    if (!result.cancelled) {
-      //caso apareça erro no uri, IGNORAR, o problema é no visual studio (compila normalmente)
-      setImage(result.uri);
-      setImage64(result.uri)
-    }
-
+    // navigation.navigate("item")
   }
 
   function OnRequestClose() {
     setVisible(false)
-    navigation.navigate("Employee")
+    navigation.navigate("item")
   }
 
 
   return (
     <>
-      {!employee ? <Text>Erro</Text> :
-        <><Header title="Editar Funcionário" canGoBack={true} />
+      {!item ? <Text>Erro</Text> :
+        <><Header title="Editar Item" canGoBack={true} />
+           <Image style={styles.image} source={{uri : item.imagem}} />
           <ErrorModal visible={visible} functionOnRequestClose={OnRequestClose} text="Alterado com sucesso!" />
           <View style={styles.container}>
             <RegisterInput
               labelName=""
               title="Nome"
               onChangeText={setName}
-            ><Text>{employee.pessoa.nome}</Text></RegisterInput>
-            <DropDownPicker
-              placeholder={employee.pessoa.cargo.nome}
-              textStyle={styles.dropdownText}
-              labelStyle={styles.dropdownText}
-              open={open}
-              value={value}
-              items={cargos.map(cargo => ({ label: cargo.nome, value: cargo.id }))}
-              setOpen={setOpen}
-              setValue={setValue}
-              style={styles.dropdown}
-              placeholderStyle={{ color: colors.dividor }}
-              dropDownContainerStyle={{ borderColor: colors.dividor }}
-              selectedItemContainerStyle={{ height: 35 }}
-            />
-            <Text>Salário</Text>
-            {/* <View style={styles.inputGroup}>
+            ><Text>{item.nome}</Text></RegisterInput>
+            <Text>Valor</Text>
+            <View style={styles.inputGroup}>
           <TextInputMask
             type={'money'}
             onChangeText={setSalary}
             style={styles.input}
             placeholder={"R$ 00,00"}
           />
-        </View> */}
-            <RegisterInput
-              labelName="Informe o email do Funcionário"
-              title="Email" onChangeText={setEmail} ><Text>{employee.conta}</Text></RegisterInput>
-            <RegisterInput
-              labelName="Informe a nova senha"
-              title="Senha"
-              icon={true}
-              onChangeText={setPassword} />
-
-            <Text style={styles.title}> Imagem do Funcionário</Text>
-            {/* se não existe imagem, mostrar o botão */}
-            {!image ?
-              <View
-                style={styles.imageSelector}
-
-              >
-                <TouchableOpacity
-                  onPress={handleSelecionarFoto}
-                // disabled={disableButton}
-                // style={disableButton ? { display: "none" } : styles.imageSelector}
-                >
-                  <View style={styles.dashedBox}>
-
-                    <Feather name="plus" size={60} color={colors.text} />
-                  </View>
-                </TouchableOpacity>
-              </View>
-              :
-              // se existe imagem, mostrar a imagem
-              <TouchableOpacity
-                onPress={handleSelecionarFoto}
-              >
-                <Image source={{ uri: image }} style={styles.image} />
-              </TouchableOpacity>
-            }
-            {employee.ativo === false ?
-              <>
-                <Text style={{ color: colors.red, marginVertical: 20 }}>Esse usuário está inativo</Text>
-                <View style={styles.footer}>
-                  {/* botão excluir */}
-                  <TouchableOpacity style={styles.buttonContainer} onPress={Active}>
-                    <Text style={styles.text}>Ativar Funcionário</Text>
-                  </TouchableOpacity>
-                  <Button title="Salvar Informações" onPress={Save} />
-                </View>
-              </>
-              :
-              <>
-                <Text style={{ color: colors.green, marginVertical: 20 }}>Usuário ativo</Text>
-                <View style={styles.footer}>
-                  {/* botão excluir */}
-                  <TouchableOpacity style={styles.buttonContainer} onPress={Unactive}>
-                    <Text style={styles.text}>Inativar Funcionário</Text>
-                  </TouchableOpacity>
-                  <Button title="Salvar Informações" onPress={Save} />
-                </View>
-              </>
-            }
+        </View>
           </View></>}
     </>
   )

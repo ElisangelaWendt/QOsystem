@@ -129,7 +129,7 @@ export default function EditEmployee({ navigation }: any) {
       pessoa: {
         nome: name,
         salario: salaryConverted,
-        imagem: image64,
+        imagem: employee.pessoa.imagem,
         cargo: {
           id: value
         }
@@ -154,11 +154,10 @@ export default function EditEmployee({ navigation }: any) {
       pessoa: {
         nome: name,
         salario: salaryConverted,
-        imagem: image64,
+        imagem: employee.pessoa.imagem,
         cargo: {
           id: value
-        }
-
+        },
       },
       ativo: true
     }).then(res => {
@@ -169,31 +168,46 @@ export default function EditEmployee({ navigation }: any) {
   }
 
   function Save() {
-    //converter a string salario para inteiro
-    const salaryConverted = parseFloat(salary)
+       async function teste() {
 
-    //está setando todas 
-    axios.put(baseUrl + "conta/editar", {
-      id: params.id,
-      conta: email,
-      senha: password,
-      pessoa: {
-        nome: name,
-        salario: salaryConverted,
-        imagem: image64,
-        cargo: {
-          id: value
-        }
+      // Responsavel pelo Upload
+      const id = (await gdrive.files.newMultipartUploader()
+        .setData(image64, "image/png") // 1° conteudo; 2° Tipo de arquivo 
+        .setIsBase64(true) // identificando se esta mandando texto ou Base64
+        .setRequestBody({
+          //parent:['root'] -- Opcional - Pasta aonde sao salvo os arquivos
+          name: name + '_' + email + '.png'// nome do arquivo
+        })
+        .execute()
+      ).id;
 
-      }
-    }).then(res => {
+      var salaryFormatted = salary.replace(/[^0-9]/g, '')
+      var fileName = '';// so pra fins de NADA kkk
+      fileName = id;
 
-      setVisible(true)
-    }).catch(function (error) {
-      console.log(error);
-    })
-
-    // navigation.navigate("Employee")
+      // cadastrar informações da conta
+      await axios.post(baseUrl + "conta/editar", {
+        id: params.id,
+        conta: email,
+        senha: password,
+        pessoa: {
+          nome: name,
+          salario: salaryFormatted,
+          imagem: await id,
+          cargo: {
+            id: value,
+          }
+        },
+        ativo: employee.ativo
+      }).then((res => {
+        setVisible(true)
+      }))
+        .catch(function (error) {
+          console.log(error);
+        })
+      return id
+    }
+    teste();
   }
 
   async function handleSelecionarFoto() {
@@ -247,14 +261,14 @@ export default function EditEmployee({ navigation }: any) {
               selectedItemContainerStyle={{ height: 35 }}
             />
             <Text>Salário</Text>
-            {/* <View style={styles.inputGroup}>
+            <View style={styles.inputGroup}>
           <TextInputMask
             type={'money'}
             onChangeText={setSalary}
             style={styles.input}
             placeholder={"R$ 00,00"}
           />
-        </View> */}
+        </View>
             <RegisterInput
               labelName="Informe o email do Funcionário"
               title="Email" onChangeText={setEmail} ><Text>{employee.conta}</Text></RegisterInput>

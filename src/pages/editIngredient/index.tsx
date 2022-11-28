@@ -77,7 +77,7 @@ export default function EditIngredient({ navigation }: any) {
     valorConverted = parseFloat(valor)
 
     //está setando todas 
-    axios.put(baseUrl + "conta/editar", {
+    axios.put(baseUrl + "ingrediente/editar", {
       id: params.id,
       nome: name,
       valor: valorConverted

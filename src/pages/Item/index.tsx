@@ -8,7 +8,7 @@ import styles from "./styles";
 import { Feather } from "@expo/vector-icons";
 import { Buffer } from "buffer";
 import { baseUrl, gdrive } from "../../config/globalConfig";
-
+import { empresa } from "../login";
 
 interface Item {
   nome: string,
@@ -22,27 +22,20 @@ interface Item {
   imagem: string;
 }
 
-interface CategoryId {
-  id: number
-}
-
 interface Categoria {
   nome: string,
 }
 
 export default function Item({ navigation }: any) {
   const [item, setItem] = useState<Item[]>([]);
-  const [nomeCategoria, setNomeCategoria] = useState<Categoria>()
-  const route = useRoute();
-  const params = route.params as CategoryId;
-  const [emptyList, setEmptyList] = useState(true)
+  const [emptyList, setEmptyList] = useState(false)
   var Terminou = 0;
   var json = '';
 
   function arruma_esse_caralho(Jsonarray) {
     Terminou = (Jsonarray.length)
 
-    Jsonarray.map(async (categoria, idx) => {
+    Jsonarray.map(async (categoria) => {
       const retorno = await gdrive.files.getBinary(categoria.imagem) // funcao responsavel por Buscar o Item ( OBRIGATORIO ID do item)
       const base64Flag = "data:image/png;base64,";
       const b64Image = base64Flag + Buffer.from(retorno).toString("base64");
@@ -56,74 +49,71 @@ export default function Item({ navigation }: any) {
     )
   }
 
+
   function setar() {
     json = json.substring(0, json.length - 1); // Remover Virgula a Mais
     //console.log('[' + json+ ']')
     if (Terminou == JSON.parse('[' + json + ']').length) {
       setItem(JSON.parse('[' + json + ']'))
+      setEmptyList(false)
     }
   }
 
-  function handleNavigateToItemDetails(id: number) {
-    navigation.navigate("ItemDetails", { id })
+  function handleNavigateToEditItem(id: number) {
+    navigation.navigate("EditItem", { id })
   }
 
-  useEffect(() => {
-    axios.post(baseUrl + "categoria/buscar", {
-      id: params.id
-    })
-      .then(res => {
-        setNomeCategoria(res.data)
-      }).catch(function (error) {
-        console.log(error);
-      })
 
-    axios.post(baseUrl + "item/buscar/categoria", {
-      id: params.id
+  useEffect(() => {
+
+    axios.post(baseUrl + "item/buscar/empresa", {
+      id: empresa
     })
       .then(res => {
-        setEmptyList(false)
+        //setCategoria(res.data)
         arruma_esse_caralho(res.data)
-        //setItem(res.data)
+        setEmptyList(false)
       }).catch(function (error) {
         console.log(error);
         setEmptyList(true)
       })
+
   }, [])
 
   function currencyFormat(num) {
-    return num.toFixed(2).replace('.',',',' ')
- }
+    return num.toFixed(2).replace('.', ',', ' ')
+  }
   return (
     <>
-      {nomeCategoria &&
-        <>
-          <Header title={nomeCategoria.nome} canGoBack={true} />
-          <View style={styles.container}>
-            <View>
-              {item.map((itens) => (
-                <TouchableOpacity style={styles.content} onPress={() => handleNavigateToItemDetails(itens.id)} key={itens.id} >
-                  <View style={styles.text}>
-                    <Text style={styles.title}>{itens.nome}</Text>
 
-                    <View style={{ flexDirection: 'row' }} >
-                      {itens.ingredientes.map(ingredient => (
-                        <Text style={styles.ingredients} key={ingredient.nome}>{ingredient.nome};</Text>
-                      ))}
-                    </View>
-
-                    <Text style={styles.title}>R$: {currencyFormat(itens.valor / 100)}</Text>
-                  </View>
-                  <Image style={styles.image} source={{ uri: itens.imagem }} />
-                </TouchableOpacity>
-              ))}
-            </View>
-            {/* <View style={styles.footer}>
-          <AddButton isAdding={false} />
-        </View> */}
+      <Header title="Itens" canGoBack={true} />
+      <View style={styles.container}>
+        {emptyList ?
+          <View style={{ alignItems: 'center', marginVertical: 20 }}>
+            <Text>Sem itens cadastrados</Text>
+            <Feather name="alert-circle" size={24} />
           </View>
-        </>
-      }
+          :
+          <View>
+            {item.map((itens) => (
+              <TouchableOpacity style={styles.content} onPress={() => handleNavigateToEditItem(itens.id)} key={itens.id} >
+                <View style={styles.text}>
+                  <Text style={styles.title}>{itens.nome}</Text>
+
+                  <View style={{ flexDirection: 'row' }} >
+                    {itens.ingredientes.map(ingredient => (
+                      <Text style={styles.ingredients} key={ingredient.nome}>{ingredient.nome};</Text>
+                    ))}
+                  </View>
+
+                  <Text style={styles.title}>R$: {currencyFormat(itens.valor / 100)}</Text>
+                </View>
+                <Image style={styles.image} source={{ uri: itens.imagem }} />
+              </TouchableOpacity>
+            ))}
+          </View>
+        }
+      </View>
     </>
   )
 }

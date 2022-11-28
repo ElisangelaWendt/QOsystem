@@ -18,8 +18,8 @@ interface Categoria{
 }
 
 export default function Home({ navigation }: any) {
-  const [search, setSearch] = useState('')
   const [categoria, setCategoria] = useState<Categoria[]>([]);
+  const [empty, setEmpty] = useState(false)
   var Terminou = 0;
   var json = '' ;
 
@@ -44,6 +44,7 @@ function setar(){
   json =  json.substring(0, json.length - 1) ; // Remover Virgula a Mais
   if (Terminou == JSON.parse('[' + json+ ']').length){
     setCategoria(JSON.parse('[' + json+ ']'))
+    setEmpty(false)
   }
 }
 
@@ -54,9 +55,10 @@ useLayoutEffect(() => {
       .then(res => {
         setCategoria(res.data)
         arruma_esse_caralho(res.data)
-
+        setEmpty(false)
       }).catch(function (error) {
         console.log(error);
+        setEmpty(true)
       })
   },[])
 
@@ -70,11 +72,11 @@ useLayoutEffect(() => {
       <ScrollView style={styles.content}>
 
         <Text style={styles.text}>Categorias</Text>
-        {!categoria && 
-        <>
+        {empty && 
+        <View style={{alignItems:'center'}}>
         <Text>Sem categoria Cadastrada</Text> 
         <Feather name="alert-circle" style={styles.icon} size={24} />
-        </>
+        </View>
         }
         {/* Categorias de lanches */}
         
