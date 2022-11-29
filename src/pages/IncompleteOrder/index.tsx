@@ -26,7 +26,8 @@ interface Pedido {
   item: {
     id: number,
     nome: string,
-    valor: number
+    valor: number,
+    observacao: string
   }
 }
 
@@ -37,7 +38,7 @@ interface Table {
 
 
 export default function IncompleteOrder({navigation}: any) {
-  const HeadTable = ['Quantidade', 'Item']
+  const HeadTable = ['Quantidade', 'Item', 'Observação']
   const [pedido, setPedido] = useState<Pedido[]>([])
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState()
@@ -138,7 +139,9 @@ function OnRequestClose(){
             <Row data={HeadTable} style={styles.headStyle} textStyle={styles.tableText} />
               <Rows data={pedido.map(pedido => {
                 return [pedido.quantidade,
-                pedido.item.nome]
+                pedido.item.nome,
+                pedido.item.observacao
+              ]
               })} textStyle={styles.tableText} />
           </Table>
             }

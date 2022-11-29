@@ -84,6 +84,7 @@ export default function EditEmployee({ navigation }: any) {
       id: params.id
     })
       .then(res => {
+        console.log(res.data)
         setEmployee(res.data)
       }).catch(function (error) {
         console.log(error);
@@ -94,12 +95,13 @@ export default function EditEmployee({ navigation }: any) {
       id: empresa
     })
       .then(res => {
+        
         setCargos(res.data)
       }).catch(function (error) {
         console.log(error);
       })
 
-  }, [employee])
+  }, [])
 
   // caso o usuário não tenha alterado algum campo, irá setar com o valor encontrado no bd
   useEffect(() => {
@@ -116,17 +118,26 @@ export default function EditEmployee({ navigation }: any) {
       if (image64 === '') {
         setImage64(employee.pessoa.imagem)
       }
+      if(!value ){
+        setValue(employee.pessoa.cargo.id)
+      }
+      if(!salary){
+        setSalary(''+ employee.pessoa.salario)
+      }
+
     }
   })
 
   function Unactive() {
+    const salaryConverted = parseFloat(salary)
+
     axios.put(baseUrl + "conta/editar", {
       id: params.id,
       conta: email,
       senha: password,
       pessoa: {
         nome: name,
-        salario: employee.pessoa.salario,
+        salario: salaryConverted,
         imagem: employee.pessoa.imagem,
         cargo: {
           id: value
@@ -135,7 +146,6 @@ export default function EditEmployee({ navigation }: any) {
       },
       ativo: false
     }).then(res => {
-
       setVisible(true)
     }).catch(function (error) {
       console.log(error);
@@ -143,6 +153,8 @@ export default function EditEmployee({ navigation }: any) {
   }
 
   function Active() {
+    
+    const salaryConverted = parseFloat(salary)
 
     axios.put(baseUrl + "conta/editar", {
       id: params.id,
@@ -150,7 +162,7 @@ export default function EditEmployee({ navigation }: any) {
       senha: password,
       pessoa: {
         nome: name,
-        salario: employee.pessoa.salario,
+        salario: salaryConverted,
         imagem: employee.pessoa.imagem,
         cargo: {
           id: value
@@ -172,22 +184,21 @@ export default function EditEmployee({ navigation }: any) {
         .setData(image64, "image/png") // 1° conteudo; 2° Tipo de arquivo 
         .setIsBase64(true) // identificando se esta mandando texto ou Base64
         .setRequestBody({
-          //parent:['root'] -- Opcional - Pasta aonde sao salvo os arquivos
           name: name + '_' + email + '.png'// nome do arquivo
         })
         .execute()
       ).id;
 
-      var salaryFormatted = salary.replace(/[^0-9]/g, '')
-      var fileName = '';// so pra fins de NADA kkk
-      fileName = id;
-
+     
+     
+     var salaryFormatted = parseFloat(salary.replace(/[^0-9]/g, ''))
       // cadastrar informações da conta
-      await axios.post(baseUrl + "conta/editar", {
+     axios.put(baseUrl + "conta/editar", {
         id: params.id,
         conta: email,
         senha: password,
         pessoa: {
+          id: employee.pessoa.id ,
           nome: name,
           salario: salaryFormatted,
           imagem: await id,
@@ -216,19 +227,19 @@ export default function EditEmployee({ navigation }: any) {
       base64: true
     });
 
-    console.log(result);
+    //console.log(result);
 
     if (!result.cancelled) {
       //caso apareça erro no uri, IGNORAR, o problema é no visual studio (compila normalmente)
       setImage(result.uri);
-      setImage64(result.uri)
+      setImage64(result.base64)
     }
 
   }
 
   function OnRequestClose() {
     setVisible(false)
-    navigation.navigate("Employee")
+    navigation.navigate("Menu")
   }
 
 

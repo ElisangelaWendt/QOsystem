@@ -12,6 +12,7 @@ import { useRoute } from "@react-navigation/native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { userID } from "../login";
 import {  Buffer} from "buffer";
+import RegisterInput from "../../components/RegisterInput";
 
 interface Item {
   imagem : string
@@ -35,6 +36,11 @@ interface Order {
   }
 }
 
+interface Ingredients{
+  nome: string,
+  id: number
+}
+
 export var pedidoItem = null;
 export var quantidadeItem = null;
 export var idItemSelected = null;
@@ -45,10 +51,11 @@ export default function ItemDetails({ navigation }: any) {
   const [item, setItem] = useState<Item>();
   const route = useRoute();
   const params = route.params as ItemId;
-  const [observacao, setObservacao] = useState()
+  const [ingredientesAdicionais, setIngredientesAdicionais] = useState<Ingredients[]>([])
   const [openRemove, setOpenRemove] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);
   const [value, setValue] = useState([]);
+  const [observacao, setObservacao] = useState('')
 
   const [removedItem, setRemovedItem] = useState([])
   const [openOrder, setOpenOrder] = useState<Order>()
@@ -85,6 +92,12 @@ export default function ItemDetails({ navigation }: any) {
         console.log(error);
       })
      
+      axios.post(baseUrl + "ingrediente/listar/true").then(res => {
+        setIngredientesAdicionais(res.data)
+        console.log(res.data)
+      }).catch(function(error){
+        console.log(error)
+      })
       
   }, [])
 
@@ -135,7 +148,8 @@ async function busca_imagem(categoria){
           item: {
             id: params.id
           },
-          quantidade: quantity
+          quantidade: quantity,
+          observacao: observacao
         }).then(res => {
           pedidoItem = (res.data.id)
           quantidadeItem = (res.data.quantidade)
@@ -150,6 +164,7 @@ async function busca_imagem(categoria){
             id: params.id
           },
           quantidade: quantity,
+          observacao: observacao,
           pedido: {
             id: openOrder[0].id
           }
@@ -176,7 +191,7 @@ async function busca_imagem(categoria){
     return (removedItem.map(RemovedItem => (findArray(item.ingredientes, RemovedItem).nome + '\n')))
   }
   function atualiza_tabela_adicionado() {
-    return (value.map(Value => (findArray(item.ingredientes, Value).nome + '\n')))
+    return (value.map(Value => (findArray(ingredientesAdicionais, Value).nome + '\n')))
   }
 
   function handleAddQuantity() {
@@ -209,11 +224,13 @@ async function busca_imagem(categoria){
               <AddQuantity quantity={quantity} title={true} functionAdd={handleAddQuantity} functionRemove={handleRemoveQuantity} />
               {warning &&
               <Text style={styles.warning}>A quantidade deve ser maior que zero</Text>}
-              <View style={styles.row}>
-                <Text style={styles.text}>Remover Algum Item?</Text>
+              {/* <View style={styles.row}> */}
+                <Text style={styles.text}>Observações:</Text>
+          <RegisterInput style={{height:50, width: '100%'}} labelName="Retirar Milho, ervilha... Adicionar Molho..." multiline title="" onChangeText={setObservacao} />
+                
                 {/* <Checkbox status={isChecked1 ? 'checked' : 'unchecked'} onPress={check1} color={colors.dividor} /> */}
-              </View>
-              <DropDownPicker
+              {/* </View> */}
+              {/* <DropDownPicker
                 placeholder="Selecione os itens"
                 textStyle={styles.dropdownText}
                 labelStyle={styles.dropdownText}
@@ -230,21 +247,21 @@ async function busca_imagem(categoria){
                 dropDownContainerStyle={{ borderColor: colors.dividor }}
                 selectedItemContainerStyle={{ height: 35 }}
                 multiple={true}
-              />
-              <View style={styles.table}><Text style={styles.tableText}>{atualiza_tabela_removido()}</Text></View>
-              <View style={styles.row}>
+              /> */}
+              {/* <View style={styles.table}><Text style={styles.tableText}>{atualiza_tabela_removido()}</Text></View> */}
+              {/* <View style={styles.row}>
 
-                <Text style={styles.text}>Deseja Algum Item Adicional?</Text>
+                <Text style={styles.text}>Deseja Algum Item Adicional?</Text> */}
                 {/* <Checkbox status={isChecked2 ? 'checked' : 'unchecked'} onPress={check2} color={colors.dividor} /> */}
-              </View>
+              {/* </View> */}
 
-              <DropDownPicker
+              {/* <DropDownPicker
                 placeholder="Selecione os itens"
                 textStyle={styles.dropdownText}
                 labelStyle={styles.dropdownText}
                 open={openAdd}
                 value={value}
-                items={item.ingredientes.map(ingredient => ({
+                items={ingredientesAdicionais.map(ingredient => ({
                   label: ingredient.nome,
                   value: ingredient.id
                 }))}
@@ -257,7 +274,7 @@ async function busca_imagem(categoria){
                 multiple={true}
                 
               />
-              <View style={styles.table}><Text style={styles.tableText}>{atualiza_tabela_adicionado()}</Text></View>
+              <View style={styles.table}><Text style={styles.tableText}>{atualiza_tabela_adicionado()}</Text></View> */}
 
             </View>
             <View style={styles.footer}>

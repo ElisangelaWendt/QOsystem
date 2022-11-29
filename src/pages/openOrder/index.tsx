@@ -33,6 +33,7 @@ interface Pedido {
     nome: string,
     quantidade: number,
     valor: number,
+    observacao: string,
     ingredientes: [{
       id: number,
       nome: string
@@ -55,19 +56,49 @@ export default function OpenOrder({ navigation }: any) {
   function arruma_esse_caralho(Jsonarray) {
     console.log('veio')
     Terminou = (Jsonarray.length)// Definir quando vai Exibir na tela
-    javeio = 1
-    Jsonarray.map(async (categoria, idx) => {
-      const retorno = await gdrive.files.getBinary(categoria.item.imagem) // funcao responsavel por Buscar o Item ( OBRIGATORIO ID do item)
-      const base64Flag = "data:image/png;base64,";
-      const b64Image = base64Flag + Buffer.from(retorno).toString("base64");
-
-      if (json.length > 2) { json += ',' } // so pra arrumar quando é mais de um Item  
-
-      json += `{ "id" : ${categoria.id},"quantidade":${categoria.quantidade}, "item":{"valor" : ${categoria.item.valor},"nome" : "${categoria.item.nome}","imagem" : "${b64Image}", "ingredientes" : [${categoria.item.ingredientes.map(ingrediente => { return '{ "nome":"' + ingrediente.nome + '"}' })}]}},`;
-
-      if (await retorno) { setar() }// so pra chamar a funcao quando Terminar // solucao alternativa
-    }
-    )
+    try {
+      Jsonarray.map(async (categoria, idx) => {
+        
+        javeio = javeio + 1;
+        const retorno = await gdrive.files.getBinary(categoria.item.imagem) // funcao responsavel por Buscar o Item ( OBRIGATORIO ID do item)
+        const base64Flag = "data:image/png;base64,";
+        const b64Image = base64Flag + Buffer.from(retorno).toString("base64");
+  
+        if (json.length > 2) { json += ',' } // so pra arrumar quando é mais de um Item  
+  
+        json += `{ "id" : ${categoria.id},"quantidade":${categoria.quantidade}, "item":{"valor" : ${categoria.item.valor},"nome" : "${categoria.item.nome}","imagem" : "${b64Image}", "ingredientes" : [${categoria.item.ingredientes.map(ingrediente => { return '{ "nome":"' + ingrediente.nome + '"}' })}]}},`;
+  
+        if (await retorno) { setar() }// so pra chamar a funcao quando Terminar // solucao alternativa
+      }
+      )  
+      
+    } catch (error) {
+      javeio = 0
+      console.log('Primeira Tentativa')
+      axios.post(baseUrl + "pedido/buscar/status/pessoa", {
+        status: 0,
+        pessoa: {
+          id: userID
+        }
+      })
+        .then(async res => {
+          setIdPedido(res.data[0].id)
+          axios.post(baseUrl + "pedidoItem/buscar/pedido", {
+            pedido: {
+              id: await res.data[0].id
+            }
+          }).then(res => {
+            if (javeio == 0){ arruma_esse_caralho(res.data)}
+            //setPedido(res.data)
+          }).catch(function (error) {
+            console.log(error)
+          })
+          setOpenOrder(res.data)
+        }).catch(function (error) {
+          console.log(error);
+        })
+    } 
+    
   }
 
   function setar() {// Salvar no "SET"
@@ -98,7 +129,9 @@ export default function OpenOrder({ navigation }: any) {
         id: userID
       }
     })
-      .then(res => {
+      .then(async res => {
+        setIdPedido(res.data[0].id)
+        //salvar(await res.data)
         setOpenOrder(res.data)
       }).catch(function (error) {
         console.log(error);
@@ -112,7 +145,7 @@ export default function OpenOrder({ navigation }: any) {
           id: userID
         }
       }).then(res => {
-        console.log(res.data)
+        //console.log(res.data)
         setOpenOrder(res.data)
         setIdPedido(res.data.id)
         
@@ -138,8 +171,8 @@ export default function OpenOrder({ navigation }: any) {
             id: idItemSelected
           }
         }).then(res => {
-          setPedido(res.data)
-          if (javeio == 0){ arruma_esse_caralho(res.data)}
+          //setPedido(res.data)
+          if (javeio == 0 ){ arruma_esse_caralho(res.data)}
         }).catch(function (error) {
           console.log(error)
         })
@@ -152,6 +185,7 @@ export default function OpenOrder({ navigation }: any) {
   }, [idPedido, openOrder])
 
   useEffect(() => {
+    
     try {
       if (idPedido != 0 && openOrder === undefined || openOrder[0].id === undefined) {
         //buscar pedido item depois de alterar
@@ -161,7 +195,7 @@ export default function OpenOrder({ navigation }: any) {
           }
         }).then(res => {
          if (javeio == 0){ arruma_esse_caralho(res.data)}
-           setPedido(res.data)
+           //setPedido(res.data)
         }).catch(function (error) {
           console.log(error)
         })
@@ -173,7 +207,7 @@ export default function OpenOrder({ navigation }: any) {
           }
         }).then(res => {
           if (javeio == 0){ arruma_esse_caralho(res.data)}
-          setPedido(res.data)
+          //setPedido(res.data)
         }).catch(function (error) {
           console.log(error)
         })
@@ -185,7 +219,7 @@ export default function OpenOrder({ navigation }: any) {
             }
           }).then(res => {
             if (javeio == 0){ arruma_esse_caralho(res.data)}
-            setPedido(res.data)
+            //setPedido(res.data)
           }).catch(function (error) {
             console.log(error)
           })
@@ -194,6 +228,7 @@ export default function OpenOrder({ navigation }: any) {
     } catch (error) {
       // console.log(error)
     }
+    console.log(pedido)
   }, [openOrder])
 
   function handleNavigateToHome() {
@@ -259,13 +294,13 @@ export default function OpenOrder({ navigation }: any) {
       {pedido.map != undefined &&
         <ScrollView style={styles.scrollview}>
           {pedido.map((order, idx) => (
-            <View style={styles.content} key={order.id}>
+            <View style={styles.content} key={order.id + idx}>
 
               <View style={styles.text} >
                 <Text style={styles.title}>{order.item.nome}</Text>
                 <Text style={styles.ingredients}>{order.item.ingredientes.map(res => <Text key={res.id}>{res.nome}{'\n'}</Text>)}</Text>
-                {/* <Text style={styles.add}>Adicionar: ...</Text> */}
-                {/* <Text style={styles.remove}>Remover: ...</Text> */}
+               <Text style={styles.add}>Observações:{order.item.observacao}</Text> 
+               {/* <Text style={styles.remove}>Remover: ...</Text> */}
               </View>
               <View style={{ alignItems: "center", marginRight: 20, marginBottom: 10 }}>
 
