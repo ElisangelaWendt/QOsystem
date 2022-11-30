@@ -66,7 +66,7 @@ export default function OpenOrder({ navigation }: any) {
   
         if (json.length > 2) { json += ',' } // so pra arrumar quando é mais de um Item  
   
-        json += `{ "id" : ${categoria.id},"quantidade":${categoria.quantidade}, "item":{"valor" : ${categoria.item.valor},"nome" : "${categoria.item.nome}","imagem" : "${b64Image}", "ingredientes" : [${categoria.item.ingredientes.map(ingrediente => { return '{ "nome":"' + ingrediente.nome + '"}' })}]}},`;
+        json += `{ "id" : ${categoria.id},"quantidade":${categoria.quantidade}, "item":{"observacao" : "${categoria.observacao}","valor" : ${categoria.item.valor},"nome" : "${categoria.item.nome}","imagem" : "${b64Image}", "ingredientes" : [${categoria.item.ingredientes.map(ingrediente => { return '{ "nome":"' + ingrediente.nome + '"}' })}]}},`;
   
         if (await retorno) { setar() }// so pra chamar a funcao quando Terminar // solucao alternativa
       }
@@ -299,7 +299,7 @@ export default function OpenOrder({ navigation }: any) {
               <View style={styles.text} >
                 <Text style={styles.title}>{order.item.nome}</Text>
                 <Text style={styles.ingredients}>{order.item.ingredientes.map(res => <Text key={res.id}>{res.nome}{'\n'}</Text>)}</Text>
-               <Text style={styles.add}>Observações:{order.item.observacao}</Text> 
+               <Text style={styles.add}>Observações: </Text> 
                {/* <Text style={styles.remove}>Remover: ...</Text> */}
               </View>
               <View style={{ alignItems: "center", marginRight: 20, marginBottom: 10 }}>
